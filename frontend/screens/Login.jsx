@@ -6,7 +6,6 @@ import tw from 'twrnc';
 const Login = () => {
     return (
         <SafeAreaView style={tw`flex-1 mt-15 items-center pb-10`}>
-
             <Image style={{ width: 120, height: 120, marginTop: 10, marginBottom: 10 }} source={require('../assets/Logo.png')} />
             <Text style={{ fontSize: 48, fontWeight: 'bold', marginBottom: 10 }}>MentoRship</Text>
             <Text style={{ fontSize: 24, fontWeight: '500' }}>Have an account?</Text>
