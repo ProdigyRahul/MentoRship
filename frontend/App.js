@@ -1,27 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Onboarding from './screens/Onboarding';
-import Home from './screens/Home';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Home, Onboarding, Login } from './screens';
 
 const Stack = createNativeStackNavigator();
 
-const App = () => {
+function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="Onboarding"
-          component={Onboarding}
-          options={{
-            animation: 'slide_from_right',
-          }}
-        />
+        <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
+}
 
 export default App;

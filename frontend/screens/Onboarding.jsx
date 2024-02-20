@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,8 +12,8 @@ const Onboarding = ({ navigation }) => {
     try {
       const onboardingCompleted = await AsyncStorage.getItem('onboardingCompleted');
       if (onboardingCompleted) {
-        // Onboarding has been completed, navigate to Home
-        navigation.navigate('Home');
+        // Onboarding has been completed, replace Onboarding with Home
+        navigation.replace('Login');
       }
     } catch (error) {
       // Handle AsyncStorage error
@@ -21,33 +21,24 @@ const Onboarding = ({ navigation }) => {
     }
   };
 
-  const handleGetStarted = async () => {
-    try {
-      // Set onboarding status to completed
-      await AsyncStorage.setItem('onboardingCompleted', 'true');
-    } catch (error) {
-      // Handle AsyncStorage error
-      console.error('Error setting onboarding status in AsyncStorage:', error);
-    }
-    
-    // Handle the button press event here
-    // navigation.navigate('NextScreen');
+  const handleGetStarted = () => {
+    navigation.navigate('Login');
   };
 
   const handleSkip = () => {
-    // Navigate to the Home screen
+    // Replace Onboarding with Home
     navigation.navigate('Home');
   };
 
   return (
-    <View style={tw`flex-1 mt-20 items-center pb-10`}>
+    <SafeAreaView style={tw`flex-1 mt-20 items-center pb-10`}>
       <Image style={{ width: 322, height: 322, borderRadius: 10, marginBottom: 50 }} source={require('../assets/ship-boarding.jpg')} />
       <Text style={{ color: '#333333', fontSize: 28, fontWeight: 'bold', marginBottom: 25 }}>Sail with your mentors</Text>
       <Text style={{
         color: "#677294",
         fontSize: 14,
         textAlign: "center",
-        marginBottom: 79,
+        marginBottom: 80,
         width: 307,
       }}>The Mentor App seamlessly connects users with experienced mentors for personalized guidance in their professional or personal pursuits. </Text>
 
@@ -69,7 +60,7 @@ const Onboarding = ({ navigation }) => {
       <TouchableOpacity onPress={handleSkip}>
         <Text style={{ color: '#677294', fontSize: 14, marginTop: 19 }}>Skip</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
