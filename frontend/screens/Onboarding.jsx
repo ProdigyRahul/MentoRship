@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Onboarding = ({navigation}) => {
-  const handleGetStarted = () => {
+const Onboarding = ({ navigation }) => {
+  useEffect(() => {
+    checkOnboardingStatus();
+  }, []);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const onboardingCompleted = await AsyncStorage.getItem('onboardingCompleted');
+      if (onboardingCompleted) {
+        // Onboarding has been completed, navigate to Home
+        navigation.navigate('Home');
+      }
+    } catch (error) {
+      // Handle AsyncStorage error
+      console.error('Error reading onboarding status from AsyncStorage:', error);
+    }
+  };
+
+  const handleGetStarted = async () => {
+    try {
+      // Set onboarding status to completed
+      await AsyncStorage.setItem('onboardingCompleted', 'true');
+    } catch (error) {
+      // Handle AsyncStorage error
+      console.error('Error setting onboarding status in AsyncStorage:', error);
+    }
+    
     // Handle the button press event here
     // navigation.navigate('NextScreen');
   };
 
   const handleSkip = () => {
-    navigation.navigate('Home')
-  }
+    // Navigate to the Home screen
+    navigation.navigate('Home');
+  };
+
   return (
     <View style={tw`flex-1 mt-20 items-center pb-10`}>
       <Image style={{ width: 322, height: 322, borderRadius: 10, marginBottom: 50 }} source={require('../assets/ship-boarding.jpg')} />
