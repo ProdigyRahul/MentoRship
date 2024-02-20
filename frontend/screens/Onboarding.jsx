@@ -12,7 +12,6 @@ const Onboarding = ({ navigation }) => {
     try {
       const onboardingCompleted = await AsyncStorage.getItem('onboardingCompleted');
       if (onboardingCompleted) {
-        // Onboarding has been completed, replace Onboarding with Home
         navigation.replace('Login');
       }
     } catch (error) {
@@ -22,12 +21,12 @@ const Onboarding = ({ navigation }) => {
   };
 
   const handleGetStarted = () => {
-    navigation.navigate('Login');
+    navigation.replace('Login');
   };
 
   const handleSkip = () => {
     // Replace Onboarding with Home
-    navigation.navigate('Home');
+    navigation.replace('Home');
   };
 
   return (
