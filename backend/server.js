@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
+import { createWriteStream } from "fs";
+import morgan from "morgan";
 
 // Environment Variables
 dotenv.config();
@@ -11,6 +13,13 @@ const app = express();
 
 // Cors
 app.use(cors());
+
+const accessLogStream = createWriteStream("access.log", { flags: "a" }); // Use createWriteStream directly
+
+// Log HTTP requests to a file
+app.use(morgan("combined", { stream: accessLogStream }));
+app.use(morgan("dev"));
+
 // Database Connection
 connectDB();
 
