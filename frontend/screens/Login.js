@@ -2,13 +2,16 @@ import { View, Text, SafeAreaView, TouchableOpacity, Touchable, TextInput } from
 import React from 'react'
 import { Image } from 'react-native'
 
-export default function Login() {
+export default function Login({ navigation }) {
+    const handleSignup = () => {
+        navigation.replace('Signup')
+    }
     return (
         <SafeAreaView
             style={{
                 flex: 1,
                 alignItems: 'center',
-                marginTop: 80
+                marginTop: 70
             }}>
 
             <Image
@@ -143,7 +146,8 @@ export default function Login() {
                     fontWeight: 'bold'
                 }}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity >
+            <TouchableOpacity
+                onPress={handleSignup}>
                 <Text style={{
                     color: '#333333',
                     marginTop: 5
