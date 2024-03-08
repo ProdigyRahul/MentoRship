@@ -1,8 +1,52 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Touchable, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Image } from 'react-native'
 
 export default function Login({ navigation }) {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = async () => {
+        try {
+            const response = await fetch(
+                "http://192.168.15.200:8080/api/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                // Handle unsuccessful login
+                const errorData = await response.json();
+                Alert.alert("Login Failed", errorData.message);
+                return;
+            }
+
+            // Handle successful login
+            const responseData = await response.json();
+
+            // Store the token in AsyncStorage
+            await AsyncStorage.setItem("token", responseData.token);
+
+            // Navigate to the Home screen or perform other actions
+            navigation.navigate("Home");
+        } catch (error) {
+            console.error("Login failed:", error);
+            Alert.alert("Login Failed", "An error occurred during login.");
+        }
+    };
+
+
+
+
     const handleSignup = () => {
         navigation.replace('Signup')
     }
@@ -99,7 +143,7 @@ export default function Login({ navigation }) {
             }}>Login With Email</Text>
 
             <TextInput
-
+                value='email'
                 placeholder="Email:"
                 style={{
                     backgroundColor: '#D9D9D9',
@@ -111,7 +155,8 @@ export default function Login({ navigation }) {
                 }}
             ></TextInput>
             <TextInput
-
+                value='password'
+                secureTextEntry
                 placeholder="Password:"
                 style={{
                     backgroundColor: '#D9D9D9',
@@ -130,7 +175,7 @@ export default function Login({ navigation }) {
 
                 }}>Forgot Password?</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{
+            <TouchableOpacity onPress={handleLogin} style={{
                 height: 50,
                 width: 250,
                 backgroundColor: '#09A1F6',
