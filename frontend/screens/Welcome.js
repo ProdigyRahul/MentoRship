@@ -26,12 +26,13 @@ export default function Welcome() {
                     marginTop: 10
                 }}>Discover personalized mentorship opportunities tailored to your unique needs and aspirations by providing us with basic information about yourself.</Text>
                 <Text style={{
-                    fontsize: 11,
+                    fontSize: 11,
                     color: '#9C9C9C',
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    marginTop: 10
                 }}>Thought you already completed these steps?</Text>
                 <View style={{
-                    width: 270,
+                    width: 220,
                     height: 1,
                     backgroundColor: '#DBD4D4',
 
@@ -151,7 +152,8 @@ export default function Welcome() {
                 <Text style={{
                     fontWeight: 'bold',
                     fontSize: 14,
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    marginTop: 10
 
                 }}>What is your primary role?</Text>
                 <View style={{
@@ -211,13 +213,7 @@ export default function Welcome() {
                         borderRadius: 10
                     }}>I want to mentor other</Text>
                 </View>
-
-
-
-
             </ScrollView>
-
-
         </SafeAreaView>
 
 
