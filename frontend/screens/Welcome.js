@@ -5,7 +5,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
+  Keyboard,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -343,6 +343,7 @@ export default function Welcome() {
                 handleState(item.value);
                 setCountryName(item.label);
                 setIsFocus(false);
+                Keyboard.dismiss();
               }}
             />
           </View>
@@ -389,6 +390,7 @@ export default function Welcome() {
                 handleCity(country, item.value);
                 setStateName(item.label);
                 setIsFocus(false);
+                Keyboard.dismiss();
               }}
             />
           </View>
@@ -434,6 +436,7 @@ export default function Welcome() {
                 setCity(item.value);
                 setCityName(item.label);
                 setIsFocus(false);
+                Keyboard.dismiss();
               }}
             />
           </View>
