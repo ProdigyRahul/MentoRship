@@ -1,3 +1,5 @@
+import FlashMessage, { showMessage } from "react-native-flash-message";
+
 import {
   View,
   Text,
@@ -15,6 +17,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const showToast = () => {
+    showMessage({
+      message: "Success",
+      description: "User registered successfully!",
+      type: "success",
+      duration: 1000,
+      autoHide: true,
+    });
+  };
 
   const handleSignup = async () => {
     try {
@@ -52,8 +64,10 @@ export default function Signup({ navigation }) {
         "token",
         responseData.token || "authenticated"
       );
-
-      navigation.navigate("Login");
+      showToast();
+      setTimeout(() => {
+        navigation.navigate("Login");
+      }, 1000);
     } catch (error) {
       console.error("Signup failed:", error);
       Alert.alert("Signup Failed", "An error occurred during signup.");
@@ -197,6 +211,7 @@ export default function Signup({ navigation }) {
         <TextInput
           onChangeText={(text) => setPassword(text)}
           placeholder="Password:"
+          secureTextEntry
           style={{
             backgroundColor: "#D9D9D9",
             width: 290,
@@ -258,6 +273,7 @@ export default function Signup({ navigation }) {
             Create Account
           </Text>
         </TouchableOpacity>
+        <FlashMessage position="bottom" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

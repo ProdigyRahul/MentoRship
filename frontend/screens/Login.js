@@ -12,10 +12,21 @@ import {
 import React, { useState } from "react";
 import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const showToast = () => {
+    showMessage({
+      message: "Success",
+      description: "Login successful!",
+      type: "success",
+      duration: 3000,
+      autoHide: true,
+    });
+  };
 
   const handleLogin = async () => {
     try {
@@ -44,7 +55,7 @@ export default function Login({ navigation }) {
 
       // Handle successful login
       const responseData = await response.json();
-
+      showToast();
       // Store the token in AsyncStorage
       await AsyncStorage.setItem("token", responseData.token);
 

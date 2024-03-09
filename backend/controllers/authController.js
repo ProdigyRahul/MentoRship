@@ -1,13 +1,22 @@
-// controllers/authController.js
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
+
+const isEmailValid = (email) => {
+  // Regular expression for a basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 const registerUser = async (req, res) => {
   try {
     const { email, password, First_Name, Last_Name, Role, Student, Mentor } =
       req.body;
+
+    // Check if the email is valid
+    if (!isEmailValid(email)) {
+      return res.status(400).json({ message: "Invalid email address." });
+    }
 
     // Check if user with the given email already exists
     const existingUser = await User.findOne({ email });
