@@ -43,7 +43,7 @@ export default function Welcome() {
       style={{
         flex: 1,
         alignItems: "center",
-        marginTop: 45,
+        marginTop: 40,
       }}
     >
       <Text
