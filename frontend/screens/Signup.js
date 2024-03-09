@@ -69,7 +69,7 @@ export default function Signup({ navigation }) {
       );
       showToast();
       setTimeout(() => {
-        navigation.navigate("Login");
+        navigation.navigate("Welcome");
       }, 1000);
     } catch (error) {
       console.error("Signup failed:", error);
