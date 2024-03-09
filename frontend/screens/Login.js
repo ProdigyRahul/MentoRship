@@ -7,9 +7,11 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Image } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -17,8 +19,10 @@ export default function Login({ navigation }) {
 
   const handleLogin = async () => {
     try {
+      console.log("Email:", email);
+      console.log("Password:", password);
       const response = await fetch(
-        "http://192.168.15.200:8080/api/auth/login",
+        "http://192.168.29.176:8080/api/auth/login",
         {
           method: "POST",
           headers: {
@@ -45,7 +49,7 @@ export default function Login({ navigation }) {
       await AsyncStorage.setItem("token", responseData.token);
 
       // Navigate to the Home screen or perform other actions
-      navigation.navigate("Home");
+      navigation.navigate("Welcome");
     } catch (error) {
       console.error("Login failed:", error);
       Alert.alert("Login Failed", "An error occurred during login.");
@@ -185,6 +189,7 @@ export default function Login({ navigation }) {
             marginTop: 15,
             paddingHorizontal: 20,
           }}
+          onChangeText={(text) => setEmail(text)}
         ></TextInput>
         <TextInput
           secureTextEntry
@@ -197,6 +202,7 @@ export default function Login({ navigation }) {
             marginTop: 15,
             paddingHorizontal: 20,
           }}
+          onChangeText={(text) => setPassword(text)}
         ></TextInput>
         <TouchableOpacity>
           <Text
