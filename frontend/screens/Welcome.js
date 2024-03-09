@@ -49,7 +49,6 @@ export default function Welcome() {
 
     axios(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;
         let countryArray = [];
         for (var i = 0; i < count; i++) {
@@ -205,6 +204,7 @@ export default function Welcome() {
               marginTop: 15,
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
+              borderWidth: 1,
             }}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Last Name *</Text>
@@ -217,6 +217,7 @@ export default function Welcome() {
               marginTop: 15,
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
+              borderWidth: 1,
             }}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Pronouns *</Text>
@@ -229,6 +230,7 @@ export default function Welcome() {
               marginTop: 15,
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
+              borderWidth: 1,
             }}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
@@ -242,6 +244,7 @@ export default function Welcome() {
               paddingHorizontal: 5,
               borderColor: "#D9D9D9",
               justifyContent: "center",
+              borderWidth: 1,
             }}
           >
             <Picker
@@ -269,6 +272,7 @@ export default function Welcome() {
               paddingHorizontal: 5,
               borderColor: "#D9D9D9",
               justifyContent: "center",
+              borderWidth: 1,
             }}
           >
             <Picker
@@ -311,6 +315,7 @@ export default function Welcome() {
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
               justifyContent: "center",
+              borderWidth: 1,
             }}
           >
             <Dropdown
@@ -358,6 +363,7 @@ export default function Welcome() {
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
               justifyContent: "center",
+              borderWidth: 1,
             }}
           >
             <Dropdown
@@ -405,6 +411,7 @@ export default function Welcome() {
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
               justifyContent: "center",
+              borderWidth: 1,
             }}
           >
             <Dropdown
