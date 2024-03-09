@@ -146,6 +146,7 @@ export default function Welcome() {
               selectedValue={selectedGender}
               onValueChange={(itemValue) => handleGenderChange(itemValue)}
               style={{ height: 50, width: "100%" }}
+              mode="dropdown"
             >
               <Picker.Item label="Select Gender" value="" />
               <Picker.Item label="Male" value="male" />
