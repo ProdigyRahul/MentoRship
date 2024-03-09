@@ -3,18 +3,63 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  Touchable,
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Image } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Signup({ navigation }) {
-  const handleSignup = () => {
-    navigation.replace("Login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignup = async () => {
+    try {
+      const First_Name = "";
+      const Last_Name = "";
+      const Role = "Default";
+
+      const response = await fetch(
+        "http://192.168.29.176:8080/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            First_Name,
+            Last_Name,
+            Role,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        Alert.alert("Signup Failed", errorData.message);
+        return;
+      }
+
+      const responseData = await response.json();
+      console.log("Server Response:", responseData);
+
+      await AsyncStorage.setItem(
+        "token",
+        responseData.token || "authenticated"
+      );
+
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Signup failed:", error);
+      Alert.alert("Signup Failed", "An error occurred during signup.");
+    }
   };
+
   return (
     <SafeAreaView
       style={{
@@ -138,6 +183,7 @@ export default function Signup({ navigation }) {
         </Text>
 
         <TextInput
+          onChangeText={(text) => setEmail(text)}
           placeholder="Email:"
           style={{
             backgroundColor: "#D9D9D9",
@@ -149,6 +195,7 @@ export default function Signup({ navigation }) {
           }}
         ></TextInput>
         <TextInput
+          onChangeText={(text) => setPassword(text)}
           placeholder="Password:"
           style={{
             backgroundColor: "#D9D9D9",
@@ -189,6 +236,7 @@ export default function Signup({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={handleSignup}
           style={{
             height: 50,
             width: 250,

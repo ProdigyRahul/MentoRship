@@ -21,7 +21,7 @@ const NavigationLine = ({ active }) => (
   />
 );
 
-export default function () {
+export default function ({ navigation }) {
   const [accounting, setAccounting] = useState("");
   const [finance, setFinance] = useState("");
   const [humanresources, setHumanresources] = useState("");
@@ -112,7 +112,7 @@ export default function () {
       </View>
       <TouchableOpacity
         onPress={() => {
-          // TODO
+          navigation.navigate("Career");
         }}
         style={{
           backgroundColor: "#09A1F6",
@@ -122,6 +122,7 @@ export default function () {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
+          marginBottom: 10,
         }}
       >
         <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 const NavigationLine = ({ active }) => (
   <View
@@ -19,7 +20,7 @@ const NavigationLine = ({ active }) => (
   />
 );
 
-export default function () {
+export default function Education({ navigation }) {
   const [education, setEducation] = useState("");
   const [degree, setDegree] = useState("");
   const [major, setMajor] = useState("");
@@ -35,6 +36,21 @@ export default function () {
         marginTop: 40,
       }}
     >
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={{
+          position: "absolute",
+          top: 3,
+          left: 20,
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Icon name="chevron-left" size={24} color="#000" />
+      </TouchableOpacity>
       <Text
         style={{
           fontWeight: "bold",
@@ -67,7 +83,7 @@ export default function () {
       </View>
       <TouchableOpacity
         onPress={() => {
-          // TODO
+          navigation.navigate("Interest");
         }}
         style={{
           backgroundColor: "#09A1F6",
@@ -77,6 +93,7 @@ export default function () {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
+          marginBottom: 10,
         }}
       >
         <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>

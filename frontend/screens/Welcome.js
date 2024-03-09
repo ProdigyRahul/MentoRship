@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
 import { Dropdown } from "react-native-element-dropdown";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const API_KEY = "SWhsTnlyUnI3TjFRcDV1ZE1XVFFoNlIzZ3NMTkcwaUtsZGNZNTdBNQ==";
 const BASE_URL = "https://api.countrystatecity.in/v1";
@@ -26,7 +27,7 @@ const NavigationLine = ({ active }) => (
   />
 );
 
-export default function Welcome() {
+export default function Welcome({ navigation }) {
   // Countries/States/Cities
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
@@ -626,7 +627,7 @@ export default function Welcome() {
       </View>
       <TouchableOpacity
         onPress={() => {
-          // TODO
+          navigation.navigate("Education");
         }}
         style={{
           backgroundColor: "#09A1F6",
@@ -636,6 +637,7 @@ export default function Welcome() {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
+          marginBottom: 10,
         }}
       >
         <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>

@@ -7,7 +7,10 @@ import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Homepage from "./screens/Homepage";
 import Welcome from "./screens/Welcome";
-
+import Education from "./screens/Forms/Education";
+import AreasOfInterest from "./screens/Forms/AreasOfInterest";
+import CareerGoals from "./screens/Forms/CareerGoals";
+import MentorAvailability from "./screens/Forms/MentorAvailability";
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -18,6 +21,10 @@ function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen name="Education" component={Education} />
+        <Stack.Screen name="Interest" component={AreasOfInterest} />
+        <Stack.Screen name="Career" component={CareerGoals} />
+        <Stack.Screen name="Availability" component={MentorAvailability} />
         <Stack.Screen name="Home" component={Homepage} />
       </Stack.Navigator>
     </NavigationContainer>
