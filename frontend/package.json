@@ -20,6 +20,7 @@
     "react-native": "0.73.4",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-element-dropdown": "^2.10.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-vector-icons": "^10.0.3",
     "twrnc": "^4.1.0"
   },
