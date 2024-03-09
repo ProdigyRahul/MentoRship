@@ -28,6 +28,9 @@ export default function Signup({ navigation }) {
     });
   };
 
+  const handleLoginNow = () => {
+    navigation.navigate("Login");
+  };
   const handleSignup = async () => {
     try {
       const First_Name = "";
@@ -271,6 +274,16 @@ export default function Signup({ navigation }) {
             }}
           >
             Create Account
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLoginNow}>
+          <Text
+            style={{
+              color: "#333333",
+              marginTop: 5,
+            }}
+          >
+            Already have an account? Login Now
           </Text>
         </TouchableOpacity>
         <FlashMessage position="bottom" />

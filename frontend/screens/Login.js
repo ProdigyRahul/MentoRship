@@ -56,11 +56,12 @@ export default function Login({ navigation }) {
       // Handle successful login
       const responseData = await response.json();
       showToast();
+
       // Store the token in AsyncStorage
       await AsyncStorage.setItem("token", responseData.token);
-
-      // Navigate to the Home screen or perform other actions
-      navigation.navigate("Welcome");
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 1000);
     } catch (error) {
       console.error("Login failed:", error);
       Alert.alert("Login Failed", "An error occurred during login.");
@@ -259,6 +260,8 @@ export default function Login({ navigation }) {
             New to MentoRship? Signup Now
           </Text>
         </TouchableOpacity>
+
+        <FlashMessage position="top" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
