@@ -26,7 +26,7 @@ connectDB();
 // Middleware to parse JSON
 app.use(express.json());
 
-// Mount the auth routes
+// Routes
 app.use("/api/auth", authRoutes);
 
 // Start the server
