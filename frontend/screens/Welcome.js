@@ -22,10 +22,16 @@ const NavigationLine = ({ active }) => (
 );
 
 export default function Welcome() {
+  // Countries/States/Cities
+
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedParticipation, setSelectedParticipation] = useState(null);
+  const [selectedRace, setSelectedRace] = useState("");
 
+  const handleRaceChange = (race) => {
+    setSelectedRace(race);
+  };
   const handleGenderChange = (gender) => {
     setSelectedGender(gender);
   };
@@ -155,19 +161,49 @@ export default function Welcome() {
             </Picker>
           </View>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>
-            Race/Ethinicity *
+            Race/Ethnicity *
           </Text>
-          <TextInput
+          <View
             style={{
               backgroundColor: "#F1F1F3",
               width: "100%",
               height: 50,
               borderRadius: 20,
               marginTop: 15,
-              paddingHorizontal: 20,
+              paddingHorizontal: 5,
               borderColor: "#D9D9D9",
+              justifyContent: "center",
             }}
-          ></TextInput>
+          >
+            <Picker
+              selectedValue={selectedRace}
+              onValueChange={(itemValue) => handleRaceChange(itemValue)}
+              style={{ height: 50, width: "100%" }}
+              mode="dropdown"
+            >
+              <Picker.Item label="Enter your race" value="" />
+              <Picker.Item
+                label="American Indian or Alaskan Native"
+                value="americanIndian"
+              />
+              <Picker.Item
+                label="Hispanic or Latino origin of any race"
+                value="hispanicLatino"
+              />
+              <Picker.Item label="Asian" value="asian" />
+              <Picker.Item
+                label="Native Hawaiian or Other Pacific Islander"
+                value="pacificIslander"
+              />
+              <Picker.Item
+                label="Black or African American"
+                value="africanAmerican"
+              />
+              <Picker.Item label="White" value="white" />
+              <Picker.Item label="Unknown" value="unknown" />
+              <Picker.Item label="Prefer not to state" value="notToState" />
+            </Picker>
+          </View>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Country *</Text>
           <TextInput
             style={{
@@ -230,48 +266,51 @@ export default function Welcome() {
             style={{
               width: 150,
               height: 60,
-              backgroundColor:
-                selectedRole === "student" ? "#09A1F6" : "#F1F1F3",
-              textAlign: "center",
-              padding: 5,
+              backgroundColor: "#fff",
               borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
+              borderColor: selectedRole === "student" ? "#09A1F6" : "#D9D9D9",
+              borderWidth: 0.7,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
             }}
           >
-            <Icon
-              name="book"
-              size={20}
-              color={selectedRole === "student" ? "#fff" : "#000"}
-            />
-            <Text
-              style={{ color: selectedRole === "student" ? "#fff" : "#000" }}
-            >
-              Student
-            </Text>
+            <Icon name="book" size={20} color="#000" />
+            <Text style={{ color: "#000" }}>Student</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleRoleSelection("professional")}
             style={{
               width: 150,
               height: 60,
-              backgroundColor:
-                selectedRole === "professional" ? "#09A1F6" : "#F1F1F3",
-              textAlign: "center",
-              padding: 5,
+              backgroundColor: "#fff",
               borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
+              borderColor:
+                selectedRole === "professional" ? "#09A1F6" : "#D9D9D9",
+              borderWidth: 0.7,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
             }}
           >
-            <Icon
-              name="briefcase"
-              size={20}
-              color={selectedRole === "professional" ? "#fff" : "#000"}
-            />
+            <Icon name="briefcase" size={20} color="#000" />
             <Text
               style={{
-                color: selectedRole === "professional" ? "#fff" : "#000",
+                color: "#000",
               }}
             >
               Working professional
@@ -305,16 +344,26 @@ export default function Welcome() {
               width: 150,
               height: 60,
               backgroundColor:
-                selectedParticipation === "findMentor" ? "#09A1F6" : "#F1F1F3",
+                selectedParticipation === "findMentor" ? "#09A1F6" : "#fff",
               textAlign: "center",
               padding: 5,
               borderRadius: 10,
               justifyContent: "center",
+              marginBottom: 10,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
             }}
           >
             <Text
               style={{
                 color: selectedParticipation === "findMentor" ? "#fff" : "#000",
+                textAlign: "center",
               }}
             >
               I want to find a mentor
@@ -326,15 +375,25 @@ export default function Welcome() {
               width: 150,
               height: 60,
               backgroundColor:
-                selectedParticipation === "mentorOther" ? "#09A1F6" : "#F1F1F3",
+                selectedParticipation === "mentorOther" ? "#09A1F6" : "#fff",
               textAlign: "center",
               padding: 5,
               borderRadius: 10,
               justifyContent: "center",
+              shadowColor: "#000",
+              marginBottom: 10,
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
             }}
           >
             <Text
               style={{
+                textAlign: "center",
                 color:
                   selectedParticipation === "mentorOther" ? "#fff" : "#000",
               }}
