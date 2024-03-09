@@ -7,6 +7,11 @@ import Login from './screens/Login';
 import Signup from './screens/Signup';
 import Homepage from './screens/Homepage';
 import Welcome from './screens/Welcome';
+import Education from './screens/Forms/Education';
+import AreasOfInterest from './screens/Forms/AreasOfInterest';
+import CareerGoals from './screens/Forms/CareerGoals';
+import MentorAvailability from './screens/Forms/MentorAvailability';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +25,12 @@ function App() {
     //     <Stack.Screen name="Home" component={Homepage} />
     //   </Stack.Navigator>
     // </NavigationContainer>
-    <Welcome />
+    //<Welcome />
+    //<Education />
+    <AreasOfInterest />
+    //<CareerGoals />
+    //<MentorAvailability />
+
   )
 }
 
