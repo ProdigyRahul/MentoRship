@@ -8,10 +8,27 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { Picker } from "@react-native-picker/picker";
+
+const NavigationLine = ({ active }) => (
+  <View
+    style={{
+      flex: 1,
+      height: 5,
+      backgroundColor: active ? "#57D5DB" : "#DBD4D4",
+      marginHorizontal: 5,
+    }}
+  />
+);
 
 export default function Welcome() {
+  const [selectedGender, setSelectedGender] = useState("");
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedParticipation, setSelectedParticipation] = useState(null);
+
+  const handleGenderChange = (gender) => {
+    setSelectedGender(gender);
+  };
 
   const handleRoleSelection = (role) => {
     setSelectedRole(role);
@@ -65,6 +82,7 @@ export default function Welcome() {
               textAlign: "left",
               marginTop: 10,
               paddingHorizontal: 15,
+              textDecorationLine: "underline",
             }}
           >
             Thought you already completed these steps?
@@ -112,17 +130,29 @@ export default function Welcome() {
             }}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
-          <TextInput
+          <View
             style={{
               backgroundColor: "#F1F1F3",
               width: "100%",
               height: 50,
               borderRadius: 20,
               marginTop: 15,
-              paddingHorizontal: 20,
+              paddingHorizontal: 5,
               borderColor: "#D9D9D9",
+              justifyContent: "center",
             }}
-          ></TextInput>
+          >
+            <Picker
+              selectedValue={selectedGender}
+              onValueChange={(itemValue) => handleGenderChange(itemValue)}
+              style={{ height: 50, width: "100%" }}
+            >
+              <Picker.Item label="Select Gender" value="" />
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
+              <Picker.Item label="Rather not say" value="notSay" />
+            </Picker>
+          </View>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>
             Race/Ethinicity *
           </Text>
@@ -313,6 +343,38 @@ export default function Welcome() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <View
+        style={{
+          flexDirection: "row",
+          height: 10,
+          marginVertical: 10,
+        }}
+      >
+        <NavigationLine active={true} />
+        <NavigationLine active={false} />
+        <NavigationLine active={false} />
+        <NavigationLine active={false} />
+        <NavigationLine active={false} />
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          // TODO
+        }}
+        style={{
+          backgroundColor: "#09A1F6",
+          padding: 10,
+          borderRadius: 30,
+          width: "90%",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>
+          Next
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
