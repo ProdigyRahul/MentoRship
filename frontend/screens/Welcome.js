@@ -80,7 +80,6 @@ export default function Welcome({ navigation }) {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;
         let stateArray = [];
         for (var i = 0; i < count; i++) {
@@ -107,7 +106,6 @@ export default function Welcome({ navigation }) {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;
         let cityArray = [];
         for (var i = 0; i < count; i++) {
@@ -172,7 +170,6 @@ export default function Welcome({ navigation }) {
         [
           {
             text: "OK",
-            onPress: () => console.log("OK Pressed"),
             style: "cancel",
           },
         ],
@@ -231,6 +228,9 @@ export default function Welcome({ navigation }) {
       ]);
       return;
     }
+
+    // If everything is good then only navigate to education
+    navigation.navigate("Education");
   };
   return (
     <SafeAreaView
