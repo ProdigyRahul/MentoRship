@@ -60,7 +60,7 @@ export default function Login({ navigation }) {
       // Store the token in AsyncStorage
       await AsyncStorage.setItem("token", responseData.token);
       setTimeout(() => {
-        navigation.navigate("Home");
+        navigation.navigate("Welcome");
       }, 1000);
     } catch (error) {
       console.error("Login failed:", error);

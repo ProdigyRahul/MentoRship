@@ -12,33 +12,43 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: Buffer,
+    default: "",
   },
   First_Name: {
     type: String,
+    default: "",
   },
   Last_Name: {
     type: String,
+    default: "",
   },
   Pronoun: {
     type: String,
+    default: "",
   },
   Gender: {
     type: String,
+    default: "",
   },
   Race: {
     type: String,
+    default: "",
   },
   Country: {
     type: String,
+    default: "",
   },
   State: {
     type: String,
+    default: "",
   },
   City: {
     type: String,
+    default: "",
   },
   Role: {
     type: String,
+    default: "",
   },
   Student: {
     type: Boolean,
@@ -50,9 +60,11 @@ const userSchema = new mongoose.Schema({
   },
   Affiliation: {
     type: String,
+    default: "",
   },
   Education: {
     type: String,
+    default: "",
   },
   Areas_of_Interest: {
     type: [String],

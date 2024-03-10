@@ -35,7 +35,20 @@ export default function Signup({ navigation }) {
     try {
       const First_Name = "";
       const Last_Name = "";
+      const Pronoun = "";
+      const Gender = "";
+      const Race = "";
+      const Country = "";
+      const State = "";
+      const City = "";
       const Role = "Default";
+      const Student = false;
+      const Mentor = false;
+      const Affiliation = "";
+      const Education = "";
+      const Areas_of_Interest = [];
+      const Career_Goals = [];
+      const withOrgOnly = false;
 
       const response = await fetch(
         "http://192.168.29.176:8080/api/auth/register",
@@ -49,7 +62,20 @@ export default function Signup({ navigation }) {
             password,
             First_Name,
             Last_Name,
+            Pronoun,
+            Gender,
+            Race,
+            Country,
+            State,
+            City,
             Role,
+            Student,
+            Mentor,
+            Affiliation,
+            Education,
+            Areas_of_Interest,
+            Career_Goals,
+            withOrgOnly,
           }),
         }
       );

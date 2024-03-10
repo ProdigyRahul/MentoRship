@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -127,7 +128,9 @@ export default function Welcome({ navigation }) {
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedParticipation, setSelectedParticipation] = useState(null);
   const [selectedRace, setSelectedRace] = useState("");
-
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Pronouns, setPronouns] = useState("");
   const handleRaceChange = (race) => {
     setSelectedRace(race);
   };
@@ -142,6 +145,16 @@ export default function Welcome({ navigation }) {
   const handleParticipationSelection = (participation) => {
     setSelectedParticipation(participation);
   };
+  // Set First name and last name onchange
+  const handleFirstNameChange = (text) => {
+    setFirstName(text);
+  };
+  const handleLastNameChange = (text) => {
+    setLastName(text);
+  };
+  const handlePronounsChange = (text) => {
+    setPronouns(text);
+  };
   // Popup
   const [isPopupVisible, setPopupVisible] = useState(false);
 
@@ -149,6 +162,76 @@ export default function Welcome({ navigation }) {
     setPopupVisible(!isPopupVisible);
   };
 
+  // Handle Next button with validation
+  const handleNext = async () => {
+    // Name Validation
+    if (!FirstName || !LastName) {
+      Alert.alert(
+        "Error",
+        "Please enter your first and last name",
+        [
+          {
+            text: "OK",
+            onPress: () => console.log("OK Pressed"),
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+    // Pronouns Validation
+
+    // Gender Validation
+    if (!selectedGender || selectedGender === "Select Gender") {
+      Alert.alert("Error", "Please select your gender", [{ text: "OK" }]);
+      return;
+    }
+
+    // Validate Race
+    if (!selectedRace || selectedRace === "Enter your race") {
+      Alert.alert("Error", "Please select your race/ethnicity", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+    // Validate Country
+    if (!country || country === "Select Country") {
+      Alert.alert("Error", "Please select your country", [{ text: "OK" }]);
+      return;
+    }
+    // Validate State
+    if (!state || state === "Select State") {
+      Alert.alert("Error", "Please select your state", [{ text: "OK" }]);
+      return;
+    }
+
+    // Validate City
+    if (!city || city === "Select City") {
+      Alert.alert("Error", "Please select your city", [{ text: "OK" }]);
+      return;
+    }
+
+    // Validate Role
+    if (!selectedRole) {
+      Alert.alert("Error", "Please select your role", [{ text: "OK" }]);
+      return;
+    }
+    // Validate Participation
+    if (!selectedParticipation) {
+      Alert.alert("Error", "Please select your participation preference", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+    // Validate selectedParticipation
+    if (!selectedParticipation) {
+      Alert.alert("Error", "Please select your participation preference", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -278,6 +361,8 @@ export default function Welcome({ navigation }) {
               borderColor: "#D9D9D9",
               borderWidth: 1,
             }}
+            value={FirstName}
+            onChangeText={(text) => handleFirstNameChange(text)}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Last Name *</Text>
           <TextInput
@@ -291,8 +376,12 @@ export default function Welcome({ navigation }) {
               borderColor: "#D9D9D9",
               borderWidth: 1,
             }}
+            value={LastName}
+            onChangeText={(text) => handleLastNameChange(text)}
           ></TextInput>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Pronouns *</Text>
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>
+            Pronouns (optional)
+          </Text>
           <TextInput
             style={{
               backgroundColor: "#F1F1F3",
@@ -304,6 +393,8 @@ export default function Welcome({ navigation }) {
               borderColor: "#D9D9D9",
               borderWidth: 1,
             }}
+            value={Pronouns}
+            onChangeText={(text) => handlePronounsChange(text)}
           ></TextInput>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
           <View
@@ -697,9 +788,7 @@ export default function Welcome({ navigation }) {
         <NavigationLine active={false} />
       </View>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Education");
-        }}
+        onPress={handleNext}
         style={{
           backgroundColor: "#09A1F6",
           padding: 10,
