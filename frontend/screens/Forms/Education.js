@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { CheckBox } from "react-native-elements";
 
 const NavigationLine = ({ active }) => (
   <View
@@ -22,11 +23,25 @@ const NavigationLine = ({ active }) => (
 );
 
 export default function Education({ navigation }) {
+  const [selectedExperience, setSelectedExperience] = useState("");
   const [selectedAffilation, setSelectionAffilation] = useState("charusat");
   const [headline, setHeadline] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
+  const [noCollegeExperience, setNoCollegeExperience] = useState(false);
+  const [Education, setEducation] = useState("");
+  const [Degree, setDegree] = useState("");
+  const [Major, setMajor] = useState("");
   const maxCharacterLimit = 60;
 
+  const handleMajor = (Major) => {
+    setMajor(Major);
+  };
+  const handleDegree = (Degree) => {
+    setDegree(Degree);
+  };
+  const handleEducation = (Education) => {
+    setEducation(Education);
+  };
   const handleAffilationChange = (affilation) => {
     setSelectionAffilation(affilation);
   };
@@ -36,6 +51,9 @@ export default function Education({ navigation }) {
       setHeadline(text);
       setCharacterCount(text.length);
     }
+  };
+  const handlechangeExperience = (selectedExperience) => {
+    setSelectedExperience(selectedExperience);
   };
 
   return (
@@ -141,6 +159,104 @@ export default function Education({ navigation }) {
           <Text style={{ marginTop: 5, color: "#9C9C9C" }}>
             {characterCount}/{maxCharacterLimit}
           </Text>
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>Experience *</Text>
+          <View
+            style={{
+              backgroundColor: "#F1F1F3",
+              width: "95%",
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 5,
+              borderColor: "#D9D9D9",
+              justifyContent: "center",
+              borderWidth: 1,
+            }}
+          >
+            <Picker
+              selectedValue={selectedExperience}
+              onValueChange={(itemValue) => handlechangeExperience(itemValue)}
+              style={{ height: 50, width: "100%" }}
+            >
+              <Picker.Item label="None" value="" />
+              <Picker.Item label="Intern" value="intern" />
+              <Picker.Item label="Entery Level" value="entrylevel" />
+              <Picker.Item label="Senior Associate" value="seniorassociate" />
+              <Picker.Item label="Manager" value="manager" />
+              <Picker.Item label="Director" value="director" />
+              <Picker.Item label="Executive" value="executive" />
+            </Picker>
+          </View>
+          {/* I dont have college experience button  */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 15,
+              paddingHorizontal: 0,
+            }}
+          >
+            <CheckBox
+              checked={noCollegeExperience}
+              onPress={() => setNoCollegeExperience(!noCollegeExperience)}
+              containerStyle={{ padding: 0, marginRight: 10 }}
+            />
+            <TouchableOpacity
+              onPress={() => setNoCollegeExperience(!noCollegeExperience)}
+            >
+              <Text style={{ fontSize: 14 }}>
+                I do not have college experience
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* Education */}
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>Education</Text>
+          <TextInput
+            style={{
+              backgroundColor: "#F1F1F3",
+              width: "95%",
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+              borderColor: "#D9D9D9",
+              borderWidth: 1,
+            }}
+            value={Education}
+            onChangeText={(text) => handleEducation(text)}
+          ></TextInput>
+          {/* Degree */}
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>Degree</Text>
+          <TextInput
+            style={{
+              backgroundColor: "#F1F1F3",
+              width: "95%",
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+              borderColor: "#D9D9D9",
+              borderWidth: 1,
+            }}
+            value={Degree}
+            onChangeText={(text) => handleDegree(text)}
+          ></TextInput>
+          {/* Major */}
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>Major</Text>
+          <TextInput
+            style={{
+              backgroundColor: "#F1F1F3",
+              width: "95%",
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+              borderColor: "#D9D9D9",
+              borderWidth: 1,
+            }}
+            value={Major}
+            onChangeText={(text) => handleMajor(text)}
+          ></TextInput>
         </View>
       </ScrollView>
 

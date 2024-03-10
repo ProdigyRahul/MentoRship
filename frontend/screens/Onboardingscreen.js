@@ -11,7 +11,7 @@ export default function Onboarding({ navigation }) {
     navigation.navigate("Signup");
   };
   const handleSkip = () => {
-    navigation.navigate("Home");
+    navigation.navigate("Education");
   };
   return (
     <SafeAreaView style={tw`flex-1 mt-20 items-center pb-20`}>
