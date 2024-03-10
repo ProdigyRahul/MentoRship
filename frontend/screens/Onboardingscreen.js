@@ -21,6 +21,7 @@ export default function Onboarding({ navigation }) {
           width: 320,
           height: 320,
           borderRadius: 10,
+          marginTop: 20,
         }}
       />
       <Text
@@ -29,7 +30,7 @@ export default function Onboarding({ navigation }) {
           color: "#333333",
           fontSize: 28,
           marginBottom: 20,
-          marginTop: 20,
+          marginTop: 60,
         }}
       >
         Sail with your Mentors
