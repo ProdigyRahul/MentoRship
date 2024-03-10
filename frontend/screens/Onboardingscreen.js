@@ -8,10 +8,10 @@ import tw from "twrnc";
 
 export default function Onboarding({ navigation }) {
   const handleGetStarted = () => {
-    navigation.replace("Signup");
+    navigation.navigate("Signup");
   };
   const handleSkip = () => {
-    navigation.replace("Home");
+    navigation.navigate("Home");
   };
   return (
     <SafeAreaView style={tw`flex-1 mt-20 items-center pb-20`}>

@@ -4,8 +4,10 @@ import {
   SafeAreaView,
   TextInput,
   ScrollView,
+  Modal,
   TouchableOpacity,
   Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -13,6 +15,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Dropdown } from "react-native-element-dropdown";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import Login from "./Login";
 
 const API_KEY = "SWhsTnlyUnI3TjFRcDV1ZE1XVFFoNlIzZ3NMTkcwaUtsZGNZNTdBNQ==";
 const BASE_URL = "https://api.countrystatecity.in/v1";
@@ -139,6 +142,12 @@ export default function Welcome({ navigation }) {
   const handleParticipationSelection = (participation) => {
     setSelectedParticipation(participation);
   };
+  // Popup
+  const [isPopupVisible, setPopupVisible] = useState(false);
+
+  const togglePopup = () => {
+    setPopupVisible(!isPopupVisible);
+  };
 
   return (
     <SafeAreaView
@@ -176,7 +185,7 @@ export default function Welcome({ navigation }) {
           needs and aspirations by providing us with basic information about
           yourself.
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={togglePopup}>
           <Text
             style={{
               fontSize: 11,
@@ -190,6 +199,68 @@ export default function Welcome({ navigation }) {
             Thought you already completed these steps?
           </Text>
         </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isPopupVisible}
+          onRequestClose={togglePopup}
+        >
+          <TouchableWithoutFeedback onPress={togglePopup}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View
+                  style={{
+                    backgroundColor: "#fff",
+                    padding: 20,
+                    borderRadius: 10,
+                    width: "80%",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      marginBottom: 20,
+                    }}
+                  >
+                    If you have already completed it, please proceed to Login.
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      togglePopup();
+                      navigation.navigate("Login");
+                    }}
+                    style={{
+                      backgroundColor: "#09A1F6",
+                      padding: 10,
+                      borderRadius: 10,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 16,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Login
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        {/* Name */}
         <View
           style={{
             paddingHorizontal: 15,
