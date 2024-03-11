@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-
+import { CheckBox } from "react-native-elements";
 const NavigationLine = ({ active }) => (
   <View
     style={{
@@ -22,7 +22,13 @@ const NavigationLine = ({ active }) => (
 
 const InterestList = ({ data }) => {
   const [expanded, setExpanded] = useState(false);
+  const [ratings, setRatings] = useState(Array(data.items.length).fill(0));
 
+  const handleRatingChange = (index, rating) => {
+    const newRatings = [...ratings];
+    newRatings[index] = rating;
+    setRatings(newRatings);
+  };
   return (
     <View>
       <TouchableOpacity
@@ -51,21 +57,49 @@ const InterestList = ({ data }) => {
       {expanded && (
         <FlatList
           data={data.items}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => (
             <View
               style={{
-                paddingLeft: 30,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingLeft: 0,
                 backgroundColor: "#F1F1F3",
                 width: "90%",
                 height: 50,
                 borderRadius: 20,
                 marginTop: 5,
-                justifyContent: "center",
+                justifyContent: "space-between",
                 marginHorizontal: 15,
+                borderWidth: 0.1,
               }}
             >
-              <Text>{item}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <CheckBox
+                  value={ratings[index] > 0}
+                  onValueChange={(value) =>
+                    handleRatingChange(index, value ? 1 : 0)
+                  }
+                />
+                <View style={{ maxWidth: 150 }}>
+                  <Text style={{ marginLeft: -10, fontSize: 13 }}>{item}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity
+                    key={star}
+                    onPress={() => handleRatingChange(index, star)}
+                    style={{ marginRight: 4 }}
+                  >
+                    <Icon
+                      name="star"
+                      size={20}
+                      color={ratings[index] >= star ? "#FFD700" : "#D3D3D3"}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           )}
         />
@@ -319,7 +353,7 @@ const AreasOfInterest = ({ navigation }) => {
     },
   ];
   // Search Logic
-  // TODO: Add Serach Logic
+  // TODO: Later Search Logic
   // Handle Next
   const handleNext = () => {
     // Handle navigation or any other logic for the "Next" button
