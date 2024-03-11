@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -28,6 +29,10 @@ export default function Education({ navigation }) {
   const [headline, setHeadline] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
   const [noCollegeExperience, setNoCollegeExperience] = useState(false);
+  const [showEducation, setShowEducation] = useState(true);
+  const [showDegree, setShowDegree] = useState(true);
+  const [showMajor, setShowMajor] = useState(true);
+  const [showGradeYear, setShowGradeYear] = useState(true);
   const [Education, setEducation] = useState("");
   const [Degree, setDegree] = useState("");
   const [Major, setMajor] = useState("");
@@ -54,6 +59,51 @@ export default function Education({ navigation }) {
   };
   const handlechangeExperience = (selectedExperience) => {
     setSelectedExperience(selectedExperience);
+  };
+  // Checkbox logic
+  const handleCheckboxChange = () => {
+    setNoCollegeExperience((prevValue) => !prevValue);
+    setShowEducation((prevValue) => !prevValue);
+    setShowDegree((prevValue) => !prevValue);
+    setShowMajor((prevValue) => !prevValue);
+    setShowGradeYear((prevValue) => !prevValue);
+  };
+
+  // Handle Next button with validation
+  const handleNext = async () => {
+    // Headline and Experience Validation
+    if (!headline) {
+      Alert.alert(
+        "Error",
+        "Please enter your headline",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+
+    if (!selectedExperience || selectedExperience === "None") {
+      Alert.alert(
+        "Error",
+        "Please select your experience",
+        [
+          {
+            text: "OK",
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+
+    // Navigate to the next screen if all validation passes
+    navigation.navigate("Interest");
   };
 
   return (
@@ -140,7 +190,7 @@ export default function Education({ navigation }) {
               <Picker.Item label="Other" value="other" />
             </Picker>
           </View>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Headline</Text>
+          <Text style={{ marginTop: 15, fontWeight: 300 }}>Headline *</Text>
           <TextInput
             placeholder="Enter your attention-grabbing headline for your profile"
             style={{
@@ -198,65 +248,112 @@ export default function Education({ navigation }) {
           >
             <CheckBox
               checked={noCollegeExperience}
-              onPress={() => setNoCollegeExperience(!noCollegeExperience)}
+              onPress={handleCheckboxChange}
               containerStyle={{ padding: 0, marginRight: 10 }}
             />
-            <TouchableOpacity
-              onPress={() => setNoCollegeExperience(!noCollegeExperience)}
-            >
+            <TouchableOpacity onPress={handleCheckboxChange}>
               <Text style={{ fontSize: 14 }}>
                 I do not have college experience
               </Text>
             </TouchableOpacity>
           </View>
           {/* Education */}
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Education</Text>
-          <TextInput
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "95%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 20,
-              borderColor: "#D9D9D9",
-              borderWidth: 1,
-            }}
-            value={Education}
-            onChangeText={(text) => handleEducation(text)}
-          ></TextInput>
+          {showEducation && (
+            <View>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Education</Text>
+              <TextInput
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  borderColor: "#D9D9D9",
+                  borderWidth: 1,
+                }}
+                value={Education}
+                onChangeText={(text) => handleEducation(text)}
+              />
+            </View>
+          )}
+
           {/* Degree */}
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Degree</Text>
-          <TextInput
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "95%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 20,
-              borderColor: "#D9D9D9",
-              borderWidth: 1,
-            }}
-            value={Degree}
-            onChangeText={(text) => handleDegree(text)}
-          ></TextInput>
+          {showDegree && (
+            <View>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Degree</Text>
+              <TextInput
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  borderColor: "#D9D9D9",
+                  borderWidth: 1,
+                }}
+                value={Degree}
+                onChangeText={(text) => handleDegree(text)}
+              />
+            </View>
+          )}
+
           {/* Major */}
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Major</Text>
-          <TextInput
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "95%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 20,
-              borderColor: "#D9D9D9",
-              borderWidth: 1,
-            }}
-            value={Major}
-            onChangeText={(text) => handleMajor(text)}
-          ></TextInput>
+          {showMajor && (
+            <View>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Major</Text>
+              <TextInput
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  borderColor: "#D9D9D9",
+                  borderWidth: 1,
+                }}
+                value={Major}
+                onChangeText={(text) => handleMajor(text)}
+              />
+            </View>
+          )}
+          {/* Grade Year */}
+          {showGradeYear && (
+            <View>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Grade Year</Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={selectedExperience}
+                  onValueChange={(itemValue) =>
+                    handlechangeExperience(itemValue)
+                  }
+                  style={{ height: 50, width: "100%" }}
+                >
+                  <Picker.Item label="2022" value="2022" />
+                  <Picker.Item label="2023" value="2023" />
+                  <Picker.Item label="2024" value="2024" />
+                  <Picker.Item label="2025" value="2025" />
+                  <Picker.Item label="2026" value="2026" />
+                  <Picker.Item label="2027" value="2027" />
+                  <Picker.Item label="2028" value="2028" />
+                </Picker>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
 
@@ -274,9 +371,7 @@ export default function Education({ navigation }) {
         <NavigationLine active={false} />
       </View>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Interest");
-        }}
+        onPress={handleNext}
         style={{
           backgroundColor: "#09A1F6",
           padding: 10,

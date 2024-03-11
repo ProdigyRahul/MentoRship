@@ -32,19 +32,16 @@ export default function Login({ navigation }) {
     try {
       console.log("Email:", email);
       console.log("Password:", password);
-      const response = await fetch(
-        "http://192.168.29.176:8080/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch("http://172.20.10.3:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       if (!response.ok) {
         // Handle unsuccessful login
