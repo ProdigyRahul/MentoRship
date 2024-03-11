@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CheckBox } from "react-native-elements";
+import { AntDesign } from "@expo/vector-icons";
+
 const NavigationLine = ({ active }) => (
   <View
     style={{
@@ -92,7 +94,7 @@ const InterestList = ({ data }) => {
                     onPress={() => handleRatingChange(index, star)}
                     style={{ marginRight: 4 }}
                   >
-                    <Icon
+                    <AntDesign
                       name="star"
                       size={20}
                       color={ratings[index] >= star ? "#FFD700" : "#D3D3D3"}
