@@ -365,6 +365,21 @@ const AreasOfInterest = ({ navigation }) => {
   return (
     // Margin Top is missing in this. i want same level of margin as my previous pages.
     <SafeAreaView style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={{
+          position: "absolute",
+          top: 3,
+          left: 20,
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Icon name="chevron-left" size={24} color="#000" />
+      </TouchableOpacity>
       <Text style={{ fontWeight: "bold", fontSize: 20, marginBottom: 5 }}>
         Areas of Interest
       </Text>

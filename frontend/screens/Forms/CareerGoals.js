@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,9 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
-import { useState } from "react";
-//import { Icon } from 'react-native-vector-icons/Icon';
+import { CheckBox } from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 const NavigationLine = ({ active }) => (
   <View
@@ -22,19 +22,53 @@ const NavigationLine = ({ active }) => (
 );
 
 export default function CareerGoals({ navigation }) {
-  const [getInternship, setGetinternship] = useState("");
-  const [prepareForInterviews, setPrepareforinterviews] = useState("");
-  const [buildResume, setBuildresume] = useState("");
-  const [prepareForGradSchool, setPrepareforgradschool] = useState("");
-  const [communicate, setCommunicate] = useState("");
-  const [motivate, setMotivate] = useState("");
-  const [buildLeadership, setBuildLeadership] = useState("");
-  const [network, setNetwork] = useState("");
-  const [managePriorities, setManagePriorities] = useState("");
-  const [selfAwareness, setSelfawareness] = useState("");
-  const [createWork, setCreateWork] = useState("");
-  const [changeRoles, setChangeRoles] = useState("");
-  const [createCareerPlans, setCreateCareerPlans] = useState("");
+  const [checkBoxStates, setCheckBoxStates] = useState({
+    getInternship: false,
+    prepareForInterviews: false,
+    buildResume: false,
+    prepareForGradSchool: false,
+    communicate: false,
+    motivate: false,
+    buildLeadership: false,
+    network: false,
+    managePriorities: false,
+    selfAwareness: false,
+    createWork: false,
+    changeRoles: false,
+    createCareerPlans: false,
+  });
+
+  const handleCheckBoxChange = (key) => {
+    setCheckBoxStates((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const careerGoalsList = [
+    "Get Internship/Job",
+    "Prepare for Interviews",
+    "Build Resume",
+    "Prepare for Graduate School",
+    "Communicate Effectively",
+    "Motivate, Coach and Develop Others",
+    "Build Leadership Skills",
+    "Network with Others",
+    "Manage Priorities",
+    "Increase Self-Awareness",
+    "Create Work/Life Balance",
+    "Change Roles/Career",
+    "Get Promoted",
+    "Create Career Plan",
+  ];
+  const isAtLeastOneSelected = Object.values(checkBoxStates).some(Boolean);
+
+  const handleNext = () => {
+    if (isAtLeastOneSelected) {
+      navigation.navigate("Availability");
+    } else {
+      // Provide user feedback about selecting at least one checkbox
+      alert("Please select at least one career goal");
+    }
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -43,6 +77,21 @@ export default function CareerGoals({ navigation }) {
         marginTop: 40,
       }}
     >
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={{
+          position: "absolute",
+          top: 3,
+          left: 20,
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Icon name="chevron-left" size={24} color="#000" />
+      </TouchableOpacity>
       <Text
         style={{
           fontWeight: "bold",
@@ -62,9 +111,9 @@ export default function CareerGoals({ navigation }) {
       <ScrollView vertical={true}>
         <Text
           style={{
-            fontSize: 17,
+            fontSize: 15,
             marginTop: 10,
-            paddingHorizontal: 15,
+            paddingHorizontal: 17,
           }}
         >
           Welcome to our comprehensive Career Hub, where your professional
@@ -73,235 +122,50 @@ export default function CareerGoals({ navigation }) {
           stages of your career development. Explore the following key sections
           to unlock your full potential
         </Text>
-
-        <TextInput
-          placeholder="Search Here"
+        <View
           style={{
+            flexDirection: "row",
+            alignItems: "center",
             backgroundColor: "#F1F1F3",
-            width: "100%",
+            width: "88%",
             height: 50,
             borderRadius: 20,
             marginTop: 15,
             paddingHorizontal: 20,
             borderColor: "#D9D9D9",
-          }}
-        ></TextInput>
-
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
+            borderWidth: 1,
+            marginHorizontal: 15,
+            marginBottom: 20,
           }}
         >
-          Get Internship/Jobs
-        </TextInput>
+          <Icon name="search" size={15} color="#9C9C9C" />
+          <TextInput
+            placeholder="Search Here"
+            style={{ flex: 1, marginLeft: 10 }}
+          />
+        </View>
 
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Prepare for interviews
-        </TextInput>
-
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Build Resume
-        </TextInput>
-
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Prepare for Graduate Schools
-        </TextInput>
-
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Communicate Effectively
-        </TextInput>
-
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Motivate, Coach and Develop others
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          {" "}
-          Build Leadership Skils
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Network with others
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Manage Priorities
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Icrease Self Awareness
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Create Work Balance
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          Change Roles/Career
-        </TextInput>
-        <TextInput
-          style={{
-            backgroundColor: "#F1F1F3",
-            width: "100%",
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-            borderColor: "#D9D9D9",
-
-            fontWeight: "bold",
-            fontSize: 14,
-          }}
-        >
-          {" "}
-          Create Career Plans
-        </TextInput>
+        {careerGoalsList.map((goal, index) => (
+          <CheckBox
+            key={index}
+            title={goal}
+            checked={checkBoxStates[goal]}
+            onPress={() => handleCheckBoxChange(goal)}
+            containerStyle={{
+              backgroundColor: "#F1F1F3",
+              width: "90%",
+              height: 50,
+              borderRadius: 20,
+              marginTop: 5,
+              justifyContent: "space-between",
+              marginHorizontal: 15,
+              borderWidth: 1,
+              borderColor: "#D9D9D9",
+            }}
+            textStyle={{ marginLeft: 5, fontSize: 15 }}
+            checkedColor="#57D5DB"
+          />
+        ))}
       </ScrollView>
 
       <View
@@ -318,9 +182,7 @@ export default function CareerGoals({ navigation }) {
         <NavigationLine active={false} />
       </View>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Availability");
-        }}
+        onPress={handleNext}
         style={{
           backgroundColor: "#09A1F6",
           padding: 10,
