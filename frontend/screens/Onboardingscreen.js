@@ -1,17 +1,33 @@
 import AppIntroSlider from "react-native-app-intro-slider";
 import { SIZES } from "../constants/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, SafeAreaView, TouchableOpacity } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "twrnc";
 
 export default function Onboarding({ navigation }) {
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          navigation.navigate("Home");
+        } else {
+          // Nothing to do here
+          // Token not found
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkLoginStatus();
+  }, []);
   const handleGetStarted = () => {
     navigation.navigate("Signup");
   };
   const handleSkip = () => {
-    navigation.navigate("Interest");
+    navigation.navigate("Home");
   };
   return (
     <SafeAreaView style={tw`flex-1 mt-20 items-center pb-20`}>

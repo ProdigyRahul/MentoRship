@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FlashMessage, { showMessage } from "react-native-flash-message";
+import axios from "axios";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -28,41 +29,25 @@ export default function Login({ navigation }) {
     });
   };
 
-  const handleLogin = async () => {
-    try {
-      console.log("Email:", email);
-      console.log("Password:", password);
-      const response = await fetch("http://172.20.10.3:8080/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+  const handleLogin = () => {
+    const user = {
+      email: email,
+      password: password,
+    };
+    axios
+      .post("http://192.168.29.176:8080/login", user)
+      .then((response) => {
+        console.log(response);
+        const token = response.data.token;
+        AsyncStorage.setItem("authToken", token);
+
+        showToast();
+        navigation.replace("Home");
+      })
+      .catch((error) => {
+        Alert.alert("Login Error", "Invalid Email or Password");
+        console.log(error);
       });
-
-      if (!response.ok) {
-        // Handle unsuccessful login
-        const errorData = await response.json();
-        Alert.alert("Login Failed", errorData.message);
-        return;
-      }
-
-      // Handle successful login
-      const responseData = await response.json();
-      showToast();
-
-      // Store the token in AsyncStorage
-      await AsyncStorage.setItem("token", responseData.token);
-      setTimeout(() => {
-        navigation.navigate("Welcome");
-      }, 1000);
-    } catch (error) {
-      console.error("Login failed:", error);
-      Alert.alert("Login Failed", "An error occurred during login.");
-    }
   };
 
   const handleSignup = () => {
