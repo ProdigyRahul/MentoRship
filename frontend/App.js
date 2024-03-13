@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
-import Homepage from "./screens/Homepage";
 import Welcome from "./screens/Welcome";
 import Education from "./screens/Forms/Education";
 import AreasOfInterest from "./screens/Forms/AreasOfInterest";
@@ -13,6 +12,10 @@ import CareerGoals from "./screens/Forms/CareerGoals";
 import MentorAvailability from "./screens/Forms/MentorAvailability";
 import { UserContext } from "./UserContext";
 import MentorRequestScreen from "./screens/MentorRequestScreen";
+import TabsWrapper from "./navigation/TabsWrapper";
+import Community from "./screens/Community";
+import Profile from "./screens/Profile";
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -29,11 +32,13 @@ function App() {
             <Stack.Screen name="Interest" component={AreasOfInterest} />
             <Stack.Screen name="Career" component={CareerGoals} />
             <Stack.Screen name="Availability" component={MentorAvailability} />
-            <Stack.Screen name="Home" component={Homepage} />
             <Stack.Screen
               name="MentorRequest"
               component={MentorRequestScreen}
             />
+            <Stack.Screen name="Home" component={TabsWrapper} />
+            <Stack.Screen name="Community" component={TabsWrapper} />
+            <Stack.Screen name="Profile" component={TabsWrapper} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>
