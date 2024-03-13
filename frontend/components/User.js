@@ -11,7 +11,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-requests/sent/${userId}`
+          `http://172.16.102.203:8080/friend-requests/sent/${userId}`
         );
 
         const data = await response.json();
@@ -32,7 +32,7 @@ const User = ({ item }) => {
     const fetchUserFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friends/${userId}`
+          `http://172.16.102.203:8080/friends/${userId}`
         );
 
         const data = await response.json();
@@ -51,13 +51,16 @@ const User = ({ item }) => {
   }, []);
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://172.20.10.3:8080/friend-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ currentUserId, selectedUserId }),
-      });
+      const response = await fetch(
+        "http://172.16.102.203:8080/friend-request",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ currentUserId, selectedUserId }),
+        }
+      );
 
       if (response.ok) {
         setRequestSent(true);
@@ -86,7 +89,6 @@ const User = ({ item }) => {
 
       <View style={{ marginLeft: 12, flex: 1 }}>
         <Text style={{ fontWeight: "bold" }}>{item?.name}</Text>
-        <Text style={{ marginTop: 4, color: "gray" }}>{item?.email}</Text>
       </View>
       {userFriends.includes(item._id) ? (
         <Pressable
@@ -124,7 +126,7 @@ const User = ({ item }) => {
           }}
         >
           <Text style={{ textAlign: "center", color: "white", fontSize: 13 }}>
-            Add Mentor
+            Add Friend
           </Text>
         </Pressable>
       )}

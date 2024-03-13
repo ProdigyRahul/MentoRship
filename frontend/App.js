@@ -12,6 +12,7 @@ import AreasOfInterest from "./screens/Forms/AreasOfInterest";
 import CareerGoals from "./screens/Forms/CareerGoals";
 import MentorAvailability from "./screens/Forms/MentorAvailability";
 import { UserContext } from "./UserContext";
+import MentorRequestScreen from "./screens/MentorRequestScreen";
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -29,6 +30,10 @@ function App() {
             <Stack.Screen name="Career" component={CareerGoals} />
             <Stack.Screen name="Availability" component={MentorAvailability} />
             <Stack.Screen name="Home" component={Homepage} />
+            <Stack.Screen
+              name="MentorRequest"
+              component={MentorRequestScreen}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>

@@ -17,7 +17,7 @@ const jwt = require("jsonwebtoken");
 
 mongoose
   .connect(
-    "mongodb+srv://22cs042:iiu3vedYCRb7UZht@mentorship.eoi0nsf.mongodb.net/"
+    "mongodb+srv://22cs042:iiu3vedYCRb7UZht@mentorship.eoi0nsf.mongodb.net/mentorship"
   )
   .then(() => {
     console.log("Connected to MongoDB");
@@ -36,14 +36,14 @@ const Message = require("./models/message");
 //endpoint for registration of the user
 
 app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, image } = req.body;
 
   try {
     // Hash the password before saving it
     const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
 
     // create a new User object with hashed password
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({ name, email, password: hashedPassword, image });
 
     // save the user to the database
     await newUser.save();

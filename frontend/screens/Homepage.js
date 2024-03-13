@@ -1,19 +1,15 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, SafeAreaView, FlatList } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import User from "../components/User";
+
 export default function Homepage({ navigation }) {
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -23,7 +19,7 @@ export default function Homepage({ navigation }) {
         setUserId(userId);
 
         const response = await axios.get(
-          `http://172.20.10.3:8080/users/${userId}`
+          `http://172.16.102.203:8080/users/${userId}`
         );
         setUsers(response.data);
       } catch (error) {
@@ -34,14 +30,8 @@ export default function Homepage({ navigation }) {
     fetchUsers();
   }, []);
 
-  console.log("users", users);
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "#D9D9D9",
-      }}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
       <Text
         style={{
           fontSize: 25,
@@ -53,39 +43,22 @@ export default function Homepage({ navigation }) {
       >
         MentoRship Conversations
       </Text>
+
       <View
         style={{
-          flex: 1,
-          borderTopStartRadius: 50,
-          borderTopEndRadius: 50,
-          backgroundColor: "#FFFFFF",
-          marginTop: 20,
-          alignItems: "center",
+          width: "100%",
+          height: 1.5,
+          backgroundColor: "#D9D9D9",
+          marginTop: 10,
         }}
-      >
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 15,
-            marginTop: 10,
-            textAlign: "justify",
-          }}
-        >
-          Your Conversations:
-        </Text>
-        <View
-          style={{
-            width: "100%",
-            height: 1.5,
-            backgroundColor: "#D9D9D9",
-            marginTop: 10,
-          }}
-        ></View>
-        <View style={{ padding: 10 }}>
-          {users.map((item, index) => (
-            <User key={index} item={item} />
-          ))}
-        </View>
+      ></View>
+      <View style={{ flex: 1, padding: 10 }}>
+        <FlatList
+          data={users}
+          renderItem={({ item }) => <User item={item} />}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
       </View>
     </SafeAreaView>
   );

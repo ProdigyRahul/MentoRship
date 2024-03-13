@@ -51,7 +51,7 @@ export default function Signup({ navigation }) {
       const withOrgOnly = false;
 
       const response = await fetch(
-        "http://172.20.10.3:8080/api/auth/register",
+        "http://172.16.102.203:8080/api/auth/register",
         {
           method: "POST",
           headers: {
