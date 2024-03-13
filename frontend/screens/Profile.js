@@ -4,9 +4,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
+  Image,
 } from "react-native";
 import React from "react";
-import { Image } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function Profile() {
   return (
@@ -14,6 +16,7 @@ export default function Profile() {
       style={{
         flex: 1,
         backgroundColor: "#D9D9D9",
+        paddingBottom: 0,
       }}
     >
       <Text
@@ -69,7 +72,6 @@ export default function Profile() {
           vertical={true}
           style={{
             flex: 1,
-            margin: 5,
           }}
         >
           <View
@@ -83,12 +85,16 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="user" size={16} color="#000" />
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               My Profile
@@ -105,12 +111,16 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="users" size={16} color="#000" />
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               My Connections
@@ -127,12 +137,16 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="calendar-alt" size={16} color="#000" />
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               My Events
@@ -149,12 +163,17 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="clock" size={16} color="#000" />
+
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               Mentoring Availability and Preferences
@@ -171,12 +190,17 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="cogs" size={16} color="#000" />
+
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               Account Settings
@@ -193,12 +217,17 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="comment" size={16} color="#000" />
+
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               Chat with MentoRship
@@ -215,34 +244,17 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="info-circle" size={16} color="#000" />
+
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
-              }}
-            >
-              Help
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              width: 300,
-              height: 1.5,
-              backgroundColor: "#D9D9D9",
-              marginTop: 25,
-            }}
-          ></View>
-          <TouchableOpacity
-            style={{
-              marginTop: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                textAlign: "left",
+                marginLeft: 10,
               }}
             >
               About MentoRship
@@ -259,12 +271,17 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="lock" size={16} color="#000" />
+
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
+                marginLeft: 10,
               }}
             >
               Privacy Policy
@@ -281,34 +298,16 @@ export default function Profile() {
           <TouchableOpacity
             style={{
               marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
+            <FontAwesome5 name="sign-out-alt" size={16} color="#000" />
             <Text
               style={{
                 fontSize: 16,
                 textAlign: "left",
-              }}
-            >
-              Terms and services
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              width: 300,
-              height: 1.5,
-              backgroundColor: "#D9D9D9",
-              marginTop: 25,
-            }}
-          ></View>
-          <TouchableOpacity
-            style={{
-              marginTop: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                textAlign: "left",
+                marginLeft: 10,
               }}
             >
               Logout

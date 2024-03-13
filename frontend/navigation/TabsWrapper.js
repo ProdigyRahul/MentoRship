@@ -30,6 +30,7 @@ const TabsWrapper = ({ navigation, route }) => {
             null,
           ],
           tabBarShowLabel: false,
+          headerShown: false,
         }}
       >
         <Tab.Screen
