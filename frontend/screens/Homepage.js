@@ -10,6 +10,7 @@ import { UserType } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import User from "../components/User";
 export default function Homepage({ navigation }) {
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
@@ -80,9 +81,11 @@ export default function Homepage({ navigation }) {
             marginTop: 10,
           }}
         ></View>
-        <TouchableOpacity>
-          <View></View>
-        </TouchableOpacity>
+        <View style={{ padding: 10 }}>
+          {users.map((item, index) => (
+            <User key={index} item={item} />
+          ))}
+        </View>
       </View>
     </SafeAreaView>
   );

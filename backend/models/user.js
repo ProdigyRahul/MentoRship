@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+    required: true,
   },
   friendRequests: [
     {
@@ -35,10 +36,6 @@ const userSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  avatar: {
-    type: Buffer,
-    default: "",
-  },
   First_Name: {
     type: String,
     default: "",
