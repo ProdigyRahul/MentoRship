@@ -22,7 +22,7 @@ export default function Homepage({ navigation }) {
         setUserId(userId);
 
         const response = await axios.get(
-          `http://192.168.29.176:8080/users/${userId}`
+          `http://172.20.10.3:8080/users/${userId}`
         );
         setUsers(response.data);
       } catch (error) {
