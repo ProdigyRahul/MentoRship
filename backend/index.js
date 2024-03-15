@@ -9,6 +9,7 @@ const app = express();
 const morgan = require("morgan");
 const port = 8080;
 const cors = require("cors");
+const router = express.Router();
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -541,5 +542,33 @@ app.post("/onboarding/v2", async (req, res) => {
   } catch (err) {
     console.log("Error onboarding user", err);
     res.status(500).json({ message: "Error onboarding user" });
+  }
+});
+
+// POST endpoint for onboarding/v3
+app.post("/onboarding/v3", async (req, res) => {
+  try {
+    const { userId, areasOfInterest } = req.body;
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+    console.log(user.name);
+    console.log(areasOfInterest);
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user's areasOfInterest field
+    user.areasOfInterest = areasOfInterest;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "Areas of interest updated successfully" });
+  } catch (err) {
+    console.log("Error updating areas of interest", err);
+    res.status(500).json({ message: "Error updating areas of interest" });
   }
 });

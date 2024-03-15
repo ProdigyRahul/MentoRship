@@ -1,5 +1,31 @@
 const mongoose = require("mongoose");
 
+// Define schema for items within an area of interest
+const InterestItemSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  stars: {
+    type: Number,
+    min: 1,
+    max: 5,
+    default: 1, // Default to 1 star
+  },
+});
+
+// Define schema for areas of interest
+const InterestSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  items: {
+    type: [InterestItemSchema],
+    default: [],
+  },
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -104,8 +130,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  Areas_of_Interest: {
-    type: [String],
+  areasOfInterest: {
+    type: [InterestSchema],
     default: [],
   },
   Career_Goals: {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CheckBox } from "react-native-elements";
 import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import { UserType } from "../../UserContext";
 
 const NavigationLine = ({ active }) => (
   <View
@@ -25,11 +27,24 @@ const NavigationLine = ({ active }) => (
 const InterestList = ({ data }) => {
   const [expanded, setExpanded] = useState(false);
   const [ratings, setRatings] = useState(Array(data.items.length).fill(0));
+  const [selectedItems, setSelectedItems] = useState(
+    Array(data.items.length).fill(false)
+  );
 
   const handleRatingChange = (index, rating) => {
     const newRatings = [...ratings];
     newRatings[index] = rating;
     setRatings(newRatings);
+  };
+
+  const toggleCheckbox = (index) => {
+    const newSelectedItems = [...selectedItems];
+    newSelectedItems[index] = !selectedItems[index];
+    setSelectedItems(newSelectedItems);
+    // Reset rating to 0 when unchecking the checkbox
+    if (!newSelectedItems[index]) {
+      handleRatingChange(index, 0);
+    }
   };
   return (
     <View>
@@ -65,43 +80,45 @@ const InterestList = ({ data }) => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                paddingLeft: 0,
                 backgroundColor: "#F1F1F3",
                 width: "90%",
                 height: 50,
                 borderRadius: 20,
                 marginTop: 5,
-                justifyContent: "space-between",
                 marginHorizontal: 15,
                 borderWidth: 0.1,
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <CheckBox
-                  value={ratings[index] > 0}
-                  onValueChange={(value) =>
-                    handleRatingChange(index, value ? 1 : 0)
-                  }
+              <TouchableOpacity
+                onPress={() => toggleCheckbox(index)}
+                style={{ marginLeft: 20, marginRight: 10 }}
+              >
+                <Icon
+                  name={selectedItems[index] ? "check-square" : "square"}
+                  size={20}
+                  color="#000"
                 />
-                <View style={{ maxWidth: 150 }}>
-                  <Text style={{ marginLeft: -10, fontSize: 13 }}>{item}</Text>
+              </TouchableOpacity>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 13 }}>{item}</Text>
+              </View>
+              {selectedItems[index] && ( // Show stars only if checkbox is selected
+                <View style={{ flexDirection: "row", marginRight: 20 }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <TouchableOpacity
+                      key={star}
+                      onPress={() => handleRatingChange(index, star)}
+                      style={{ marginRight: 4 }}
+                    >
+                      <AntDesign
+                        name="star"
+                        size={20}
+                        color={ratings[index] >= star ? "#FFD700" : "#D3D3D3"}
+                      />
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <TouchableOpacity
-                    key={star}
-                    onPress={() => handleRatingChange(index, star)}
-                    style={{ marginRight: 4 }}
-                  >
-                    <AntDesign
-                      name="star"
-                      size={20}
-                      color={ratings[index] >= star ? "#FFD700" : "#D3D3D3"}
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View>
+              )}
             </View>
           )}
         />
@@ -111,6 +128,8 @@ const InterestList = ({ data }) => {
 };
 
 const AreasOfInterest = ({ navigation }) => {
+  // Use userId to send backend
+  const { userId, setUserId } = useContext(UserType);
   const interestData = [
     {
       title: "Accounting",
@@ -354,12 +373,37 @@ const AreasOfInterest = ({ navigation }) => {
       ],
     },
   ];
+
+  const [initialInterestData, setInitialInterestData] = useState([]);
   // Search Logic
   // TODO: Later Search Logic
   // Handle Next
-  const handleNext = () => {
-    // Handle navigation or any other logic for the "Next" button
-    navigation.navigate("Career");
+  const handleNext = async () => {
+    try {
+      // Construct the data object to send
+      const dataToSend = initialInterestData.map((interest) => ({
+        title: interest.title,
+        selectedItems: interest.items
+          .filter((item, index) => selectedItems[index])
+          .map((item, index) => ({
+            name: item,
+            rating: ratings[index],
+          })),
+      }));
+      console.log(dataToSend);
+      // Make the HTTP request to the backend API
+      const response = await axios.post(
+        "http://172.20.10.3:8080/onboarding/v3",
+        dataToSend
+      );
+
+      // Handle response as needed (e.g., show success message, navigate to next screen)
+      console.log("Response from backend:", response.data);
+      navigation.navigate("Career"); // Navigate to the next screen
+    } catch (error) {
+      // Handle error (e.g., show error message)
+      console.error("Error sending data to backend:", error);
+    }
   };
 
   return (

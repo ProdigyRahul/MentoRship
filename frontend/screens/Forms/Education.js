@@ -101,6 +101,7 @@ export default function Education({ navigation }) {
         ],
         { cancelable: false }
       );
+      setLoading(false);
       return;
     }
 
@@ -116,6 +117,8 @@ export default function Education({ navigation }) {
         ],
         { cancelable: false }
       );
+
+      setLoading(false);
       return;
     }
 
@@ -147,6 +150,7 @@ export default function Education({ navigation }) {
       // Handle error
       console.error("Error sending data to backend:", error);
       Alert.alert("Error", "Failed to submit data. Please try again.");
+      setLoading(false);
     } finally {
       setLoading(false);
     }
