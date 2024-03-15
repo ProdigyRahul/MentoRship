@@ -23,11 +23,11 @@ function App() {
     <>
       <UserContext>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Onboarding" component={Onboarding} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
-            <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Navigator screenOptions={{ headerShown: false}}>
+            <Stack.Screen name="Onboarding" component={Onboarding} options={{animation: 'fade'}} />
+            <Stack.Screen name="Login" component={Login} options={{animation: 'slide_from_right'}}/>
+            <Stack.Screen name="Signup" component={Signup} options={{animation: 'slide_from_left'}}/>
+            <Stack.Screen name="Welcome" component={Welcome} options={{animation: 'fade'}}/>
             <Stack.Screen name="Education" component={Education} />
             <Stack.Screen name="Interest" component={AreasOfInterest} />
             <Stack.Screen name="Career" component={CareerGoals} />

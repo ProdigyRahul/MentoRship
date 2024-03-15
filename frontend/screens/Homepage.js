@@ -1,5 +1,12 @@
-import { View, Text, SafeAreaView, FlatList } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { UserType } from "../UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -19,7 +26,7 @@ export default function Homepage({ navigation }) {
         setUserId(userId);
 
         const response = await axios.get(
-          `http://172.16.102.203:8080/users/${userId}`
+          `http://172.20.10.3:8080/users/${userId}`
         );
         setUsers(response.data);
       } catch (error) {
@@ -30,29 +37,15 @@ export default function Homepage({ navigation }) {
     fetchUsers();
   }, []);
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9" }}>
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#000000",
-          marginTop: 50,
-          textAlign: "center",
-        }}
-      >
-        MentoRship Conversations
-      </Text>
+  const navigateToMentorRequest = () => {
+    navigation.navigate("MentorRequest");
+  };
 
-      <View
-        style={{
-          width: "100%",
-          height: 1.5,
-          backgroundColor: "#D9D9D9",
-          marginTop: 10,
-        }}
-      ></View>
-      <View style={{ flex: 1, padding: 10 }}>
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Mentorship Conversations</Text>
+      <View style={styles.separator}></View>
+      <View style={styles.userList}>
         <FlatList
           data={users}
           renderItem={({ item }) => <User item={item} />}
@@ -60,6 +53,51 @@ export default function Homepage({ navigation }) {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={navigateToMentorRequest}
+        >
+          <Text style={styles.buttonText}>Dont touch</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#D9D9D9",
+  },
+  header: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#000000",
+    marginTop: 50,
+    textAlign: "center",
+  },
+  separator: {
+    width: "100%",
+    height: 1.5,
+    backgroundColor: "#D9D9D9",
+    marginTop: 10,
+  },
+  userList: {
+    flex: 1,
+    padding: 10,
+  },
+  buttonContainer: {
+    marginBottom: 150,
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+});

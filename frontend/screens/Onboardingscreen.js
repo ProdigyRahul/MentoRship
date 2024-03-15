@@ -7,22 +7,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "twrnc";
 
 export default function Onboarding({ navigation }) {
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        if (token) {
-          navigation.navigate("Home");
-        } else {
-          // Nothing to do here
-          // Token not found
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkLoginStatus();
-  }, []);
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem("authToken");
+  //       if (token) {
+  //         navigation.navigate("Home");
+  //       } else {
+  //         // Nothing to do here
+  //         // Token not found
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   checkLoginStatus();
+  // }, []);
   const handleGetStarted = () => {
     navigation.navigate("Signup");
   };

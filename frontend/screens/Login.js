@@ -35,14 +35,14 @@ export default function Login({ navigation }) {
       password: password,
     };
     axios
-      .post("http://172.16.102.203:8080/login", user)
+      .post(`http://172.20.10.3:8080/login`, user)
       .then((response) => {
         console.log(response);
         const token = response.data.token;
         AsyncStorage.setItem("authToken", token);
 
         showToast();
-        navigation.replace("Home");
+        navigation.replace("Welcome");
       })
       .catch((error) => {
         Alert.alert("Login Error", "Invalid Email or Password");

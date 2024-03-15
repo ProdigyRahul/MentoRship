@@ -9,8 +9,21 @@ import {
 } from "react-native";
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Profile() {
+export default function Profile({ navigation }) {
+  const handleLogout = async () => {
+    // Clear AsyncStorage
+    try {
+      await AsyncStorage.clear();
+    } catch (error) {
+      console.error("Error clearing AsyncStorage:", error);
+    }
+
+    // Navigate back to login screen
+    navigation.navigate("Login");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -301,6 +314,7 @@ export default function Profile() {
               flexDirection: "row",
               alignItems: "center",
             }}
+            onPress={handleLogout}
           >
             <FontAwesome5 name="sign-out-alt" size={16} color="#000" />
             <Text

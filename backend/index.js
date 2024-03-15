@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
-
+const os = require("os");
 const app = express();
 const port = 8080;
 const cors = require("cors");
@@ -26,9 +26,22 @@ mongoose
     console.log("Error connecting to MongoDB", err);
   });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+  app.listen(port, () => {
+    //* Get local IP addresses
+    const interfaces = os.networkInterfaces();
+    let internetConnectedIP = null;
+  
+    //* Loop through network interfaces to find the one with internet connection
+    Object.values(interfaces).forEach(interface => {
+      interface.forEach(details => {
+        if (details.family === 'IPv4' && !details.internal) {
+          internetConnectedIP = details.address;
+        }
+      });
+    });
+  
+    console.log(`Server is running on ${internetConnectedIP || 'Unknown'} and Port ${port}`);
+  });
 
 const User = require("./models/user");
 const Message = require("./models/message");

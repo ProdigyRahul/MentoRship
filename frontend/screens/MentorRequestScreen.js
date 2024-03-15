@@ -14,7 +14,7 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `http://172.16.102.203:8080/friend-request/${userId}`
+        `http://172.20.10.3:8080/friend-request/${userId}`
       );
       if (response.status === 200) {
         const friendRequestsData = response.data.map((friendRequest) => ({
@@ -33,7 +33,7 @@ const MentorRequestScreen = () => {
 
   console.log(friendRequests);
   return (
-    <View style={{ padding: 10, marginHorizontal: 12 }}>
+    <View style={{ padding: 10, marginHorizontal: 12, marginTop: 50 }}>
       {friendRequests.length > 0 && <Text>Your Friend Requests!</Text>}
 
       {friendRequests.map((item, index) => (

@@ -11,7 +11,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.16.102.203:8080/friend-requests/sent/${userId}`
+          `http://172.20.10.3:8080/friend-requests/sent/${userId}`
         );
 
         const data = await response.json();
@@ -32,7 +32,7 @@ const User = ({ item }) => {
     const fetchUserFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.16.102.203:8080/friends/${userId}`
+          `http://172.20.10.3:8080/friends/${userId}`
         );
 
         const data = await response.json();
@@ -50,9 +50,9 @@ const User = ({ item }) => {
     fetchUserFriends();
   }, []);
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
-    try {
+    try { 
       const response = await fetch(
-        "http://172.16.102.203:8080/friend-request",
+        "http://172.20.10.3:8080/friend-request",
         {
           method: "POST",
           headers: {
@@ -93,7 +93,7 @@ const User = ({ item }) => {
       {userFriends.includes(item._id) ? (
         <Pressable
           style={{
-            backgroundColor: "#82CD47",
+            backgroundColor: "#09A1F6",
             padding: 10,
             width: 105,
             borderRadius: 6,
@@ -119,7 +119,7 @@ const User = ({ item }) => {
         <Pressable
           onPress={() => sendFriendRequest(userId, item._id)}
           style={{
-            backgroundColor: "#567189",
+            backgroundColor: "#09A1F6",
             padding: 10,
             borderRadius: 6,
             width: 105,

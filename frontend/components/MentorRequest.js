@@ -9,7 +9,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
   const acceptRequest = async (friendRequestId) => {
     try {
       const response = await fetch(
-        "http://172.16.102.203:8080/friend-request/accept",
+        "http://172.20.10.3:8080/friend-request/accept",
         {
           method: "POST",
           headers: {
@@ -26,7 +26,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
         setFriendRequests(
           friendRequests.filter((request) => request._id !== friendRequestId)
         );
-        navigation.navigate("Chats");
+        navigation.navigate("Home");
       }
     } catch (err) {
       console.log("error acceptin the friend request", err);
