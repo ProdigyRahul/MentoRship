@@ -45,7 +45,9 @@ export default function Login({ navigation }) {
         AsyncStorage.setItem("authToken", token);
 
         showToast();
-        navigation.replace("Welcome");
+        setTimeout(() => {
+          navigation.navigate("Welcome");
+        }, 1000);
       })
       .catch((error) => {
         Alert.alert("Login Error", "Invalid Email or Password");

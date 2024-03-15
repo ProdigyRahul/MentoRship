@@ -1,5 +1,4 @@
-import FlashMessage, { showMessage } from "react-native-flash-message";
-
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,14 +8,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
 import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showToast = () => {
     showMessage({
@@ -31,27 +35,16 @@ export default function Signup({ navigation }) {
   const handleLoginNow = () => {
     navigation.navigate("Login");
   };
-  const handleSignup = async () => {
-    try {
-      const First_Name = "";
-      const Last_Name = "";
-      const Pronoun = "";
-      const Gender = "";
-      const Race = "";
-      const Country = "";
-      const State = "";
-      const City = "";
-      const Role = "Default";
-      const Student = false;
-      const Mentor = false;
-      const Affiliation = "";
-      const Education = "";
-      const Areas_of_Interest = [];
-      const Career_Goals = [];
-      const withOrgOnly = false;
 
+  const handleSignup = async () => {
+    if (!name || !email || !password || !image) {
+      Alert.alert("Validation Error", "Please fill in all fields.");
+      return;
+    }
+    setLoading(true);
+    try {
       const response = await fetch(
-        `http://172.20.10.3/register`,
+        "http://172.20.10.3:8080/register",
         {
           method: "POST",
           headers: {
@@ -60,22 +53,8 @@ export default function Signup({ navigation }) {
           body: JSON.stringify({
             email,
             password,
-            First_Name,
-            Last_Name,
-            Pronoun,
-            Gender,
-            Race,
-            Country,
-            State,
-            City,
-            Role,
-            Student,
-            Mentor,
-            Affiliation,
-            Education,
-            Areas_of_Interest,
-            Career_Goals,
-            withOrgOnly,
+            name,
+            image,
           }),
         }
       );
@@ -88,11 +67,10 @@ export default function Signup({ navigation }) {
 
       const responseData = await response.json();
       console.log("Server Response:", responseData);
+      const token = responseData.token;
+      AsyncStorage.setItem("authToken", token);
+  
 
-      await AsyncStorage.setItem(
-        "token",
-        responseData.token || "authenticated"
-      );
       showToast();
       setTimeout(() => {
         navigation.navigate("Welcome");
@@ -100,6 +78,8 @@ export default function Signup({ navigation }) {
     } catch (error) {
       console.error("Signup failed:", error);
       Alert.alert("Signup Failed", "An error occurred during signup.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,207 +92,213 @@ export default function Signup({ navigation }) {
       }}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "position" : "height"}
         style={{
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Image
-          source={require("../assets/Logo.png")}
-          style={{
-            height: 100,
-            width: 100,
-            marginBottom: 10,
-          }}
-        />
-        <Text
-          style={{
-            fontSize: 48,
-            fontWeight: "bold",
-            color: "#000000",
-          }}
-        >
-          MentoRship
-        </Text>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            marginTop: 10,
-          }}
-        >
-          Welcome to MentoRship
-        </Text>
-        <Text
-          style={{
-            fontSize: 15,
-            marginTop: 10,
-            marginBottom: 20,
-            textAlign: "center",
-            paddingHorizontal: 50,
-          }}
-        >
-          Join the MentoRship Community with one of these services
-        </Text>
-
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-          }}
-        >
-          <TouchableOpacity>
-            <Image
-              source={require("../assets/Google.png")}
-              style={{
-                height: 60,
-                width: 60,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={require("../assets/Apple1.png")}
-              style={{
-                height: 60,
-                width: 60,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={require("../assets/LinkedIn.png")}
-              style={{
-                height: 60,
-                width: 60,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 15,
-            marginTop: 10,
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              width: 100,
-              height: 1.5,
-              backgroundColor: "#09A1F6",
-            }}
-          ></View>
-          <Text>or</Text>
-          <View
-            style={{
-              width: 100,
-              height: 1.5,
-              backgroundColor: "#09A1F6",
-            }}
-          ></View>
-        </View>
-        <Text
-          style={{
-            fontSize: 16,
-            marginTop: 10,
-          }}
-        >
-          Signup With Email
-        </Text>
-
-        <TextInput
-          onChangeText={(text) => setEmail(text)}
-          placeholder="Email:"
-          style={{
-            backgroundColor: "#D9D9D9",
-            width: 290,
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-          }}
-        ></TextInput>
-        <TextInput
-          onChangeText={(text) => setPassword(text)}
-          placeholder="Password:"
-          secureTextEntry
-          style={{
-            backgroundColor: "#D9D9D9",
-            width: 290,
-            height: 50,
-            borderRadius: 20,
-            marginTop: 15,
-            paddingHorizontal: 20,
-          }}
-        ></TextInput>
-        <TouchableOpacity style={{ alignItems: "center" }}>
-          <Text
-            style={{
-              fontWeight: "500",
-              fontSize: 16,
-              marginTop: 10,
-              paddingHorizontal: 50,
-              textAlign: "center",
-            }}
-          >
-            By signing up, you agree to our{" "}
-            <TouchableOpacity>
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", color: "#09A1F6" }}
-              >
-                terms of service
-              </Text>
-            </TouchableOpacity>{" "}
-            and{" "}
-            <TouchableOpacity>
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", color: "#09A1F6" }}
-              >
-                privacy policy
-              </Text>
-            </TouchableOpacity>
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleSignup}
-          style={{
-            height: 50,
-            width: 250,
-            backgroundColor: "#09A1F6",
-            borderRadius: 10,
-            marginTop: 20,
-
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
+          <Image
+            source={require("../assets/Logo.png")}
+            style={{
+              height: 100,
+              width: 100,
+              marginBottom: 10,
+            }}
+          />
           <Text
             style={{
-              fontSize: 20,
-              color: "#FFFFFF",
+              fontSize: 48,
               fontWeight: "bold",
+              color: "#000000",
             }}
           >
-            Create Account
+            MentoRship
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLoginNow}>
           <Text
             style={{
-              color: "#333333",
-              marginTop: 5,
+              fontSize: 24,
+              fontWeight: "bold",
+              marginTop: 10,
             }}
           >
-            Already have an account? Login Now
+            Welcome to MentoRship
           </Text>
-        </TouchableOpacity>
-        <FlashMessage position="bottom" />
+          <Text
+            style={{
+              fontSize: 15,
+              marginTop: 10,
+              marginBottom: 20,
+              textAlign: "center",
+              paddingHorizontal: 50,
+            }}
+          >
+            Join the MentoRship Community with one of these services
+          </Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <TouchableOpacity>
+              <Image
+                source={require("../assets/Google.png")}
+                style={{
+                  height: 60,
+                  width: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                source={require("../assets/Apple1.png")}
+                style={{
+                  height: 60,
+                  width: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                source={require("../assets/LinkedIn.png")}
+                style={{
+                  height: 60,
+                  width: 60,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 15,
+              marginTop: 10,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: 100,
+                height: 1.5,
+                backgroundColor: "#09A1F6",
+              }}
+            ></View>
+            <Text>or</Text>
+            <View
+              style={{
+                width: 100,
+                height: 1.5,
+                backgroundColor: "#09A1F6",
+              }}
+            ></View>
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginTop: 10,
+            }}
+          >
+            Signup With Email
+          </Text>
+          <TextInput
+            onChangeText={(text) => setName(text)}
+            placeholder="Name"
+            style={{
+              backgroundColor: "#D9D9D9",
+              width: 290,
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+            }}
+          ></TextInput>
+          <TextInput
+            onChangeText={(text) => setEmail(text)}
+            placeholder="Email:"
+            style={{
+              backgroundColor: "#D9D9D9",
+              width: 290,
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+            }}
+          ></TextInput>
+          <TextInput
+            onChangeText={(text) => setPassword(text)}
+            placeholder="Password:"
+            secureTextEntry
+            style={{
+              backgroundColor: "#D9D9D9",
+              width: 290,
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+            }}
+          ></TextInput>
+
+          <TextInput
+            onChangeText={(text) => setImage(text)}
+            placeholder="Image URL"
+            style={{
+              backgroundColor: "#D9D9D9",
+              width: 290,
+              height: 50,
+              borderRadius: 20,
+              marginTop: 15,
+              paddingHorizontal: 20,
+            }}
+          ></TextInput>
+          <TouchableOpacity
+            onPress={handleSignup}
+            style={{
+              height: 50,
+              width: 250,
+              backgroundColor: "#09A1F6",
+              borderRadius: 10,
+              marginTop: 20,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                }}
+              >
+                Create Account
+              </Text>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLoginNow}>
+            <Text
+              style={{
+                color: "#333333",
+                marginTop: 5,
+              }}
+            >
+              Already have an account? Login Now
+            </Text>
+          </TouchableOpacity>
+          <FlashMessage position="top" />
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

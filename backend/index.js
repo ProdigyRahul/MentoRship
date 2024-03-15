@@ -6,8 +6,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const os = require("os");
 const app = express();
+const morgan = require("morgan")
 const port = 8080;
 const cors = require("cors");
+
+app.use(morgan("dev"));
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,6 +55,12 @@ app.post("/register", async (req, res) => {
   const { name, email, password, image } = req.body;
 
   try {
+    // Check if user with the same email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered. Please try again with a different email." });
+    }
+
     // Hash the password before saving it
     const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
 
@@ -61,7 +70,8 @@ app.post("/register", async (req, res) => {
     // save the user to the database
     await newUser.save();
 
-    res.status(200).json({ message: "User registered successfully" });
+    const token = createToken(newUser._id);
+    res.status(201).json({ token, message: "User registered successfully" });
   } catch (err) {
     console.log("Error registering user", err);
     res.status(500).json({ message: "Error registering the user!" });
