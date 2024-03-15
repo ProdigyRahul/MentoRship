@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator
 } from "react-native";
 import React, { useState } from "react";
 import { Image } from "react-native";
@@ -18,6 +19,7 @@ import axios from "axios";
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showToast = () => {
     showMessage({
@@ -30,6 +32,7 @@ export default function Login({ navigation }) {
   };
 
   const handleLogin = () => {
+    setLoading(true);
     const user = {
       email: email,
       password: password,
@@ -47,6 +50,9 @@ export default function Login({ navigation }) {
       .catch((error) => {
         Alert.alert("Login Error", "Invalid Email or Password");
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -221,7 +227,10 @@ export default function Login({ navigation }) {
             alignItems: "center",
             justifyContent: "center",
           }}
-        >
+        >{/* Render login text or loading animation based on loading state */}
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" size="small" />
+        ) : (
           <Text
             style={{
               fontSize: 20,
@@ -231,7 +240,8 @@ export default function Login({ navigation }) {
           >
             Login
           </Text>
-        </TouchableOpacity>
+        )}
+      </TouchableOpacity>
         <TouchableOpacity onPress={handleSignup}>
           <Text
             style={{
