@@ -10,16 +10,19 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+import { UserType } from "../UserContext";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { userId, setUserId } = useContext(UserType);
 
   const showToast = () => {
     showMessage({
@@ -31,7 +34,7 @@ export default function Login({ navigation }) {
     });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setLoading(true);
     const user = {
       email: email,
@@ -44,6 +47,9 @@ export default function Login({ navigation }) {
         const token = response.data.token;
         AsyncStorage.setItem("authToken", token);
 
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.userId;
+        setUserId(userId);
         showToast();
         setTimeout(() => {
           navigation.navigate("Welcome");

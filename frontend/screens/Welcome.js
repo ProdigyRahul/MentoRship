@@ -125,12 +125,6 @@ export default function Welcome({ navigation }) {
         console.log(error);
       });
   };
-  const getUserId = async () => {
-    const token = await AsyncStorage.getItem("authToken");
-    const decodedToken = jwt_decode(token);
-    const userId = decodedToken.userId;
-    setUserId(userId);
-  };
 
   // Others
   const [selectedGender, setSelectedGender] = useState("");
@@ -173,7 +167,8 @@ export default function Welcome({ navigation }) {
 
   // Handle Next button with validation
   const handleNext = async () => {
-    await getUserId();
+    // Fetch user id first
+    console.log(userId);
     // Name Validation
     if (!FirstName || !LastName) {
       Alert.alert(
@@ -838,7 +833,6 @@ export default function Welcome({ navigation }) {
           marginBottom: 10,
         }}
       >
-        {/* Render login text or loading animation based on loading state */}
         {loading ? (
           <ActivityIndicator color="#FFFFFF" size="small" />
         ) : (

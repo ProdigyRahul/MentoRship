@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,10 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CheckBox } from "react-native-elements";
+import { UserType } from "../../UserContext";
+import axios from "axios";
 
 const NavigationLine = ({ active }) => (
   <View
@@ -36,8 +39,21 @@ export default function Education({ navigation }) {
   const [Education, setEducation] = useState("");
   const [Degree, setDegree] = useState("");
   const [Major, setMajor] = useState("");
+  const [gradeYear, setGradeYear] = useState("");
+  const { userId, setUserId } = useContext(UserType);
+  const [loading, setLoading] = useState(false);
+
   const maxCharacterLimit = 60;
 
+  useEffect(() => {
+    const startYear = 1975;
+    const endYear = 2028;
+    const years = Array.from(
+      { length: endYear - startYear + 1 },
+      (_, index) => endYear - index
+    );
+    console.log("Grade Year:", gradeYear);
+  }, []);
   const handleMajor = (Major) => {
     setMajor(Major);
   };
@@ -71,6 +87,7 @@ export default function Education({ navigation }) {
 
   // Handle Next button with validation
   const handleNext = async () => {
+    setLoading(true);
     // Headline and Experience Validation
     if (!headline) {
       Alert.alert(
@@ -102,8 +119,37 @@ export default function Education({ navigation }) {
       return;
     }
 
-    // Navigate to the next screen if all validation passes
-    navigation.navigate("Interest");
+    // Create data object to send to backend
+    const data = {
+      userId: userId,
+      Affiliation: selectedAffilation,
+      Headline: headline,
+      Experience: selectedExperience,
+      Education: Education,
+      Degree: Degree,
+      Major: Major,
+      GradeYear: gradeYear,
+    };
+
+    try {
+      // Send POST request to backend API
+      const response = await axios.post(
+        "http://172.20.10.3:8080/onboarding/v2",
+        data
+      );
+
+      // Handle success response
+      console.log("Response from backend:", response.data);
+
+      // Navigate to the next screen if all validation passes
+      navigation.navigate("Interest");
+    } catch (error) {
+      // Handle error
+      console.error("Error sending data to backend:", error);
+      Alert.alert("Error", "Failed to submit data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -181,7 +227,6 @@ export default function Education({ navigation }) {
               selectedValue={selectedAffilation}
               onValueChange={(itemValue) => handleAffilationChange(itemValue)}
               style={{ height: 50, width: "100%" }}
-              mode="dropdown"
             >
               <Picker.Item label="Select Affiliation" value="" />
               <Picker.Item label="Charusat" value="charusat" />
@@ -334,22 +379,22 @@ export default function Education({ navigation }) {
                   borderColor: "#D9D9D9",
                   justifyContent: "center",
                   borderWidth: 1,
+                  marginBottom: 10,
                 }}
               >
                 <Picker
-                  selectedValue={selectedExperience}
-                  onValueChange={(itemValue) =>
-                    handlechangeExperience(itemValue)
-                  }
+                  selectedValue={gradeYear}
+                  onValueChange={(itemValue) => setGradeYear(itemValue)}
                   style={{ height: 50, width: "100%" }}
+                  mode="dropdown"
                 >
-                  <Picker.Item label="2022" value="2022" />
-                  <Picker.Item label="2023" value="2023" />
-                  <Picker.Item label="2024" value="2024" />
-                  <Picker.Item label="2025" value="2025" />
-                  <Picker.Item label="2026" value="2026" />
-                  <Picker.Item label="2027" value="2027" />
-                  <Picker.Item label="2028" value="2028" />
+                  {Array.from({ length: 50 }, (_, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={(new Date().getFullYear() - index).toString()}
+                      value={(new Date().getFullYear() - index).toString()}
+                    />
+                  ))}
                 </Picker>
               </View>
             </View>
@@ -383,9 +428,19 @@ export default function Education({ navigation }) {
           marginBottom: 10,
         }}
       >
-        <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>
-          Next
-        </Text>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" size="small" />
+        ) : (
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#FFFFFF",
+              fontWeight: "bold",
+            }}
+          >
+            Next
+          </Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );

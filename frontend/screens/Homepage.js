@@ -8,8 +8,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { UserType } from "../UserContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
 import axios from "axios";
 import User from "../components/User";
 
@@ -20,11 +18,6 @@ export default function Homepage({ navigation }) {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = await AsyncStorage.getItem("authToken");
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
-        setUserId(userId);
-
         const response = await axios.get(
           `http://172.20.10.3:8080/users/${userId}`
         );

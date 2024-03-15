@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,9 @@ import {
 } from "react-native";
 import { Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import jwt_decode from "jwt-decode";
+import { UserType } from "../UserContext";
 import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default function Signup({ navigation }) {
@@ -21,6 +24,7 @@ export default function Signup({ navigation }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { userId, setUserId } = useContext(UserType);
 
   const showToast = () => {
     showMessage({
@@ -43,21 +47,18 @@ export default function Signup({ navigation }) {
     }
     setLoading(true);
     try {
-      const response = await fetch(
-        "http://172.20.10.3:8080/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            name,
-            image,
-          }),
-        }
-      );
+      const response = await fetch("http://172.20.10.3:8080/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          image,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -69,7 +70,9 @@ export default function Signup({ navigation }) {
       console.log("Server Response:", responseData);
       const token = responseData.token;
       AsyncStorage.setItem("authToken", token);
-  
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.userId;
+      setUserId(userId);
 
       showToast();
       setTimeout(() => {
