@@ -84,7 +84,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  Headline: {
+    type: String,
+    default: "",
+  },
   Education: {
+    type: String,
+    default: "",
+  },
+  Major: {
+    type: String,
+    default: "",
+  },
+  Degree: {
+    type: String,
+    default: "",
+  },
+  GradeYear: {
     type: String,
     default: "",
   },
