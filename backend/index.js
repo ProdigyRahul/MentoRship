@@ -342,3 +342,24 @@ app.get("/friends/:userId", (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 });
+
+
+// Endpoint to fetch user data based on userId
+app.get("/user-data/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch user data from the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user data
+    res.status(200).json({ name: user.name, image: user.image });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

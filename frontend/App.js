@@ -13,8 +13,6 @@ import MentorAvailability from "./screens/Forms/MentorAvailability";
 import { UserContext } from "./UserContext";
 import MentorRequestScreen from "./screens/MentorRequestScreen";
 import TabsWrapper from "./navigation/TabsWrapper";
-import Community from "./screens/Community";
-import Profile from "./screens/Profile";
 
 const Stack = createNativeStackNavigator();
 

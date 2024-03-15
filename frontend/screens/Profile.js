@@ -7,11 +7,32 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserType } from "../UserContext";
 
 export default function Profile({ navigation }) {
+  const [userData, setUserData] = useState(null);
+  const { userId } = useContext(UserType);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+       
+        // Fetch user data from backend
+        const response = await fetch(
+          `http://172.20.10.3:8080/user-data/${userId}`
+        );
+        const data = await response.json();
+
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   const handleLogout = async () => {
     // Clear AsyncStorage
     try {
@@ -20,66 +41,25 @@ export default function Profile({ navigation }) {
       console.error("Error clearing AsyncStorage:", error);
     }
 
-    // Navigate back to login screen
-    navigation.navigate("Login");
+    // Reset navigation stack to Onboarding screen
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Onboarding" }],
+    });
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "#D9D9D9",
-        paddingBottom: 0,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#000000",
-          marginTop: 50,
-          textAlign: "left",
-          marginLeft: 10,
-        }}
-      >
-        Hi, Melita Castelino
-      </Text>
-      <View
-        style={{
-          flex: 1,
-          borderTopStartRadius: 50,
-          borderTopEndRadius: 50,
-          backgroundColor: "#FFFFFF",
-          marginTop: 20,
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-            marginTop: 15,
-            alignItems: "center",
-            alignSelf: "flex-start",
-            marginLeft: 15,
-          }}
-        >
-          <Image
-            source={require("../assets/User.png")}
-            style={{
-              width: 50,
-              height: 50,
-            }}
-          />
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 20,
-            }}
-          >
-            Melita Castelino
-          </Text>
-        </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#D9D9D9", paddingBottom: 0 }}>
+    {userData && (
+      <>
+        <Text style={{ fontSize: 25, fontWeight: "bold", color: "#000000", marginTop: 50, textAlign: "left", marginLeft: 10 }}>
+          Hi, {userData.name}
+        </Text>
+        <View style={{ flex: 1, borderTopStartRadius: 50, borderTopEndRadius: 50, backgroundColor: "#FFFFFF", marginTop: 20, alignItems: "center" }}>
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 15, alignItems: "center", alignSelf: "flex-start", marginLeft: 15 }}>
+            <Image source={{ uri: userData.image }} style={{ width: 50, height: 50, borderRadius: 25 }} />
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>{userData.name}</Text>
+          </View>
 
         <ScrollView
           vertical={true}
@@ -329,6 +309,8 @@ export default function Profile({ navigation }) {
           </TouchableOpacity>
         </ScrollView>
       </View>
+      </>
+    )}
     </SafeAreaView>
   );
 }
