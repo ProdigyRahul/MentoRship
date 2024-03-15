@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { Image } from "react-native";
@@ -229,21 +229,22 @@ export default function Login({ navigation }) {
             alignItems: "center",
             justifyContent: "center",
           }}
-        >{/* Render login text or loading animation based on loading state */}
-        {loading ? (
-          <ActivityIndicator color="#FFFFFF" size="small" />
-        ) : (
-          <Text
-            style={{
-              fontSize: 20,
-              color: "#FFFFFF",
-              fontWeight: "bold",
-            }}
-          >
-            Login
-          </Text>
-        )}
-      </TouchableOpacity>
+        >
+          {/* Render login text or loading animation based on loading state */}
+          {loading ? (
+            <ActivityIndicator color="#FFFFFF" size="small" />
+          ) : (
+            <Text
+              style={{
+                fontSize: 20,
+                color: "#FFFFFF",
+                fontWeight: "bold",
+              }}
+            >
+              Login
+            </Text>
+          )}
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleSignup}>
           <Text
             style={{

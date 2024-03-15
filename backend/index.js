@@ -6,7 +6,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const os = require("os");
 const app = express();
-const morgan = require("morgan")
+const morgan = require("morgan");
 const port = 8080;
 const cors = require("cors");
 
@@ -29,22 +29,24 @@ mongoose
     console.log("Error connecting to MongoDB", err);
   });
 
-  app.listen(port, () => {
-    //* Get local IP addresses
-    const interfaces = os.networkInterfaces();
-    let internetConnectedIP = null;
-  
-    //* Loop through network interfaces to find the one with internet connection
-    Object.values(interfaces).forEach(interface => {
-      interface.forEach(details => {
-        if (details.family === 'IPv4' && !details.internal) {
-          internetConnectedIP = details.address;
-        }
-      });
+app.listen(port, () => {
+  //* Get local IP addresses
+  const interfaces = os.networkInterfaces();
+  let internetConnectedIP = null;
+
+  //* Loop through network interfaces to find the one with internet connection
+  Object.values(interfaces).forEach((interface) => {
+    interface.forEach((details) => {
+      if (details.family === "IPv4" && !details.internal) {
+        internetConnectedIP = details.address;
+      }
     });
-  
-    console.log(`Server is running on ${internetConnectedIP || 'Unknown'} and Port ${port}`);
   });
+
+  console.log(
+    `Server is running on ${internetConnectedIP || "Unknown"} and Port ${port}`
+  );
+});
 
 const User = require("./models/user");
 const Message = require("./models/message");
@@ -58,7 +60,10 @@ app.post("/register", async (req, res) => {
     // Check if user with the same email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered. Please try again with a different email." });
+      return res.status(400).json({
+        message:
+          "Email already registered. Please try again with a different email.",
+      });
     }
 
     // Hash the password before saving it
@@ -343,7 +348,6 @@ app.get("/friends/:userId", (req, res) => {
   }
 });
 
-
 // Endpoint to fetch user data based on userId
 app.get("/user-data/:userId", async (req, res) => {
   try {
@@ -361,5 +365,133 @@ app.get("/user-data/:userId", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Onboarding/v1 API endpoint for welcome.js
+app.post("/onboarding/v1", async (req, res) => {
+  try {
+    // Extract user data and userId from request body
+    const {
+      userId,
+      First_Name,
+      Last_Name,
+      Pronoun,
+      Gender,
+      Race,
+      Country,
+      State,
+      City,
+      Role,
+      Student,
+      Mentor,
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !userId ||
+      !First_Name ||
+      !Last_Name ||
+      !Pronoun ||
+      !Gender ||
+      !Role ||
+      Student === undefined ||
+      Mentor === undefined
+    ) {
+      return res.status(400).json({
+        message:
+          "userId, First_Name, Last_Name, Pronoun, Gender, Role, Student, and Mentor are required fields.",
+      });
+    }
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user data with the provided fields
+    user.First_Name = First_Name;
+    user.Last_Name = Last_Name;
+    user.Pronoun = Pronoun;
+    user.Gender = Gender;
+    user.Race = Race;
+    user.Country = Country;
+    user.State = State;
+    user.City = City;
+    user.Role = Role;
+    user.Student = Student;
+    user.Mentor = Mentor;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "User onboarded successfully", user });
+  } catch (err) {
+    console.log("Error onboarding user", err);
+    res.status(500).json({ message: "Error onboarding user" });
+  }
+});
+// Onboarding/v1 API endpoint for welcome.js
+app.post("/onboarding/v1", async (req, res) => {
+  try {
+    // Extract user data and userId from request body
+    const {
+      userId,
+      First_Name,
+      Last_Name,
+      Pronoun,
+      Gender,
+      Race,
+      Country,
+      State,
+      City,
+      Role,
+      Student,
+      Mentor,
+    } = req.body;
+
+    // Validate required fields
+    if (!userId || !First_Name || !Last_Name || !Pronoun || !Gender || !Role) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "userId, First_Name, Last_Name, Pronoun, Gender, Role, Student, and Mentor are required fields.",
+        });
+    }
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user data with the provided fields
+    user.First_Name = First_Name;
+    user.Last_Name = Last_Name;
+    user.Pronoun = Pronoun;
+    user.Gender = Gender;
+    user.Race = Race;
+    user.Country = Country;
+    user.State = State;
+    user.City = City;
+    user.Role = Role;
+    user.Student = Student;
+    user.Mentor = Mentor;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "User onboarded successfully", user });
+  } catch (err) {
+    console.log("Error onboarding user", err);
+    res.status(500).json({ message: "Error onboarding user" });
   }
 });

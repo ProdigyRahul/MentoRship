@@ -9,14 +9,16 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
 import { Dropdown } from "react-native-element-dropdown";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-import Login from "./Login";
+import { UserType } from "../UserContext";
 
 const API_KEY = "SWhsTnlyUnI3TjFRcDV1ZE1XVFFoNlIzZ3NMTkcwaUtsZGNZNTdBNQ==";
 const BASE_URL = "https://api.countrystatecity.in/v1";
@@ -43,6 +45,9 @@ export default function Welcome({ navigation }) {
   const [stateName, setStateName] = useState(null);
   const [cityName, setCityName] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const { userId, setUserId } = useContext(UserType);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     var config = {
       method: "get",
@@ -120,6 +125,12 @@ export default function Welcome({ navigation }) {
         console.log(error);
       });
   };
+  const getUserId = async () => {
+    const token = await AsyncStorage.getItem("authToken");
+    const decodedToken = jwt_decode(token);
+    const userId = decodedToken.userId;
+    setUserId(userId);
+  };
 
   // Others
   const [selectedGender, setSelectedGender] = useState("");
@@ -162,6 +173,7 @@ export default function Welcome({ navigation }) {
 
   // Handle Next button with validation
   const handleNext = async () => {
+    await getUserId();
     // Name Validation
     if (!FirstName || !LastName) {
       Alert.alert(
@@ -221,16 +233,42 @@ export default function Welcome({ navigation }) {
       ]);
       return;
     }
-    // Validate selectedParticipation
-    if (!selectedParticipation) {
-      Alert.alert("Error", "Please select your participation preference", [
-        { text: "OK" },
-      ]);
-      return;
-    }
+    setLoading(true);
+    // Prepare user data
+    const userData = {
+      userId: userId,
+      First_Name: FirstName,
+      Last_Name: LastName,
+      Pronoun: Pronouns,
+      Gender: selectedGender,
+      Race: selectedRace,
+      Country: countryName,
+      State: stateName,
+      City: cityName,
+      Role: selectedRole,
+      Student: selectedRole === "findMentor",
+      Mentor: selectedRole === "mentorOther",
+    };
+    try {
+      // Send user data to backend
+      const response = await axios.post(
+        "http://172.20.10.3:8080/onboarding/v1",
+        userData
+      );
 
-    // If everything is good then only navigate to education
-    navigation.navigate("Education");
+      // Check response and navigate if successful
+      if (response.status === 200) {
+        console.log("Successfully sent user data to backend");
+        navigation.navigate("Education");
+      } else {
+        Alert.alert("Error", "Failed to onboard user");
+      }
+    } catch (error) {
+      console.error("Error onboarding user:", error);
+      Alert.alert("Error", "Failed to onboard user");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <SafeAreaView
@@ -800,9 +838,20 @@ export default function Welcome({ navigation }) {
           marginBottom: 10,
         }}
       >
-        <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>
-          Next
-        </Text>
+        {/* Render login text or loading animation based on loading state */}
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" size="small" />
+        ) : (
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#FFFFFF",
+              fontWeight: "bold",
+            }}
+          >
+            Next
+          </Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );
