@@ -55,7 +55,7 @@ export default function Profile({ navigation }) {
       style={{ flex: 1 }}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      locations={[0.1, 1]}
+      locations={[0.3, 1]}
     >
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={{ flex: 1, paddingBottom: 0 }}>

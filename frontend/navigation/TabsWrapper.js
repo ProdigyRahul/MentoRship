@@ -22,7 +22,7 @@ const TabsWrapper = ({ navigation, route }) => {
               left: 20,
               right: 20,
               elevation: 0,
-              backgroundColor: "#000", // colors will be changed from here only. so i want linear gradiant here. please
+              backgroundColor: "#000",
               borderRadius: 15,
               height: 60,
               ...styles.shadow,
@@ -111,7 +111,7 @@ export default TabsWrapper;
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#57D5DB",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 10,
