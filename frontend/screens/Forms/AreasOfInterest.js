@@ -374,31 +374,14 @@ const AreasOfInterest = ({ navigation }) => {
     },
   ];
 
-  const [initialInterestData, setInitialInterestData] = useState([]);
-  // Search Logic
   // TODO: Later Search Logic
   // Handle Next
   const handleNext = async () => {
     try {
       // Construct the data object to send
-      const dataToSend = initialInterestData.map((interest) => ({
-        title: interest.title,
-        selectedItems: interest.items
-          .filter((item, index) => selectedItems[index])
-          .map((item, index) => ({
-            name: item,
-            rating: ratings[index],
-          })),
-      }));
-      console.log(dataToSend);
-      // Make the HTTP request to the backend API
-      const response = await axios.post(
-        "http://172.20.10.3:8080/onboarding/v3",
-        dataToSend
-      );
 
       // Handle response as needed (e.g., show success message, navigate to next screen)
-      console.log("Response from backend:", response.data);
+      console.log("Response from backend:");
       navigation.navigate("Career"); // Navigate to the next screen
     } catch (error) {
       // Handle error (e.g., show error message)

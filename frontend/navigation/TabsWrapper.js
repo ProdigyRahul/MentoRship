@@ -22,7 +22,7 @@ const TabsWrapper = ({ navigation, route }) => {
               left: 20,
               right: 20,
               elevation: 0,
-              backgroundColor: "#fff",
+              backgroundColor: "#000", // colors will be changed from here only. so i want linear gradiant here. please
               borderRadius: 15,
               height: 60,
               ...styles.shadow,
@@ -42,11 +42,11 @@ const TabsWrapper = ({ navigation, route }) => {
                 <FontAwesome
                   name="home"
                   size={26}
-                  color={focused ? "#000004" : "#748c94"}
+                  color={focused ? "#fff" : "#748c94"}
                 />
                 <Text
                   style={{
-                    color: focused ? "#000004" : "#748c94",
+                    color: focused ? "#fff" : "#748c94",
                     fontSize: 11,
                   }}
                 >
@@ -65,11 +65,11 @@ const TabsWrapper = ({ navigation, route }) => {
                 <FontAwesome
                   name="users"
                   size={26}
-                  color={focused ? "#000004" : "#748c94"}
+                  color={focused ? "#fff" : "#748c94"}
                 />
                 <Text
                   style={{
-                    color: focused ? "#000004" : "#748c94",
+                    color: focused ? "#fff" : "#748c94",
                     fontSize: 11,
                   }}
                 >
@@ -88,11 +88,11 @@ const TabsWrapper = ({ navigation, route }) => {
                 <FontAwesome
                   name="user"
                   size={26}
-                  color={focused ? "#000000" : "#748c94"}
+                  color={focused ? "#fff" : "#748c94"}
                 />
                 <Text
                   style={{
-                    color: focused ? "#000000" : "#748c94",
+                    color: focused ? "#fff" : "#748c94",
                     fontSize: 11,
                   }}
                 >
