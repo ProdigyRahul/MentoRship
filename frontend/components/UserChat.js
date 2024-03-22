@@ -19,12 +19,11 @@ const UserChat = ({ item }) => {
       if (response.ok) {
         const userMessages = data.filter(
           (message) =>
-            message.messageType === "text" && // Filter only text messages
-            message.senderId !== userId && // Filter out messages sent by the current user
-            message.recepientId === userId // Filter out messages intended for the current user
+            message.messageType === "text" &&
+            message.senderId !== userId &&
+            message.recepientId === userId
         );
 
-        // If there are messages, set the count and display the last message
         if (userMessages.length > 0) {
           const lastMessageItem = userMessages[userMessages.length - 1];
           setLastMessage(lastMessageItem);
@@ -33,6 +32,7 @@ const UserChat = ({ item }) => {
           ).length;
           setNewMessagesCount(unreadMessagesCount);
         } else {
+          setLastMessage(null);
           setNewMessagesCount(0);
         }
       } else {
@@ -45,7 +45,7 @@ const UserChat = ({ item }) => {
 
   useEffect(() => {
     fetchMessages();
-    const intervalId = setInterval(fetchMessages, 2000);
+    const intervalId = setInterval(fetchMessages, 10000);
     return () => clearInterval(intervalId);
   }, []);
 
