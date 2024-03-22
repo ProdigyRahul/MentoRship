@@ -24,6 +24,7 @@ import EmojiSelector from "react-native-emoji-selector";
 import { UserType } from "../UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const ChatMessagesScreen = () => {
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
@@ -67,7 +68,7 @@ const ChatMessagesScreen = () => {
       if (response.ok) {
         setMessages(data);
       } else {
-        console.log("error showing messags", response.status.message);
+        console.log("error showing messages", response.status.message);
       }
     } catch (error) {
       console.log("error fetching messages", error);
@@ -75,7 +76,9 @@ const ChatMessagesScreen = () => {
   };
 
   useEffect(() => {
-    fetchMessages();
+    const interval = setInterval(fetchMessages, 1000); // Fetch messages every 1 second
+
+    return () => clearInterval(interval); // Cleanup function to clear the interval
   }, []);
 
   useEffect(() => {
@@ -94,6 +97,63 @@ const ChatMessagesScreen = () => {
 
     fetchRecepientData();
   }, []);
+
+  useEffect(() => {
+    if (userId && messages.length > 0) {
+      const unreadMessageIds = messages
+        .filter((message) => !message.read && message.recepientId === userId)
+        .map((message) => message._id);
+
+      if (unreadMessageIds.length > 0) {
+        markMessagesAsRead(unreadMessageIds);
+      }
+    }
+  }, [userId, messages]);
+
+  // Function to mark messages as read
+  const markMessagesAsRead = async (messageIds) => {
+    try {
+      // Call API to mark messages as read
+      await Promise.all(
+        messageIds.map(async (messageId) => {
+          const response = await fetch(
+            `http://172.20.10.3:8080/messages/read/${messageId}`,
+            {
+              method: "PUT",
+            }
+          );
+          if (!response.ok) {
+            console.log("error marking message as read:", response.status);
+          }
+        })
+      );
+    } catch (error) {
+      console.log("error marking messages as read", error);
+    }
+  };
+
+  // useEffect to fetch messages when component mounts
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [recepientId]);
+  // Function to render message status indicators
+  const renderMessageStatus = (message) => {
+    if (message.sent && message.read) {
+      // If message is sent and read, show blue double tick
+      return <MaterialCommunityIcons name="check-all" size={16} color="blue" />;
+    } else if (message.sent && !message.read) {
+      // If message is sent but not read, show gray single tick
+      return <MaterialCommunityIcons name="check" size={16} color="gray" />;
+    } else {
+      // If message is not sent, show nothing
+      return null;
+    }
+  };
+  // Handle Send Button
   const handleSend = async (messageType, imageUri) => {
     try {
       // Check if the message is empty
@@ -299,66 +359,17 @@ const ChatMessagesScreen = () => {
                 >
                   {item?.message}
                 </Text>
-                <Text
+                <View
                   style={{
-                    textAlign: "right",
-                    fontSize: 9,
-                    color: "gray",
+                    flexDirection: "row",
+                    alignItems: "center",
                     marginTop: 5,
                   }}
                 >
-                  {formatTime(item.timeStamp)}
-                </Text>
-              </Pressable>
-            );
-          }
-
-          if (item.messageType === "image") {
-            const baseUrl = "/Users/rahul/data/";
-            const imageUrl = item.imageUrl;
-            const filename = imageUrl.split("/").pop();
-            const source = { uri: baseUrl + filename };
-            return (
-              <Pressable
-                key={index}
-                style={[
-                  item?.senderId?._id === userId
-                    ? {
-                        alignSelf: "flex-end",
-                        backgroundColor: "#DCF8C6",
-                        padding: 8,
-                        maxWidth: "60%",
-                        borderRadius: 7,
-                        margin: 10,
-                      }
-                    : {
-                        alignSelf: "flex-start",
-                        backgroundColor: "white",
-                        padding: 8,
-                        margin: 10,
-                        borderRadius: 7,
-                        maxWidth: "60%",
-                      },
-                ]}
-              >
-                <View>
-                  <Image
-                    source={source}
-                    style={{ width: 200, height: 200, borderRadius: 7 }}
-                  />
-                  <Text
-                    style={{
-                      textAlign: "right",
-                      fontSize: 9,
-                      position: "absolute",
-                      right: 10,
-                      bottom: 7,
-                      color: "white",
-                      marginTop: 5,
-                    }}
-                  >
-                    {formatTime(item?.timeStamp)}
+                  <Text style={{ fontSize: 9, color: "gray", marginRight: 5 }}>
+                    <Text>{formatTime(item.timeStamp)}</Text>
                   </Text>
+                  {renderMessageStatus(item)}
                 </View>
               </Pressable>
             );

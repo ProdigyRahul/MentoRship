@@ -238,7 +238,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-//endpoint to post Messages and store it in the backend
+// Endpoint to post Messages and store it in the backend
 app.post("/messages", upload.single("imageFile"), async (req, res) => {
   try {
     const { senderId, recepientId, messageType, messageText } = req.body;
@@ -250,10 +250,51 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
       message: messageText,
       timestamp: new Date(),
       imageUrl: messageType === "image" ? req.file.path : null,
+      sent: true, // Mark the message as sent when created
+      read: false, // Mark the message as not read initially
     });
 
     await newMessage.save();
     res.status(200).json({ message: "Message sent Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to post Messages and store it in the backend
+app.post("/messages", upload.single("imageFile"), async (req, res) => {
+  try {
+    const { senderId, recepientId, messageType, messageText } = req.body;
+
+    const newMessage = new Message({
+      senderId,
+      recepientId,
+      messageType,
+      message: messageText,
+      timestamp: new Date(),
+      imageUrl: messageType === "image" ? req.file.path : null,
+      sent: true, // Mark the message as sent when created
+      read: false, // Mark the message as not read initially
+    });
+
+    await newMessage.save();
+    res.status(200).json({ message: "Message sent Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to mark a message as read
+app.put("/messages/read/:messageId", async (req, res) => {
+  try {
+    const { messageId } = req.params;
+
+    // Find the message by messageId and update the read status to true
+    await Message.findByIdAndUpdate(messageId, { read: true });
+
+    res.status(200).json({ message: "Message read successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });

@@ -19,6 +19,8 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  sent: { type: Boolean, default: false },
+  read: { type: Boolean, default: false },
 });
 
 const Message = mongoose.model("Message", messageSchema);
