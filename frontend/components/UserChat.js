@@ -1,19 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Image,
-  SafeAreaView,
-} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { Pressable, Image, Text, View, StyleSheet } from "react-native";
 import { UserType } from "../UserContext";
 
 const UserChat = ({ item }) => {
-  const { userId, setUserId } = useContext(UserType);
-  const [messages, setMessages] = useState([]);
+  const { userId } = useContext(UserType);
   const navigation = useNavigation();
+  const [lastMessage, setLastMessage] = useState(null);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
+
   const fetchMessages = async () => {
     try {
       const response = await fetch(
@@ -22,35 +17,43 @@ const UserChat = ({ item }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessages(data);
+        const userMessages = data.filter(
+          (message) =>
+            message.messageType === "text" && // Filter only text messages
+            message.senderId !== userId && // Filter out messages sent by the current user
+            message.recepientId === userId // Filter out messages intended for the current user
+        );
+
+        // If there are messages, set the count and display the last message
+        if (userMessages.length > 0) {
+          const lastMessageItem = userMessages[userMessages.length - 1];
+          setLastMessage(lastMessageItem);
+          const unreadMessagesCount = userMessages.filter(
+            (message) => !message.read
+          ).length;
+          setNewMessagesCount(unreadMessagesCount);
+        } else {
+          setNewMessagesCount(0);
+        }
       } else {
-        console.log("error showing messags", response.status.message);
+        console.log("Error fetching messages:", response.status.message);
       }
     } catch (error) {
-      console.log("error fetching messages", error);
+      console.log("Error fetching messages:", error);
     }
   };
 
   useEffect(() => {
     fetchMessages();
+    const intervalId = setInterval(fetchMessages, 2000);
+    return () => clearInterval(intervalId);
   }, []);
-  console.log(messages);
 
-  const getLastMessage = () => {
-    const userMessages = messages.filter(
-      (message) => message.messageType === "text"
-    );
-
-    const n = userMessages.length;
-
-    return userMessages[n - 1];
-  };
-  const lastMessage = getLastMessage();
-  console.log(lastMessage);
   const formatTime = (time) => {
     const options = { hour: "numeric", minute: "numeric" };
     return new Date(time).toLocaleString("en-US", options);
   };
+
   return (
     <Pressable
       onPress={() =>
@@ -58,46 +61,84 @@ const UserChat = ({ item }) => {
           recepientId: item._id,
         })
       }
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-        borderWidth: 0.7,
-        borderColor: "#D0D0D0",
-        borderTopWidth: 0,
-        borderLeftWidth: 0,
-        borderRightWidth: 0,
-        padding: 10,
-      }}
+      style={styles.container}
     >
-      <Image
-        style={{
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          resizeMode: "cover",
-        }}
-        source={{ uri: item?.image }}
-      />
+      <Image style={styles.userImage} source={{ uri: item?.image }} />
 
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 15, fontWeight: "500" }}>{item?.name}</Text>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.userName}>{item?.name}</Text>
         {lastMessage && (
-          <Text style={{ marginTop: 3, color: "gray", fontWeight: "500" }}>
-            {lastMessage?.message}
-          </Text>
+          <Text style={styles.lastMessage}>{lastMessage?.message}</Text>
         )}
       </View>
 
-      <View>
-        <Text style={{ fontSize: 11, fontWeight: "400", color: "#585858" }}>
+      <View style={styles.timeContainer}>
+        <Text style={styles.time}>
           {lastMessage && formatTime(lastMessage?.timeStamp)}
         </Text>
+        {newMessagesCount > 0 && (
+          <View style={styles.newMessagesBadge}>
+            <Text style={styles.newMessagesCount}>{newMessagesCount}</Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );
 };
 
-export default UserChat;
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 0.7,
+    borderColor: "#D0D0D0",
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    padding: 10,
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    resizeMode: "cover",
+    marginRight: 10,
+  },
+  detailsContainer: {
+    flex: 1,
+    marginRight: 10,
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  lastMessage: {
+    marginTop: 3,
+    color: "gray",
+    fontWeight: "500",
+  },
+  timeContainer: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  time: {
+    fontSize: 11,
+    fontWeight: "400",
+    color: "#585858",
+  },
+  newMessagesBadge: {
+    backgroundColor: "black",
+    borderRadius: 50,
+    width: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  newMessagesCount: {
+    color: "white",
+    fontSize: 10,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default UserChat;
