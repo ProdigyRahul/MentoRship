@@ -572,3 +572,31 @@ app.post("/onboarding/v3", async (req, res) => {
     res.status(500).json({ message: "Error updating areas of interest" });
   }
 });
+
+// Write POST endpoint for onboarding/v4 for Career Goals.
+// POST endpoint for onboarding/v4 to update Career Goals
+app.post("/onboarding/v4", async (req, res) => {
+  try {
+    const { userId, careerGoals } = req.body;
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user's career goals field
+    user.Career_Goals = careerGoals;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "Career goals updated successfully" });
+  } catch (err) {
+    console.log("Error updating career goals", err);
+    res.status(500).json({ message: "Error updating career goals" });
+  }
+});

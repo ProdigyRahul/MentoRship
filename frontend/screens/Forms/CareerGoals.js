@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,13 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome5";
-
+import { UserType } from "../../UserContext";
+import axios from "axios";
 const NavigationLine = ({ active }) => (
   <View
     style={{
@@ -41,6 +44,9 @@ export default function CareerGoals({ navigation }) {
   const handleCheckBoxChange = (key) => {
     setCheckBoxStates((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+  // Use userId to send
+  const { userId, setUserId } = useContext(UserType);
+  const [loading, setLoading] = useState(false);
 
   const careerGoalsList = [
     "Get Internship/Job",
@@ -60,12 +66,41 @@ export default function CareerGoals({ navigation }) {
   ];
   const isAtLeastOneSelected = Object.values(checkBoxStates).some(Boolean);
 
-  const handleNext = () => {
-    if (isAtLeastOneSelected) {
+  const handleNext = async () => {
+    const isAtLeastOneSelected = Object.values(checkBoxStates).some(Boolean);
+    if (!isAtLeastOneSelected) {
+      // Give alert to atleast one selected
+      Alert.alert("Error", "Please select at least one career goal", [
+        {
+          text: "OK",
+          style: "cancel",
+        },
+      ]);
+      return;
+    }
+    setLoading(true);
+
+    try {
+      // Send a POST request to your backend endpoint
+      const response = await axios.post(
+        "http://172.20.10.3:8080/onboarding/v4",
+        {
+          userId: userId, // Use the userId from your context or state
+          careerGoals: Object.keys(checkBoxStates).filter(
+            (key) => checkBoxStates[key]
+          ),
+        }
+      );
+
+      // Handle successful response (if needed)
+      console.log(response.data);
+      setLoading(false);
+      // Navigate to the next screen
       navigation.navigate("Availability");
-    } else {
-      // Provide user feedback about selecting at least one checkbox
-      alert("Please select at least one career goal");
+    } catch (error) {
+      // Handle error
+      console.error("Error updating career goals:", error);
+      // Show an error message or handle the error accordingly
     }
   };
 
@@ -194,9 +229,19 @@ export default function CareerGoals({ navigation }) {
           marginBottom: 10,
         }}
       >
-        <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>
-          Next
-        </Text>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" size="small" />
+        ) : (
+          <Text
+            style={{
+              fontSize: 20,
+              color: "#FFFFFF",
+              fontWeight: "bold",
+            }}
+          >
+            Next
+          </Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );

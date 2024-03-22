@@ -52,7 +52,7 @@ export default function Login({ navigation }) {
         setUserId(userId);
         showToast();
         setTimeout(() => {
-          navigation.navigate("Home");
+          navigation.navigate("Welcome");
         }, 1000);
       })
       .catch((error) => {
