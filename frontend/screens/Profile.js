@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -16,17 +17,21 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const { userId } = useContext(UserType);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Fetch user data from backend
-        const response = await fetch(
-          `http://172.20.10.3:8080/user-data/${userId}`
-        );
-        const data = await response.json();
+        setTimeout(async () => {
+          const response = await fetch(
+            `http://172.20.10.3:8080/user-data/${userId}`
+          );
+          const data = await response.json();
 
-        setUserData(data);
+          setUserData(data);
+          setLoading(false);
+        }, 500);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -34,6 +39,7 @@ export default function Profile({ navigation }) {
 
     fetchUserData();
   }, []);
+
   const handleLogout = async () => {
     // Clear AsyncStorage
     try {
@@ -49,6 +55,15 @@ export default function Profile({ navigation }) {
     });
   };
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000000" />
+        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
+      </View>
+    );
+  }
+
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -57,7 +72,6 @@ export default function Profile({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      {/* <StatusBar barStyle="light-content" /> */}
       <SafeAreaView style={{ flex: 1, paddingBottom: 0 }}>
         {userData && (
           <>

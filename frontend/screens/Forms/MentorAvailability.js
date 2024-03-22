@@ -28,7 +28,7 @@ export default function MentorAvailability({ navigation }) {
       connectionType === "Anyone" ||
       connectionType === "Only members in your org"
     ) {
-      navigation.navigate("Home");
+      navigation.navigate("Chat");
     } else {
       alert("Please select a valid connection type");
     }

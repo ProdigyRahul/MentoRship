@@ -5,6 +5,7 @@ import Homepage from "../screens/Homepage";
 import Community from "../screens/Community";
 import Profile from "../screens/Profile";
 import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome icons
+import ChatsScreen from "../screens/ChatsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,7 @@ const TabsWrapper = ({ navigation, route }) => {
       >
         <Tab.Screen
           name="Homepage"
-          component={Homepage}
+          component={ChatsScreen}
           options={{
             tabBarIcon: ({ focused }) => (
               <View style={styles.tabItem}>

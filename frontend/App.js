@@ -13,6 +13,7 @@ import MentorAvailability from "./screens/Forms/MentorAvailability";
 import { UserContext } from "./UserContext";
 import MentorRequestScreen from "./screens/MentorRequestScreen";
 import TabsWrapper from "./navigation/TabsWrapper";
+import ChatMessagesScreen from "./screens/ChatMessagesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,11 +22,27 @@ function App() {
     <>
       <UserContext>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false}}>
-            <Stack.Screen name="Onboarding" component={Onboarding} options={{animation: 'fade'}} />
-            <Stack.Screen name="Login" component={Login} options={{animation: 'slide_from_right'}}/>
-            <Stack.Screen name="Signup" component={Signup} options={{animation: 'slide_from_left'}}/>
-            <Stack.Screen name="Welcome" component={Welcome} options={{animation: 'fade'}}/>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ animation: "slide_from_right" }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{ animation: "slide_from_left" }}
+            />
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{ animation: "fade" }}
+            />
             <Stack.Screen name="Education" component={Education} />
             <Stack.Screen name="Interest" component={AreasOfInterest} />
             <Stack.Screen name="Career" component={CareerGoals} />
@@ -34,9 +51,10 @@ function App() {
               name="MentorRequest"
               component={MentorRequestScreen}
             />
-            <Stack.Screen name="Home" component={TabsWrapper} />
+            <Stack.Screen name="Chat" component={TabsWrapper} />
             <Stack.Screen name="Community" component={TabsWrapper} />
             <Stack.Screen name="Profile" component={TabsWrapper} />
+            <Stack.Screen name="Messages" component={ChatMessagesScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>
