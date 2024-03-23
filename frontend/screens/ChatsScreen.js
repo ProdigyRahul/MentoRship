@@ -5,11 +5,14 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
 import { useNavigation } from "@react-navigation/native";
 import UserChat from "../components/UserChat";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ChatsScreen = () => {
   const [acceptedFriends, setAcceptedFriends] = useState([]);
@@ -48,13 +51,48 @@ const ChatsScreen = () => {
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 50 }}>
-      <Pressable>
-        {acceptedFriends.map((item, index) => (
-          <UserChat key={index} item={item} />
-        ))}
-      </Pressable>
-    </ScrollView>
+    // Light Theme of Status bar please
+
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
+    >
+      <StatusBar barStyle="light-content" />
+
+      <Text
+        style={{
+          fontSize: 25,
+          fontWeight: "bold",
+          color: "#FFFFFF",
+          marginTop: 20,
+          textAlign: "left",
+          marginLeft: 20,
+        }}
+      >
+        Chats
+      </Text>
+      <View
+        style={{
+          flex: 1,
+          borderTopStartRadius: 50,
+          borderTopEndRadius: 50,
+          backgroundColor: "#FFFFFF",
+          marginTop: 30,
+        }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ alignItems: "center" }}
+        >
+          {acceptedFriends.map((item, index) => (
+            <UserChat key={index} item={item} />
+          ))}
+        </ScrollView>
+      </View>
+    </LinearGradient>
   );
 };
 

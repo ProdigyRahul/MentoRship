@@ -80,7 +80,7 @@ export default function Profile({ navigation }) {
                 fontSize: 25,
                 fontWeight: "bold",
                 color: "#FFFFFF",
-                marginTop: 40,
+                marginTop: 20,
                 textAlign: "left",
                 marginLeft: 20,
               }}

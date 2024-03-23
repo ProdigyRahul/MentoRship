@@ -270,7 +270,7 @@ export default function Welcome({ navigation }) {
       style={{
         flex: 1,
         alignItems: "center",
-        marginTop: 40,
+        marginTop: 10,
       }}
     >
       <Text

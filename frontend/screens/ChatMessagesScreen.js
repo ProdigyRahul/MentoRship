@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#CCCCCC",
-    marginTop: 30,
+    marginTop: 0,
   },
   userInfo: {
     flexDirection: "row",

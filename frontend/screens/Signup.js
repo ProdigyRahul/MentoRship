@@ -188,7 +188,7 @@ export default function Signup({ navigation }) {
       style={{
         flex: 1,
         alignItems: "center",
-        marginTop: 40,
+        marginTop: 0,
       }}
     >
       <KeyboardAvoidingView
