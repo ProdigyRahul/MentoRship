@@ -39,7 +39,7 @@ export default function MentorAvailability({ navigation }) {
       style={{
         flex: 1,
         alignItems: "center",
-        marginTop: 10,
+        marginTop: 40,
       }}
     >
       <TouchableOpacity

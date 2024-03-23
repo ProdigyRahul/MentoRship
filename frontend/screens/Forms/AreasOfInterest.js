@@ -391,7 +391,7 @@ const AreasOfInterest = ({ navigation }) => {
 
   return (
     // Margin Top is missing in this. i want same level of margin as my previous pages.
-    <SafeAreaView style={{ flex: 1, alignItems: "center", marginTop: 10 }}>
+    <SafeAreaView style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
       <TouchableOpacity
         onPress={() => {
           navigation.goBack();

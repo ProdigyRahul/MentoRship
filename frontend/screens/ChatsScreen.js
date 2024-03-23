@@ -51,8 +51,6 @@ const ChatsScreen = () => {
   }
 
   return (
-    // Light Theme of Status bar please
-
     <LinearGradient
       colors={["#000000", "#007CB0"]}
       style={{ flex: 1 }}
@@ -67,7 +65,7 @@ const ChatsScreen = () => {
           fontSize: 25,
           fontWeight: "bold",
           color: "#FFFFFF",
-          marginTop: 20,
+          marginTop: 37,
           textAlign: "left",
           marginLeft: 20,
         }}
