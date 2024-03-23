@@ -7,12 +7,14 @@ import {
   ActivityIndicator,
   SafeAreaView,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
 import { useNavigation } from "@react-navigation/native";
 import UserChat from "../components/UserChat";
 import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const ChatsScreen = () => {
   const [acceptedFriends, setAcceptedFriends] = useState([]);
@@ -40,6 +42,9 @@ const ChatsScreen = () => {
   }, []);
 
   console.log("friends", acceptedFriends);
+  const navigateToMentorRequest = () => {
+    navigation.navigate("MentorRequest");
+  };
 
   if (loading) {
     return (
@@ -59,19 +64,38 @@ const ChatsScreen = () => {
       locations={[0.3, 1]}
     >
       <StatusBar barStyle="light-content" />
-
-      <Text
+      <View
         style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#FFFFFF",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 20,
           marginTop: 37,
-          textAlign: "left",
-          marginLeft: 20,
         }}
       >
-        MentoRship Chats
-      </Text>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
+          }}
+        >
+          MentoRship Chats
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable onPress={navigateToMentorRequest}>
+            <MaterialIcons
+              name="notifications"
+              size={24}
+              color="white"
+              style={{ marginRight: 10 }}
+            />
+          </Pressable>
+          <Pressable onPress={navigateToMentorRequest}>
+            <MaterialIcons name="search" size={24} color="white" />
+          </Pressable>
+        </View>
+      </View>
       <View
         style={{
           flex: 1,
@@ -85,6 +109,7 @@ const ChatsScreen = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
             Your Conversations:
           </Text>
+          <View style={styles.borderLine}></View>
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -101,4 +126,12 @@ const ChatsScreen = () => {
 
 export default ChatsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  borderLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "gray",
+    borderWidth: 0.1,
+    marginRight: 20,
+  },
+});
