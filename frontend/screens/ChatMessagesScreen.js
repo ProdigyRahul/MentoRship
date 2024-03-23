@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React, {
   useState,
@@ -37,6 +38,13 @@ const ChatMessagesScreen = () => {
   const { recepientId } = route.params;
   const [message, setMessage] = useState("");
   const { userId, setUserId } = useContext(UserType);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
 
   const scrollViewRef = useRef(null);
 
@@ -53,7 +61,6 @@ const ChatMessagesScreen = () => {
   const handleContentSizeChange = () => {
     scrollToBottom();
   };
-
   const handleEmojiPress = () => {
     setShowEmojiSelector(!showEmojiSelector);
   };
@@ -75,11 +82,12 @@ const ChatMessagesScreen = () => {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(fetchMessages, 1000); // Fetch messages every 1 second
+  // TODO: Remove Comments
+  // useEffect(() => {
+  //   const interval = setInterval(fetchMessages, 1000);
 
-    return () => clearInterval(interval); // Cleanup function to clear the interval
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     const fetchRecepientData = async () => {
@@ -140,19 +148,31 @@ const ChatMessagesScreen = () => {
   useEffect(() => {
     fetchMessages();
   }, [recepientId]);
+
   // Function to render message status indicators
   const renderMessageStatus = (message) => {
+    const isCurrentUser = message?.senderId?._id === userId; // Check if the message sender is the current user
+
     if (message.sent && message.read) {
-      // If message is sent and read, show blue double tick
-      return <MaterialCommunityIcons name="check-all" size={16} color="blue" />;
+      // If message is sent and read
+      return isCurrentUser ? (
+        <MaterialCommunityIcons name="check-all" size={16} color="#FFFFFF" />
+      ) : (
+        <MaterialCommunityIcons name="check-all" size={16} color="blue" />
+      );
     } else if (message.sent && !message.read) {
-      // If message is sent but not read, show gray single tick
-      return <MaterialCommunityIcons name="check" size={16} color="gray" />;
+      // If message is sent but not read
+      return isCurrentUser ? (
+        <MaterialCommunityIcons name="check" size={16} color="#FFFFFF" />
+      ) : (
+        <MaterialCommunityIcons name="check" size={16} color="gray" />
+      );
     } else {
-      // If message is not sent, show nothing
+      // If message is not sent
       return null;
     }
   };
+
   // Handle Send Button
   const handleSend = async (messageType, imageUri) => {
     try {
@@ -313,10 +333,41 @@ const ChatMessagesScreen = () => {
       ]);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000000" />
+        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
+      </View>
+    );
+  }
+
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "#F0F0F0", marginTop: 40 }}
-    >
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <View style={styles.header}>
+        <View style={styles.userInfo}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Entypo name="arrow-left" size={24} color="black" />
+          </Pressable>
+          <Image
+            style={styles.userImage}
+            source={{ uri: recepientData?.image }}
+          />
+          <Text style={styles.userName}>{recepientData?.name}</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable
+            onPress={() => console.log("Call")}
+            style={{ marginRight: 10 }}
+          >
+            <MaterialCommunityIcons name="phone" size={24} color="black" />
+          </Pressable>
+          <Pressable onPress={() => console.log("More options")}>
+            <Entypo name="dots-three-vertical" size={24} color="black" />
+          </Pressable>
+        </View>
+      </View>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -333,27 +384,31 @@ const ChatMessagesScreen = () => {
                   item?.senderId?._id === userId
                     ? {
                         alignSelf: "flex-end",
-                        backgroundColor: "#DCF8C6",
+                        backgroundColor: "#0077FF",
                         padding: 8,
                         maxWidth: "60%",
-                        borderRadius: 7,
+                        borderRadius: 10,
                         margin: 10,
                       }
                     : {
                         alignSelf: "flex-start",
-                        backgroundColor: "white",
+                        backgroundColor: "#E8F0FE",
                         padding: 8,
                         margin: 10,
-                        borderRadius: 7,
+                        borderRadius: 10,
                         maxWidth: "60%",
                       },
-
                   isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
                 ]}
               >
                 <Text
                   style={{
-                    fontSize: 13,
+                    fontSize: 16,
+                    color: isSelected
+                      ? "#FFFFFF"
+                      : item?.senderId?._id === userId
+                      ? "#FFFFFF"
+                      : "#000000",
                     textAlign: isSelected ? "right" : "left",
                   }}
                 >
@@ -366,8 +421,18 @@ const ChatMessagesScreen = () => {
                     marginTop: 5,
                   }}
                 >
-                  <Text style={{ fontSize: 9, color: "gray", marginRight: 5 }}>
-                    <Text>{formatTime(item.timeStamp)}</Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: isSelected
+                        ? "#FFFFFF"
+                        : item?.senderId?._id === userId
+                        ? "#FFFFFF"
+                        : "#808080",
+                      marginRight: 5,
+                    }}
+                  >
+                    {formatTime(item.timeStamp)}
                   </Text>
                   {renderMessageStatus(item)}
                 </View>
@@ -384,7 +449,7 @@ const ChatMessagesScreen = () => {
           paddingHorizontal: 10,
           paddingVertical: 10,
           borderTopWidth: 1,
-          borderTopColor: "#dddddd",
+          borderTopColor: "#CCCCCC",
           marginBottom: showEmojiSelector ? 0 : 25,
         }}
       >
@@ -393,7 +458,7 @@ const ChatMessagesScreen = () => {
           style={{ marginRight: 5 }}
           name="emoji-happy"
           size={24}
-          color="gray"
+          color="#0077FF"
         />
 
         <TextInput
@@ -403,11 +468,13 @@ const ChatMessagesScreen = () => {
             flex: 1,
             height: 40,
             borderWidth: 1,
-            borderColor: "#dddddd",
+            borderColor: "#CCCCCC",
             borderRadius: 20,
             paddingHorizontal: 10,
+            color: "#000000",
           }}
           placeholder="Type Your message..."
+          placeholderTextColor="#A9A9A9"
         />
 
         <View
@@ -418,21 +485,20 @@ const ChatMessagesScreen = () => {
             marginHorizontal: 8,
           }}
         >
-          <Entypo onPress={pickImage} name="camera" size={24} color="gray" />
-
-          <Feather name="mic" size={24} color="gray" />
+          <Entypo onPress={pickImage} name="camera" size={24} color="#0077FF" />
+          <Feather name="mic" size={24} color="#0077FF" />
         </View>
 
         <Pressable
           onPress={() => handleSend("text")}
           style={{
-            backgroundColor: "#007bff",
+            backgroundColor: "#0077FF",
             paddingVertical: 8,
             paddingHorizontal: 12,
             borderRadius: 20,
           }}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>Send</Text>
+          <Text style={{ color: "#FFFFFF", fontWeight: "bold" }}>Send</Text>
         </Pressable>
       </View>
 
@@ -450,4 +516,58 @@ const ChatMessagesScreen = () => {
 
 export default ChatMessagesScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#CCCCCC",
+    marginTop: 30,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    resizeMode: "cover",
+    marginRight: 5,
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#CCCCCC",
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#CCCCCC",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    color: "#000000",
+    marginLeft: 5,
+  },
+  sendButton: {
+    backgroundColor: "#0077FF",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+});

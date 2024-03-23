@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
@@ -14,6 +13,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserType } from "../UserContext";
 import { LinearGradient } from "expo-linear-gradient";
+import logo from "../assets/Logo.png";
 
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
@@ -80,7 +80,7 @@ export default function Profile({ navigation }) {
                 fontSize: 25,
                 fontWeight: "bold",
                 color: "#FFFFFF",
-                marginTop: 20,
+                marginTop: 40,
                 textAlign: "left",
                 marginLeft: 20,
               }}
@@ -104,7 +104,7 @@ export default function Profile({ navigation }) {
                   marginTop: 15,
                   alignItems: "center",
                   alignSelf: "flex-start",
-                  marginLeft: 15,
+                  marginLeft: 25,
                 }}
               >
                 <Image
@@ -297,8 +297,11 @@ export default function Profile({ navigation }) {
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesome5 name="info-circle" size={16} color="#000" />
-
+                  <Image
+                    source={logo}
+                    style={{ width: 20, height: 20, marginRight: 10 }}
+                  />
+                  {/* End of replacement */}
                   <Text
                     style={{
                       fontSize: 16,
