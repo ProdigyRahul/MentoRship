@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Homepage from "../screens/Homepage";
 import Community from "../screens/Community";
 import Profile from "../screens/Profile";
 import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome icons

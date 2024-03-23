@@ -12,7 +12,7 @@ import { UserType } from "../UserContext";
 import axios from "axios";
 import User from "../components/User";
 
-export default function Homepage({ navigation }) {
+export default function Explore({ navigation }) {
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);

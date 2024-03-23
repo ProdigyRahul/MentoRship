@@ -63,6 +63,10 @@ const ChatsScreen = () => {
     fetchPendingFriendRequests();
   }, []);
 
+  const navigateToExplore = () => {
+    navigation.navigate("Explore");
+  };
+
   const startAnimation = () => {
     // Define the animation sequence
     Animated.sequence([

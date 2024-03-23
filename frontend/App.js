@@ -14,6 +14,7 @@ import { UserContext } from "./UserContext";
 import MentorRequestScreen from "./screens/MentorRequestScreen";
 import TabsWrapper from "./navigation/TabsWrapper";
 import ChatMessagesScreen from "./screens/ChatMessagesScreen";
+import Explore from "./screens/Explore";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,7 @@ function App() {
             <Stack.Screen name="Community" component={TabsWrapper} />
             <Stack.Screen name="Profile" component={TabsWrapper} />
             <Stack.Screen name="Messages" component={ChatMessagesScreen} />
+            <Stack.Screen name="Explore" component={Explore} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>

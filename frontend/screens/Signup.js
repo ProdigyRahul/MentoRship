@@ -25,14 +25,9 @@ export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUserId } = useContext(UserType);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [linkModalVisible, setLinkModalVisible] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageFileName, setImageFileName] = useState(""); // Add state for image file name
-
   // Function to display success message
   const showToast = () => {
     showMessage({
@@ -51,7 +46,7 @@ export default function Signup({ navigation }) {
 
   // Function to handle signup process
   const handleSignup = async () => {
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !imageUrl) {
       Alert.alert(
         "Validation Error",
         "Please fill in all fields and upload an image."
@@ -70,7 +65,7 @@ export default function Signup({ navigation }) {
           email,
           password,
           name,
-          image: url,
+          image: imageUrl,
         }),
       });
 
@@ -101,88 +96,6 @@ export default function Signup({ navigation }) {
     }
   };
 
-  // Function to handle opening image upload modal
-  const handleImageUpload = () => {
-    setModalVisible(true);
-  };
-  // Function to handle clearing the uploaded image
-  const handleClearImage = () => {
-    setImage(null);
-    setImageFileName(""); // Clear the file name
-  };
-
-  // Function to handle taking photo with camera
-  const handleCamera = async () => {
-    try {
-      // Request camera permissions
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission denied",
-          "You need to grant camera permission to take photos."
-        );
-        return;
-      }
-      // Launch camera to capture photo
-      let result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        // Save captured image and set file name
-        setImage(result.uri);
-        setImageFileName(result.uri.split("/").pop());
-        setModalVisible(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setModalVisible(false);
-    }
-  };
-  const handleImageUrlInput = (text) => {
-    setImageUrl(text);
-  };
-  // Function to handle choosing photo from library
-  const handleGallery = async () => {
-    try {
-      // Request media library permissions
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission denied",
-          "You need to grant media library permission to choose photos."
-        );
-        return;
-      }
-      // Launch image library to choose photo
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.cancelled && result.uri) {
-        // Check if result.uri is not undefined
-        // Save chosen image and set file name
-        setImage(result.uri);
-        setImageFileName(result.uri.split("/").pop());
-        setModalVisible(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setModalVisible(false);
-    }
-  };
-
-  // Function to handle pasting image URL
-  const handleLinkModalOpen = () => {
-    setLinkModalVisible(true);
-  };
-
   return (
     <SafeAreaView
       style={{
@@ -206,112 +119,6 @@ export default function Signup({ navigation }) {
             justifyContent: "center",
           }}
         >
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0,0,0,0.5)",
-              }}
-              onPress={() => setModalVisible(false)}
-            >
-              <View
-                style={{
-                  backgroundColor: "#fff",
-                  padding: 20,
-                  borderRadius: 10,
-                  width: 300,
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handleCamera}
-                  style={{ marginBottom: 20, alignItems: "center" }}
-                >
-                  <FontAwesome name="camera" size={30} color="#3498db" />
-                  <Text style={{ fontSize: 18, marginTop: 5 }}>Take Photo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleGallery}
-                  style={{ marginBottom: 20, alignItems: "center" }}
-                >
-                  <FontAwesome name="image" size={30} color="#3498db" />
-                  <Text style={{ fontSize: 18, marginTop: 5 }}>
-                    Choose from Library
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleLinkModalOpen}
-                  style={{ marginBottom: 20, alignItems: "center" }}
-                >
-                  <FontAwesome name="link" size={30} color="#3498db" />
-                  <Text style={{ fontSize: 18, marginTop: 5 }}>
-                    Paste Image URL
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </Modal>
-          {/* Link Modal */}
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={linkModalVisible}
-            onRequestClose={() => setLinkModalVisible(false)}
-          >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0,0,0,0.5)",
-              }}
-              onPress={() => setLinkModalVisible(false)}
-            >
-              <View
-                style={{
-                  backgroundColor: "#fff",
-                  padding: 20,
-                  borderRadius: 10,
-                  width: 300,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ fontSize: 18, marginBottom: 10 }}>
-                  Paste Image URL
-                </Text>
-                <TextInput
-                  placeholder="Enter Image URL"
-                  onChangeText={handleImageUrlInput}
-                  style={{
-                    backgroundColor: "#D9D9D9",
-                    width: 200,
-                    height: 40,
-                    borderRadius: 10,
-                    paddingHorizontal: 10,
-                    marginBottom: 10,
-                  }}
-                />
-                <TouchableOpacity
-                  onPress={() => setLinkModalVisible(false)}
-                  style={{
-                    backgroundColor: "#3498db",
-                    paddingVertical: 8,
-                    paddingHorizontal: 20,
-                    borderRadius: 10,
-                  }}
-                >
-                  <Text style={{ color: "#FFFFFF" }}>Confirm</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </Modal>
           <Image
             source={require("../assets/Logo.png")}
             style={{
@@ -453,8 +260,9 @@ export default function Signup({ navigation }) {
               paddingHorizontal: 20,
             }}
           ></TextInput>
-          <TouchableOpacity
-            onPress={handleImageUpload}
+          <TextInput
+            onChangeText={(text) => setImageUrl(text)}
+            placeholder="Image URL:"
             style={{
               backgroundColor: "#D9D9D9",
               width: 290,
@@ -462,26 +270,8 @@ export default function Signup({ navigation }) {
               borderRadius: 20,
               marginTop: 15,
               paddingHorizontal: 20,
-              justifyContent: "center",
-              alignItems: "center",
             }}
-          >
-            <Text style={{ fontSize: 16 }}>Upload Image</Text>
-          </TouchableOpacity>
-          {image ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-              }}
-            >
-              <Text style={{ marginRight: 10 }}>{imageFileName}</Text>
-              <TouchableOpacity onPress={handleClearImage}>
-                <FontAwesome name="times-circle" size={24} color="red" />
-              </TouchableOpacity>
-            </View>
-          ) : null}
+          ></TextInput>
           <TouchableOpacity
             onPress={handleSignup}
             style={{
@@ -518,7 +308,7 @@ export default function Signup({ navigation }) {
               Already have an account? Login Now
             </Text>
           </TouchableOpacity>
-          <FlashMessage position="top" />
+          <FlashMessage position="bottom" />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
