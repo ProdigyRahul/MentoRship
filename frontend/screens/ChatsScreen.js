@@ -5,9 +5,9 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
-  SafeAreaView,
   StatusBar,
-  TouchableOpacity,
+  Animated,
+  Easing,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
@@ -20,9 +20,12 @@ const ChatsScreen = () => {
   const [acceptedFriends, setAcceptedFriends] = useState([]);
   const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(true);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [animatedValue] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+
   useEffect(() => {
-    const acceptedFriendsList = async () => {
+    const fetchAcceptedFriends = async () => {
       try {
         const response = await fetch(
           `http://172.20.10.3:8080/accepted-friends/${userId}`
@@ -38,11 +41,80 @@ const ChatsScreen = () => {
       }
     };
 
-    acceptedFriendsList();
+    const fetchPendingFriendRequests = async () => {
+      try {
+        const response = await fetch(
+          `http://172.20.10.3:8080/friend-request/${userId}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setNotificationCount(data.length);
+          if (data.length > 0) {
+            startAnimation();
+          }
+        }
+      } catch (error) {
+        console.log("error fetching pending friend requests", error);
+      }
+    };
+
+    fetchAcceptedFriends();
+    fetchPendingFriendRequests();
   }, []);
+
+  const startAnimation = () => {
+    // Define the animation sequence
+    Animated.sequence([
+      // Move bell downwards
+      Animated.timing(animatedValue, {
+        toValue: 10,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: -10,
+        duration: 200,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 10,
+        duration: 200,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: -10,
+        duration: 200,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+    ]).start();
+  };
+
+  useEffect(() => {
+    const intervalId = setTimeout(() => {
+      startAnimation();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const translateStyle = {
+    transform: [{ translateY: animatedValue }],
+  };
 
   console.log("friends", acceptedFriends);
   const navigateToMentorRequest = () => {
+    setNotificationCount(0);
     navigation.navigate("MentorRequest");
   };
 
@@ -54,7 +126,6 @@ const ChatsScreen = () => {
       </View>
     );
   }
-
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -83,13 +154,40 @@ const ChatsScreen = () => {
           MentoRship Chats
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Pressable onPress={navigateToMentorRequest}>
-            <MaterialIcons
-              name="notifications"
-              size={24}
-              color="white"
-              style={{ marginRight: 10 }}
-            />
+          <Pressable
+            onPress={navigateToMentorRequest}
+            style={{ marginRight: 7 }}
+          >
+            <View style={{ position: "relative" }}>
+              <Animated.View style={translateStyle}>
+                <MaterialIcons
+                  name="notifications"
+                  size={24}
+                  color="white"
+                  style={{ marginRight: 10 }}
+                />
+              </Animated.View>
+              {notificationCount > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -9,
+                    right: 0,
+                    height: 17,
+                    width: 17,
+                    backgroundColor: "red",
+                    borderRadius: 20,
+                    paddingHorizontal: 5.5,
+                    paddingVertical: 1,
+                    marginRight: 2,
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 11 }}>
+                    {notificationCount}
+                  </Text>
+                </View>
+              )}
+            </View>
           </Pressable>
           <Pressable onPress={navigateToMentorRequest}>
             <MaterialIcons name="search" size={24} color="white" />
