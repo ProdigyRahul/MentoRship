@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     padding: 10,
+    marginHorizontal: 10,
   },
   userImage: {
     width: 50,

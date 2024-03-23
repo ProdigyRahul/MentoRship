@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React, {
   useState,
@@ -391,6 +392,7 @@ const ChatMessagesScreen = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Pressable onPress={() => navigation.goBack()}>
@@ -579,7 +581,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#CCCCCC",
-    marginTop: 0,
+    marginTop: 25,
   },
   userInfo: {
     flexDirection: "row",

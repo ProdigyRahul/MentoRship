@@ -70,7 +70,7 @@ const ChatsScreen = () => {
           marginLeft: 20,
         }}
       >
-        Chats
+        MentoRship Chats
       </Text>
       <View
         style={{
@@ -78,9 +78,14 @@ const ChatsScreen = () => {
           borderTopStartRadius: 50,
           borderTopEndRadius: 50,
           backgroundColor: "#FFFFFF",
-          marginTop: 30,
+          marginTop: 20,
         }}
       >
+        <View style={{ marginTop: 20, marginLeft: 20 }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
+            Your Conversations:
+          </Text>
+        </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ alignItems: "center" }}
