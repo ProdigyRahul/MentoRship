@@ -47,9 +47,9 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
       />
 
       <Text
-        style={{ fontSize: 15, fontWeight: "bold", marginLeft: 10, flex: 1 }}
+        style={{ fontSize: 15, fontWeight: "600", marginLeft: 10, flex: 1 }}
       >
-        {item?.name} sent you a friend request!!
+        {item?.name} sent you a connection request!!
       </Text>
 
       <Pressable
