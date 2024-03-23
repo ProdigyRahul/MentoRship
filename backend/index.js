@@ -641,3 +641,39 @@ app.post("/onboarding/v4", async (req, res) => {
     res.status(500).json({ message: "Error updating career goals" });
   }
 });
+
+// Endpoint to update or get last seen time
+app.get("/user/last-seen/:recipientId", async (req, res) => {
+  try {
+    const { recipientId } = req.params;
+    const recipient = await User.findById(recipientId);
+    if (recipient) {
+      res.status(200).json({ lastSeen: recipient.lastSeen });
+    } else {
+      res.status(404).json({ error: "Recipient not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to update sender's last seen time
+app.put("/user/last-seen/:senderId", async (req, res) => {
+  try {
+    const { senderId } = req.params;
+    const sender = await User.findByIdAndUpdate(
+      senderId,
+      { lastSeen: new Date() },
+      { new: true }
+    );
+    if (sender) {
+      res.status(200).json({ message: "Last seen time updated successfully" });
+    } else {
+      res.status(404).json({ error: "Sender not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

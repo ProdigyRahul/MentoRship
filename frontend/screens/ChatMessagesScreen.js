@@ -39,11 +39,12 @@ const ChatMessagesScreen = () => {
   const [message, setMessage] = useState("");
   const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(true);
+  const [lastSeen, setLastSeen] = useState(null);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 1000);
   }, []);
 
   const scrollViewRef = useRef(null);
@@ -139,10 +140,57 @@ const ChatMessagesScreen = () => {
       console.log("error marking messages as read", error);
     }
   };
+  // Update the fetchLastSeen function to calculate the time difference
+  const fetchLastSeen = async () => {
+    try {
+      const response = await fetch(
+        `http://172.20.10.3:8080/user/last-seen/${recepientId}`
+      );
+
+      // Update sender's last seen time
+      await fetch(`http://172.20.10.3:8080/user/last-seen/${userId}`, {
+        method: "PUT",
+      });
+
+      const data = await response.json();
+      const lastSeenTime = data.lastSeen;
+
+      if (lastSeenTime) {
+        const lastSeenDate = new Date(lastSeenTime);
+
+        // Calculate the time difference
+        const currentTime = new Date();
+        const timeDifference = currentTime.getTime() - lastSeenDate.getTime();
+
+        // Convert milliseconds to minutes, hours, or days
+        const minutes = Math.floor(timeDifference / (1000 * 60));
+        const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+        let lastSeen;
+        if (minutes === 0) {
+          lastSeen = "Online";
+        } else if (days > 0) {
+          lastSeen = `${days} days ago`;
+        } else if (hours > 0) {
+          lastSeen = `${hours} hours ago`;
+        } else {
+          lastSeen = `${minutes} minutes ago`;
+        }
+
+        setLastSeen(lastSeen);
+      } else {
+        setLastSeen("Unknown");
+      }
+    } catch (error) {
+      console.log("error fetching last seen time", error);
+    }
+  };
 
   // useEffect to fetch messages when component mounts
   useEffect(() => {
     fetchMessages();
+    fetchLastSeen();
   }, []);
 
   useEffect(() => {
@@ -215,10 +263,8 @@ const ChatMessagesScreen = () => {
     }
   };
 
-  console.log("messages", selectedMessages);
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "",
       headerLeft: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Ionicons
@@ -275,7 +321,7 @@ const ChatMessagesScreen = () => {
         }
       },
     });
-  }, [navigation, recepientData, selectedMessages]);
+  }, [navigation, recepientData, selectedMessages, lastSeen]);
 
   const deleteMessages = async (messageIds) => {
     try {
@@ -348,13 +394,23 @@ const ChatMessagesScreen = () => {
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Pressable onPress={() => navigation.goBack()}>
-            <Entypo name="arrow-left" size={24} color="black" />
+            <FontAwesome name="angle-left" size={30} color="black" />
           </Pressable>
+
           <Image
             style={styles.userImage}
             source={{ uri: recepientData?.image }}
           />
-          <Text style={styles.userName}>{recepientData?.name}</Text>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.userName}>{recepientData?.name}</Text>
+            <Text style={styles.lastSeenText}>
+              {lastSeen
+                ? lastSeen === "Online"
+                  ? "Online"
+                  : `Last Seen: ${lastSeen}`
+                : ""}
+            </Text>
+          </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Pressable
@@ -515,7 +571,6 @@ const ChatMessagesScreen = () => {
 };
 
 export default ChatMessagesScreen;
-
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
@@ -541,6 +596,11 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 15,
     fontWeight: "bold",
+    marginLeft: 10,
+  },
+  lastSeenText: {
+    fontSize: 12,
+    color: "#808080",
     marginLeft: 10,
   },
   inputContainer: {
