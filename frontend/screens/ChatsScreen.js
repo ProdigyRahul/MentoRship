@@ -193,7 +193,8 @@ const ChatsScreen = () => {
               )}
             </View>
           </Pressable>
-          <Pressable onPress={navigateToMentorRequest}>
+          {/* TODO: Search */}
+          <Pressable>
             <MaterialIcons name="search" size={24} color="white" />
           </Pressable>
         </View>
