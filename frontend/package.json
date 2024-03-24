@@ -31,6 +31,7 @@
     "react-native-flash-message": "^0.4.2",
     "react-native-modal": "^13.0.1",
     "react-native-reanimated": "^3.8.0",
+    "react-native-swipe-gestures": "^1.0.5",
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.0.3",
     "twrnc": "^4.1.0"

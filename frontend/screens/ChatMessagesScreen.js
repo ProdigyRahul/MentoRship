@@ -17,6 +17,9 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import GestureRecognizer, {
+  swipeDirections,
+} from "react-native-swipe-gestures";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -41,6 +44,8 @@ const ChatMessagesScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(true);
   const [lastSeen, setLastSeen] = useState(null);
+  const [myText, setMyText] = useState("I'm ready to get swiped!");
+  const [gestureName, setGestureName] = useState("none");
 
   useEffect(() => {
     setTimeout(() => {
@@ -83,6 +88,19 @@ const ChatMessagesScreen = () => {
       console.log("error fetching messages", error);
     }
   };
+
+  const onSwipeLeft = () => {
+    navigation.navigate("Chat");
+  };
+  const onSwipeRight = () => {
+    navigation.goBack();
+  };
+
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 20,
+  };
+  const onSwipe = (gestureName) => {};
 
   // TODO: Remove Comments
   // useEffect(() => {
@@ -391,184 +409,197 @@ const ChatMessagesScreen = () => {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
-      <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
-        <View style={styles.userInfo}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <FontAwesome name="angle-left" size={30} color="black" />
-          </Pressable>
+    <GestureRecognizer
+      onSwipe={(direction) => onSwipe(direction)}
+      onSwipeLeft={onSwipeLeft}
+      onSwipeRight={onSwipeRight}
+      config={config}
+      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+    >
+      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <StatusBar barStyle="dark-content" />
+        <View style={styles.header}>
+          <View style={styles.userInfo}>
+            <Pressable onPress={() => navigation.goBack()}>
+              <FontAwesome name="angle-left" size={30} color="black" />
+            </Pressable>
 
-          <Image
-            style={styles.userImage}
-            source={{ uri: recepientData?.image }}
-          />
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.userName}>{recepientData?.name}</Text>
-            <Text style={styles.lastSeenText}>
-              {lastSeen
-                ? lastSeen === "Online"
-                  ? "Online"
-                  : `Last Seen: ${lastSeen}`
-                : ""}
-            </Text>
+            <Image
+              style={styles.userImage}
+              source={{ uri: recepientData?.image }}
+            />
+            <View style={{ flexDirection: "column" }}>
+              <Text style={styles.userName}>{recepientData?.name}</Text>
+              <Text style={styles.lastSeenText}>
+                {lastSeen
+                  ? lastSeen === "Online"
+                    ? "Online"
+                    : `Last Seen: ${lastSeen}`
+                  : ""}
+              </Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Pressable
+              onPress={() => console.log("Call")}
+              style={{ marginRight: 10 }}
+            >
+              <MaterialCommunityIcons name="phone" size={24} color="black" />
+            </Pressable>
+            <Pressable onPress={() => console.log("More options")}>
+              <Entypo name="dots-three-vertical" size={24} color="black" />
+            </Pressable>
           </View>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Pressable
-            onPress={() => console.log("Call")}
-            style={{ marginRight: 10 }}
-          >
-            <MaterialCommunityIcons name="phone" size={24} color="black" />
-          </Pressable>
-          <Pressable onPress={() => console.log("More options")}>
-            <Entypo name="dots-three-vertical" size={24} color="black" />
-          </Pressable>
-        </View>
-      </View>
-      <ScrollView
-        ref={scrollViewRef}
-        contentContainerStyle={{ flexGrow: 1 }}
-        onContentSizeChange={handleContentSizeChange}
-      >
-        {messages.map((item, index) => {
-          if (item.messageType === "text") {
-            const isSelected = selectedMessages.includes(item._id);
-            return (
-              <Pressable
-                onLongPress={() => handleSelectMessage(item)}
-                key={index}
-                style={[
-                  item?.senderId?._id === userId
-                    ? {
-                        alignSelf: "flex-end",
-                        backgroundColor: "#0077FF",
-                        padding: 8,
-                        maxWidth: "60%",
-                        borderRadius: 10,
-                        margin: 10,
-                      }
-                    : {
-                        alignSelf: "flex-start",
-                        backgroundColor: "#E8F0FE",
-                        padding: 8,
-                        margin: 10,
-                        borderRadius: 10,
-                        maxWidth: "60%",
-                      },
-                  isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: isSelected
-                      ? "#FFFFFF"
-                      : item?.senderId?._id === userId
-                      ? "#FFFFFF"
-                      : "#000000",
-                    textAlign: isSelected ? "right" : "left",
-                  }}
-                >
-                  {item?.message}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 5,
-                  }}
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={{ flexGrow: 1 }}
+          onContentSizeChange={handleContentSizeChange}
+        >
+          {messages.map((item, index) => {
+            if (item.messageType === "text") {
+              const isSelected = selectedMessages.includes(item._id);
+              return (
+                <Pressable
+                  onLongPress={() => handleSelectMessage(item)}
+                  key={index}
+                  style={[
+                    item?.senderId?._id === userId
+                      ? {
+                          alignSelf: "flex-end",
+                          backgroundColor: "#0077FF",
+                          padding: 8,
+                          maxWidth: "60%",
+                          borderRadius: 10,
+                          margin: 10,
+                        }
+                      : {
+                          alignSelf: "flex-start",
+                          backgroundColor: "#E8F0FE",
+                          padding: 8,
+                          margin: 10,
+                          borderRadius: 10,
+                          maxWidth: "60%",
+                        },
+                    isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
+                  ]}
                 >
                   <Text
                     style={{
-                      fontSize: 12,
+                      fontSize: 16,
                       color: isSelected
                         ? "#FFFFFF"
                         : item?.senderId?._id === userId
                         ? "#FFFFFF"
-                        : "#808080",
-                      marginRight: 5,
+                        : "#000000",
+                      textAlign: isSelected ? "right" : "left",
                     }}
                   >
-                    {formatTime(item.timeStamp)}
+                    {item?.message}
                   </Text>
-                  {renderMessageStatus(item)}
-                </View>
-              </Pressable>
-            );
-          }
-        })}
-      </ScrollView>
-
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-          borderTopWidth: 1,
-          borderTopColor: "#CCCCCC",
-          marginBottom: showEmojiSelector ? 0 : 25,
-        }}
-      >
-        <Entypo
-          onPress={handleEmojiPress}
-          style={{ marginRight: 5 }}
-          name="emoji-happy"
-          size={24}
-          color="#0077FF"
-        />
-
-        <TextInput
-          value={message}
-          onChangeText={(text) => setMessage(text)}
-          style={{
-            flex: 1,
-            height: 40,
-            borderWidth: 1,
-            borderColor: "#CCCCCC",
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            color: "#000000",
-          }}
-          placeholder="Type Your message..."
-          placeholderTextColor="#A9A9A9"
-        />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: isSelected
+                          ? "#FFFFFF"
+                          : item?.senderId?._id === userId
+                          ? "#FFFFFF"
+                          : "#808080",
+                        marginRight: 5,
+                      }}
+                    >
+                      {formatTime(item.timeStamp)}
+                    </Text>
+                    {renderMessageStatus(item)}
+                  </View>
+                </Pressable>
+              );
+            }
+          })}
+        </ScrollView>
 
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            gap: 7,
-            marginHorizontal: 8,
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            borderTopWidth: 1,
+            borderTopColor: "#CCCCCC",
+            marginBottom: showEmojiSelector ? 0 : 25,
           }}
         >
-          <Entypo onPress={pickImage} name="camera" size={24} color="#0077FF" />
-          <Feather name="mic" size={24} color="#0077FF" />
+          <Entypo
+            onPress={handleEmojiPress}
+            style={{ marginRight: 5 }}
+            name="emoji-happy"
+            size={24}
+            color="#0077FF"
+          />
+
+          <TextInput
+            value={message}
+            onChangeText={(text) => setMessage(text)}
+            style={{
+              flex: 1,
+              height: 40,
+              borderWidth: 1,
+              borderColor: "#CCCCCC",
+              borderRadius: 20,
+              paddingHorizontal: 10,
+              color: "#000000",
+            }}
+            placeholder="Type Your message..."
+            placeholderTextColor="#A9A9A9"
+          />
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 7,
+              marginHorizontal: 8,
+            }}
+          >
+            <Entypo
+              onPress={pickImage}
+              name="camera"
+              size={24}
+              color="#0077FF"
+            />
+            <Feather name="mic" size={24} color="#0077FF" />
+          </View>
+
+          <Pressable
+            onPress={() => handleSend("text")}
+            style={{
+              backgroundColor: "#0077FF",
+              paddingVertical: 8,
+              paddingHorizontal: 12,
+              borderRadius: 20,
+            }}
+          >
+            <Text style={{ color: "#FFFFFF", fontWeight: "bold" }}>Send</Text>
+          </Pressable>
         </View>
 
-        <Pressable
-          onPress={() => handleSend("text")}
-          style={{
-            backgroundColor: "#0077FF",
-            paddingVertical: 8,
-            paddingHorizontal: 12,
-            borderRadius: 20,
-          }}
-        >
-          <Text style={{ color: "#FFFFFF", fontWeight: "bold" }}>Send</Text>
-        </Pressable>
-      </View>
-
-      {showEmojiSelector && (
-        <EmojiSelector
-          onEmojiSelected={(emoji) => {
-            setMessage((prevMessage) => prevMessage + emoji);
-          }}
-          style={{ height: 250 }}
-        />
-      )}
-    </KeyboardAvoidingView>
+        {showEmojiSelector && (
+          <EmojiSelector
+            onEmojiSelected={(emoji) => {
+              setMessage((prevMessage) => prevMessage + emoji);
+            }}
+            style={{ height: 250 }}
+          />
+        )}
+      </KeyboardAvoidingView>
+    </GestureRecognizer>
   );
 };
 
