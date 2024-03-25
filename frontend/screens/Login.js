@@ -33,35 +33,41 @@ export default function Login({ navigation }) {
       autoHide: true,
     });
   };
-
   const handleLogin = async () => {
     setLoading(true);
     const user = {
       email: email,
       password: password,
     };
-    axios
-      .post(`http://172.20.10.3:8080/login`, user)
-      .then((response) => {
-        console.log(response);
-        const token = response.data.token;
-        AsyncStorage.setItem("authToken", token);
+    try {
+      const response = await axios.post(`http://172.20.10.3:8080/login`, user);
+      console.log(response);
+      const token = response.data.token;
+      // Save token to AsyncStorage
+      await AsyncStorage.setItem("authToken", token);
 
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
-        setUserId(userId);
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.userId;
+
+      // Save userId to AsyncStorage after stringifying
+      await AsyncStorage.setItem("userId", JSON.stringify(userId));
+
+      // Check if the user is onboarded
+      const onboarded = response.data.onboarded;
+      if (onboarded) {
+        navigation.navigate("Chat");
+      } else {
         showToast();
         setTimeout(() => {
-          navigation.navigate("Chat");
+          navigation.navigate("Welcome");
         }, 1000);
-      })
-      .catch((error) => {
-        Alert.alert("Login Error", "Invalid Email or Password");
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      }
+    } catch (error) {
+      Alert.alert("Login Error", "Invalid Email or Password");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignup = () => {
