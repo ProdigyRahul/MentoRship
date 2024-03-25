@@ -1,32 +1,28 @@
 import AppIntroSlider from "react-native-app-intro-slider";
 import { SIZES } from "../constants/theme";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Image, SafeAreaView, TouchableOpacity } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserType } from "../UserContext";
 import tw from "twrnc";
 
 export default function Onboarding({ navigation }) {
-  const { userId, setUserId } = useContext(UserType);
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        const userId = await AsyncStorage.getItem("userId");
-        if (token && userId) {
-          // Update UserContext with userId if available
-          setUserId(userId);
-          navigation.replace("Chat");
-        } else {
-          // Token Not Found
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    checkLoginStatus();
-  }, []);
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem("authToken");
+  //       if (token) {
+  //         navigation.navigate("Chat");
+  //       } else {
+  //         // Nothing to do here
+  //         // Token not found
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   checkLoginStatus();
+  // }, []);
   const handleGetStarted = () => {
     navigation.navigate("Signup");
   };

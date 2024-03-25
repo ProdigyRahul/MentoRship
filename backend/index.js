@@ -114,13 +114,8 @@ app.post("/login", async (req, res) => {
       return res.status(404).json({ message: "Invalid Password!" });
     }
 
-    // Check if the user is onboarded
-    const onboarded = user.Onboarded;
-
-    // Generate token with onboarded status
-    const token = createToken({ userId: user._id, onboarded });
-
-    res.status(200).json({ token, onboarded });
+    const token = createToken(user._id);
+    res.status(200).json({ token });
   } catch (error) {
     console.log("Error in finding the user", error);
     res.status(500).json({ message: "Internal server Error!" });
@@ -482,6 +477,65 @@ app.post("/onboarding/v1", async (req, res) => {
     res.status(500).json({ message: "Error onboarding user" });
   }
 });
+// Onboarding/v1 API endpoint for welcome.js
+app.post("/onboarding/v1", async (req, res) => {
+  try {
+    // Extract user data and userId from request body
+    const {
+      userId,
+      First_Name,
+      Last_Name,
+      Pronoun,
+      Gender,
+      Race,
+      Country,
+      State,
+      City,
+      Role,
+      Student,
+      Mentor,
+    } = req.body;
+
+    // Validate required fields
+    if (!userId || !First_Name || !Last_Name || !Pronoun || !Gender || !Role) {
+      return res.status(400).json({
+        message:
+          "userId, First_Name, Last_Name, Pronoun, Gender, Role, Student, and Mentor are required fields.",
+      });
+    }
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user data with the provided fields
+    user.First_Name = First_Name;
+    user.Last_Name = Last_Name;
+    user.Pronoun = Pronoun;
+    user.Gender = Gender;
+    user.Race = Race;
+    user.Country = Country;
+    user.State = State;
+    user.City = City;
+    user.Role = Role;
+    user.Student = Student;
+    user.Mentor = Mentor;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "User onboarded successfully", user });
+  } catch (err) {
+    console.log("Error onboarding user", err);
+    res.status(500).json({ message: "Error onboarding user" });
+  }
+});
+
 // Endpoint to handle onboarding v2 data
 app.post("/onboarding/v2", async (req, res) => {
   try {
