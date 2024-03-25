@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Community from "../screens/Community";
 import Profile from "../screens/Profile";
-import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome icons
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import ChatsScreen from "../screens/ChatsScreen";
 
 const Tab = createBottomTabNavigator();
@@ -11,6 +11,9 @@ const Tab = createBottomTabNavigator();
 const TabsWrapper = ({ navigation, route }) => {
   const { name } = route;
 
+  const handlePlusButton = () => {
+    navigation.navigate("Explore");
+  };
   return (
     <View style={{ flex: 1 }}>
       <Tab.Navigator
@@ -103,6 +106,9 @@ const TabsWrapper = ({ navigation, route }) => {
           }}
         />
       </Tab.Navigator>
+      <TouchableOpacity style={styles.addButton} onPress={handlePlusButton}>
+        <AntDesign name="plus" size={27} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -123,5 +129,17 @@ const styles = StyleSheet.create({
   tabItem: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 100,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#5DC8D7",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
   },
 });

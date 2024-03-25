@@ -12,7 +12,7 @@ export default function Onboarding({ navigation }) {
   //     try {
   //       const token = await AsyncStorage.getItem("authToken");
   //       if (token) {
-  //         navigation.navigate("Home");
+  //         navigation.navigate("Chat");
   //       } else {
   //         // Nothing to do here
   //         // Token not found

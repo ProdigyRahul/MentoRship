@@ -50,17 +50,14 @@ const User = ({ item }) => {
     fetchUserFriends();
   }, []);
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
-    try { 
-      const response = await fetch(
-        "http://172.20.10.3:8080/friend-request",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ currentUserId, selectedUserId }),
-        }
-      );
+    try {
+      const response = await fetch("http://172.20.10.3:8080/friend-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ currentUserId, selectedUserId }),
+      });
 
       if (response.ok) {
         setRequestSent(true);
@@ -99,7 +96,7 @@ const User = ({ item }) => {
             borderRadius: 6,
           }}
         >
-          <Text style={{ textAlign: "center", color: "white" }}>Friends</Text>
+          <Text style={{ textAlign: "center", color: "white" }}>Message</Text>
         </Pressable>
       ) : requestSent ||
         friendRequests.some((friend) => friend._id === item._id) ? (

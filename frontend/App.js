@@ -53,10 +53,18 @@ function App() {
               name="MentorRequest"
               component={MentorRequestScreen}
             />
-            <Stack.Screen name="Chat" component={TabsWrapper} />
+            <Stack.Screen
+              name="Chat"
+              component={TabsWrapper}
+              options={{ animation: "slide_from_left" }}
+            />
             <Stack.Screen name="Community" component={TabsWrapper} />
             <Stack.Screen name="Profile" component={TabsWrapper} />
-            <Stack.Screen name="Messages" component={ChatMessagesScreen} />
+            <Stack.Screen
+              name="Messages"
+              component={ChatMessagesScreen}
+              options={{ animation: "slide_from_right" }}
+            />
             <Stack.Screen name="Explore" component={Explore} />
           </Stack.Navigator>
         </NavigationContainer>

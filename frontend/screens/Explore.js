@@ -66,14 +66,6 @@ export default function Explore({ navigation }) {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={navigateToMentorRequest}
-        >
-          <Text style={styles.buttonText}>Dont touch</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
