@@ -371,7 +371,9 @@ export default function Education({ navigation }) {
           {/* Grade Year */}
           {showGradeYear && (
             <View>
-              <Text style={{ marginTop: 15, fontWeight: 300 }}>Grade Year</Text>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Starting Year
+              </Text>
               <View
                 style={{
                   backgroundColor: "#F1F1F3",
