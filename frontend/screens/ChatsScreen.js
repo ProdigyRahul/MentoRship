@@ -145,7 +145,7 @@ const ChatsScreen = () => {
           justifyContent: "space-between",
           alignItems: "center",
           paddingHorizontal: 20,
-          marginTop: 37,
+          marginTop: 45,
         }}
       >
         <Text
