@@ -684,7 +684,7 @@ app.get("/user-details/:userId", async (req, res) => {
 });
 
 // Endpoint to update user details
-app.put("/user-details/:userId", async (req, res) => {
+app.put("/user-update/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 

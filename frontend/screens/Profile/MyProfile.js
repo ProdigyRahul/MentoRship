@@ -132,7 +132,6 @@ export default function MyProfile() {
   useEffect(() => {
     fetchProfileData();
   }, []);
-
   const fetchProfileData = async () => {
     try {
       const response = await fetch(
@@ -175,29 +174,6 @@ export default function MyProfile() {
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
-      // Handle error
-    }
-  };
-  const updateProfile = async () => {
-    try {
-      const response = await fetch(
-        `http://172.20.10.3:8080/user-details/${userId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(profileData),
-        }
-      );
-      if (response.ok) {
-        console.log("Successfully updated profile!");
-      } else {
-        console.error("Failed to update profile:", response.status);
-        // Handle error
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
       // Handle error
     }
   };
@@ -260,20 +236,64 @@ export default function MyProfile() {
                 Basic Details
               </Text>
             </View>
-            <View style={{ alignItems: "center", marginTop: 0 }}>
-              <Image
-                source={{ uri: profileData.image }}
-                style={{ width: 100, height: 100, borderRadius: 75 }}
-              />
-            </View>
-            <Text
+            <View
               style={{
-                marginTop: 20,
-                marginLeft: 30,
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 10,
+                marginLeft: 20,
               }}
             >
-              Update Profile Photo
-            </Text>
+              <View style={{ position: "relative" }}>
+                {profileData.image ? (
+                  <Image
+                    source={{ uri: profileData.image }}
+                    style={{ width: 70, height: 70, borderRadius: 75 }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: 70,
+                      height: 70,
+                      borderRadius: 75,
+                      backgroundColor: "#CCCCCC",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text>No Image</Text>
+                  </View>
+                )}
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    bottom: -5,
+                    left: 50,
+                    padding: 4,
+                  }}
+                  onPress={() => console.log("Update photo")}
+                >
+                  <Icon name="edit" size={20} color="black" />
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  width: "70%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  borderColor: "#D9D9D9",
+                  borderWidth: 1,
+                  marginHorizontal: 20,
+                }}
+                value={profileData.name}
+                onChangeText={(text) => handleInputChange("name", text)}
+                placeholder="Name"
+                placeholderTextColor="#A9A9A9"
+              />
+            </View>
             <Text
               style={{
                 marginTop: 10,
@@ -820,49 +840,67 @@ export default function MyProfile() {
                 style={{
                   width: 150,
                   height: 60,
-                  backgroundColor: "#fff",
+                  backgroundColor: profileData.student ? "#3498DB" : "#fff", // Highlight blue if student
                   borderRadius: 10,
                   justifyContent: "center",
                   alignItems: "center",
-
                   borderWidth: 0.7,
                   shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.25,
                   shadowRadius: 3.84,
                   elevation: 5,
                 }}
+                onPress={() => {
+                  setProfileData({
+                    ...profileData,
+                    student: true,
+                    workingProfessional: false,
+                  });
+                }}
               >
-                <Icon name="book" size={20} color="#000" />
-                <Text style={{ color: "#000" }}>Student</Text>
+                <Icon
+                  name="book"
+                  size={20}
+                  color={profileData.student ? "#fff" : "#000"}
+                />
+                <Text style={{ color: profileData.student ? "#fff" : "#000" }}>
+                  Student
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
                   width: 150,
                   height: 60,
-                  backgroundColor: "#fff",
+                  backgroundColor: profileData.workingProfessional
+                    ? "#3498DB"
+                    : "#fff", // Highlight blue if working professional
                   borderRadius: 10,
                   justifyContent: "center",
                   alignItems: "center",
-
                   borderWidth: 0.7,
                   shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.25,
                   shadowRadius: 3.84,
                   elevation: 5,
                 }}
+                onPress={() => {
+                  setProfileData({
+                    ...profileData,
+                    student: false,
+                    workingProfessional: true,
+                  });
+                }}
               >
-                <Icon name="briefcase" size={20} color="#000" />
+                <Icon
+                  name="briefcase"
+                  size={20}
+                  color={profileData.workingProfessional ? "#fff" : "#000"}
+                />
                 <Text
                   style={{
-                    color: "#000",
+                    color: profileData.workingProfessional ? "#fff" : "#000",
                   }}
                 >
                   Working professional
