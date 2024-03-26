@@ -215,7 +215,7 @@ export default function MyProfile() {
           >
             <TouchableOpacity>
               <Image
-                source={require("../assets/LinkedIn.png")}
+                source={require("../../assets/LinkedIn.png")}
                 style={{
                   height: 50,
                   width: 50,
@@ -224,7 +224,7 @@ export default function MyProfile() {
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                source={require("../assets/instagram.png")}
+                source={require("../../assets/instagram.png")}
                 style={{
                   height: 50,
                   width: 50,
@@ -233,7 +233,7 @@ export default function MyProfile() {
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                source={require("../assets/fb.png")}
+                source={require("../../assets/fb.png")}
                 style={{
                   height: 50,
                   width: 50,
@@ -242,7 +242,7 @@ export default function MyProfile() {
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                source={require("../assets/twitter.png")}
+                source={require("../../assets/twitter.png")}
                 style={{
                   height: 50,
                   width: 50,
