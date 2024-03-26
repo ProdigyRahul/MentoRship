@@ -52,7 +52,6 @@ export default function Education({ navigation }) {
       { length: endYear - startYear + 1 },
       (_, index) => endYear - index
     );
-    console.log("Grade Year:", gradeYear);
   }, []);
   const handleMajor = (Major) => {
     setMajor(Major);

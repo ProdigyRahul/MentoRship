@@ -739,3 +739,30 @@ app.put("/user-details/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// New endpoint to set onboarded status for a user
+app.post("/onboarded/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Set Onboarded field to true
+    user.Onboarded = true;
+
+    // Save the updated user to the database
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "User onboarded successfully" });
+  } catch (error) {
+    console.log("Error onboarding user", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});

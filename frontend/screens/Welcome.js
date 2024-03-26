@@ -241,20 +241,31 @@ export default function Welcome({ navigation }) {
       State: stateName,
       City: cityName,
       Role: selectedRole,
-      Student: selectedRole === "findMentor",
-      Mentor: selectedRole === "mentorOther",
+      Student: selectedParticipation === "findMentor",
+      Mentor: selectedParticipation === "mentorOther",
     };
     try {
-      // Send user data to backend
-      const response = await axios.post(
-        "http://172.20.10.3:8080/onboarding/v1",
+      // Send user data to backend for first API call
+      const response1 = await axios.post(
+        `http://172.20.10.3:8080/onboarding/v1`,
         userData
       );
 
-      // Check response and navigate if successful
-      if (response.status === 200) {
-        console.log("Successfully sent user data to backend");
-        navigation.navigate("Education");
+      // Check response and proceed if successful
+      if (response1.status === 200) {
+        console.log("Successfully sent user data to onboarded/v1 API");
+        // Send user data to backend for second API call
+        const response2 = await axios.post(
+          `http://172.20.10.3:8080/onboarded/${userId}`
+        );
+
+        // Check response and navigate if successful
+        if (response2.status === 200) {
+          console.log("Successfully set onboarded status for user");
+          navigation.navigate("Education");
+        } else {
+          Alert.alert("Error", "Failed to set onboarded status for user");
+        }
       } else {
         Alert.alert("Error", "Failed to onboard user");
       }
