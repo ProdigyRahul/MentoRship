@@ -647,3 +647,95 @@ app.get("/user-onboarded/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// Endpoint to fetch user details
+app.get("/user-details/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch user data from the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user data
+    res.status(200).json({
+      name: user.name,
+      image: user.image,
+      headline: user.Headline,
+      country: user.Country,
+      state: user.State,
+      city: user.City,
+      gender: user.Gender,
+      raceEthnicity: user.Race,
+      role: user.Role,
+      education: user.Education,
+      experience: user.Experience,
+      careerGoals: user.Career_Goals,
+      student: user.Student,
+      workingProfessional: user.Mentor,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to update user details
+app.put("/user-details/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch user data from the database
+    let user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user details based on request body
+    const {
+      image,
+      headline,
+      country,
+      state,
+      city,
+      gender,
+      raceEthnicity,
+      role,
+      education,
+      experience,
+      careerGoals,
+      student,
+      workingProfessional,
+    } = req.body;
+
+    // Update user object
+    user.image = image || user.image;
+    user.Headline = headline || user.Headline;
+    user.Country = country || user.Country;
+    user.State = state || user.State;
+    user.City = city || user.City;
+    user.Gender = gender || user.Gender;
+    user.Race = raceEthnicity || user.Race;
+    user.Role = role || user.Role;
+    user.Education = education || user.Education;
+    user.Experience = experience || user.Experience;
+    user.Career_Goals = careerGoals || user.Career_Goals;
+    user.Student = student || user.Student;
+    user.Mentor = workingProfessional || user.Mentor;
+
+    // Save the updated user to the database
+    user = await user.save();
+
+    // Return success response
+    res
+      .status(200)
+      .json({ message: "User details updated successfully", user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
