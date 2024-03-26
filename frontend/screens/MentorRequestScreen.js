@@ -13,6 +13,9 @@ import MentorRequest from "../components/MentorRequest";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import GestureRecognizer, {
+  swipeDirections,
+} from "react-native-swipe-gestures";
 
 const MentorRequestScreen = () => {
   const { userId, setUserId } = useContext(UserType);
@@ -50,6 +53,15 @@ const MentorRequestScreen = () => {
     navigation.goBack();
   };
 
+  const onSwipeRight = () => {
+    navigation.goBack();
+  };
+
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 20,
+  };
+  const onSwipe = (gestureName) => {};
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -59,58 +71,65 @@ const MentorRequestScreen = () => {
     );
   }
   return (
-    <LinearGradient
-      colors={["#000000", "#007CB0"]}
-      style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      locations={[0.3, 1]}
+    <GestureRecognizer
+      onSwipe={(direction) => onSwipe(direction)}
+      onSwipeRight={onSwipeRight}
+      config={config}
+      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
-      <StatusBar barStyle="white-content" />
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          marginTop: 37,
-        }}
+      <LinearGradient
+        colors={["#000000", "#007CB0"]}
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        locations={[0.3, 1]}
       >
-        <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
-          <MaterialIcons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-        <Text
+        <StatusBar barStyle="white-content" />
+        <View
           style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "#FFFFFF",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            marginTop: 37,
           }}
         >
-          Notifications
-        </Text>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          borderTopStartRadius: 50,
-          borderTopEndRadius: 50,
-          backgroundColor: "#FFFFFF",
-          marginTop: 20,
-        }}
-      >
-        <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
-          {friendRequests.length > 0}
-
-          {friendRequests.map((item, index) => (
-            <MentorRequest
-              key={index}
-              item={item}
-              friendRequests={friendRequests}
-              setFriendRequests={setFriendRequests}
-            />
-          ))}
+          <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+            }}
+          >
+            Notifications
+          </Text>
         </View>
-      </View>
-    </LinearGradient>
+        <View
+          style={{
+            flex: 1,
+            borderTopStartRadius: 50,
+            borderTopEndRadius: 50,
+            backgroundColor: "#FFFFFF",
+            marginTop: 20,
+          }}
+        >
+          <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
+            {friendRequests.length > 0}
+
+            {friendRequests.map((item, index) => (
+              <MentorRequest
+                key={index}
+                item={item}
+                friendRequests={friendRequests}
+                setFriendRequests={setFriendRequests}
+              />
+            ))}
+          </View>
+        </View>
+      </LinearGradient>
+    </GestureRecognizer>
   );
 };
 

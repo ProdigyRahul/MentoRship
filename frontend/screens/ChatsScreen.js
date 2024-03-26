@@ -124,10 +124,16 @@ const ChatsScreen = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#000000" />
-        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
-      </View>
+      <LinearGradient
+        colors={["#000000", "#007CB0"]}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        locations={[0.3, 1]}
+      >
+        <ActivityIndicator size="large" color="#FFFFFF" />
+        <Text style={{ marginTop: 10, color: "#FFFFFF" }}>Please wait...</Text>
+      </LinearGradient>
     );
   }
   return (
@@ -145,7 +151,7 @@ const ChatsScreen = () => {
           justifyContent: "space-between",
           alignItems: "center",
           paddingHorizontal: 20,
-          marginTop: 37,
+          marginTop: 45,
         }}
       >
         <Text

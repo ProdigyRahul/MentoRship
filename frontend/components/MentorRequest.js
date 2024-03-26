@@ -26,7 +26,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
         setFriendRequests(
           friendRequests.filter((request) => request._id !== friendRequestId)
         );
-        navigation.navigate("Home");
+        navigation.navigate("Chat");
       }
     } catch (err) {
       console.log("error acceptin the friend request", err);

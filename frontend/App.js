@@ -15,6 +15,7 @@ import MentorRequestScreen from "./screens/MentorRequestScreen";
 import TabsWrapper from "./navigation/TabsWrapper";
 import ChatMessagesScreen from "./screens/ChatMessagesScreen";
 import Explore from "./screens/Explore";
+import MyProfile from "./screens/Profile/MyProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,7 @@ function App() {
               options={{ animation: "slide_from_right" }}
             />
             <Stack.Screen name="Explore" component={Explore} />
+            <Stack.Screen name="MyProfile" component={MyProfile} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>
