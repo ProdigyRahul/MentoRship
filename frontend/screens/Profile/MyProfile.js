@@ -215,7 +215,7 @@ export default function MyProfile() {
           >
             <TouchableOpacity>
               <Image
-                source={require("../assets/linkedIn.png")}
+                source={require("../assets/LinkedIn.png")}
                 style={{
                   height: 50,
                   width: 50,
