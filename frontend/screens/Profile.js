@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -17,6 +18,7 @@ import logo from "../assets/Logo.png";
 export default function Profile({ navigation }) {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { userId } = useContext(UserType);
   useEffect(() => {
@@ -30,17 +32,26 @@ export default function Profile({ navigation }) {
 
           setUserData(data);
           setLoading(false);
+          setRefreshing(false);
         }, 500);
       } catch (error) {
         console.error("Error fetching user data:", error);
+        setRefreshing(false);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [refreshing]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+  };
 
   const navigateMyProfile = () => {
     navigation.navigate("MyProfile");
+  };
+  const navigateMyConnection = () => {
+    navigation.navigate("MyConnection");
   };
   const handleLogout = async () => {
     // Clear AsyncStorage
@@ -124,6 +135,12 @@ export default function Profile({ navigation }) {
               </View>
 
               <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
                 vertical={true}
                 style={{
                   flex: 1,
@@ -171,6 +188,7 @@ export default function Profile({ navigation }) {
                     flexDirection: "row",
                     alignItems: "center",
                   }}
+                  onPress={navigateMyConnection}
                 >
                   <FontAwesome5 name="users" size={16} color="#000" />
                   <Text

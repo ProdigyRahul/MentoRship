@@ -9,7 +9,6 @@ const app = express();
 const morgan = require("morgan");
 const port = 8080;
 const cors = require("cors");
-const router = express.Router();
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -51,6 +50,7 @@ app.listen(port, () => {
 
 const User = require("./models/user");
 const Message = require("./models/message");
+const GroupSession = require("./models/session");
 
 //endpoint for registration of the user
 
@@ -764,5 +764,195 @@ app.post("/onboarded/:userId", async (req, res) => {
   } catch (error) {
     console.log("Error onboarding user", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to create a new session
+app.post("/create-session", async (req, res) => {
+  const {
+    createdBy,
+    sessionName,
+    description,
+    careerGoals,
+    public,
+    banner,
+    bannerAltText,
+    date,
+    time,
+    duration,
+  } = req.body;
+  try {
+    // Save session to database
+    const newSession = new GroupSession({
+      createdBy,
+      sessionName,
+      description,
+      careerGoals,
+      public,
+      banner,
+      bannerAltText,
+      date,
+      time,
+      duration,
+    });
+    const savedSession = await newSession.save();
+    res.status(201).json(savedSession);
+  } catch (error) {
+    console.error("Error creating session:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+// Endpoint to invite friends
+app.post("/invite-friends/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+  const { invitedFriends } = req.body;
+  try {
+    // Fetch session by ID
+    const session = await GroupSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Ensure invitedFriends is an array
+    if (!Array.isArray(invitedFriends)) {
+      return res
+        .status(400)
+        .json({ message: "Invited friends should be an array" });
+    }
+
+    // Add invited friends as attendees to the session
+    for (const friendId of invitedFriends) {
+      const attendee = await User.findById(friendId);
+      if (attendee) {
+        session.attendees.push({
+          userId: attendee._id,
+          name: attendee.name,
+          image: attendee.image,
+        });
+      }
+    }
+
+    // Save the updated session
+    await session.save();
+
+    res.status(200).json({ message: "Friends invited successfully" });
+  } catch (error) {
+    console.error("Error inviting friends:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to upload session banner and alt text
+app.post("/upload-banner/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+  const { bannerUrl, bannerAltText } = req.body;
+  try {
+    // Fetch session by ID
+    const session = await GroupSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Update session banner and alt text
+    session.banner = bannerUrl;
+    session.bannerAltText = bannerAltText;
+    await session.save();
+    res.status(200).json({ message: "Banner uploaded successfully" });
+  } catch (error) {
+    console.error("Error uploading banner:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to select schedule
+app.post("/select-schedule/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+  const { date, time, duration } = req.body;
+  try {
+    // Fetch session by ID
+    const session = await GroupSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Update session schedule
+    session.date = date;
+    session.time = time;
+    session.duration = duration;
+    await session.save();
+    res.status(200).json({ message: "Schedule selected successfully" });
+  } catch (error) {
+    console.error("Error selecting schedule:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to fetch all friends of a user with their name, image, headline, and IDs
+app.get("/user-friends/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the user by userId and populate the friends field
+    const user = await User.findById(userId).populate(
+      "friends",
+      "name image Headline _id" // Include _id field for friend IDs
+    );
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Extract friend IDs only
+    const friendIds = user.friends.map((friend) => friend._id);
+    console.log("Friend IDs:", friendIds); // Log friend IDs
+
+    // Extract friend details (name, image, headline) from the populated friends array
+    const friends = user.friends.map((friend) => ({
+      name: friend.name,
+      image: friend.image,
+      headline: friend.Headline,
+    }));
+
+    res.status(200).json({ friends, friendIds }); // Return both friends and friendIds
+  } catch (error) {
+    console.log("Error fetching user friends:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to retrieve the public profile of a particular user
+app.get("/public-profile/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch user data from the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Extract required details from the user object
+    const publicProfile = {
+      name: user.name,
+      image: user.image,
+      headline: user.Headline,
+      areaOfInterest: user.areasOfInterest.map((interest) => interest.title),
+      careerGoals: user.Career_Goals,
+      education: user.Education,
+      country: user.Country,
+      state: user.State,
+      role: user.Role,
+      gradeYear: user.GradeYear,
+      major: user.Major,
+      degree: user.Degree,
+    };
+
+    // Return the public profile
+    res.status(200).json(publicProfile);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });

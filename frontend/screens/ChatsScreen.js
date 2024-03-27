@@ -8,6 +8,7 @@ import {
   StatusBar,
   Animated,
   Easing,
+  RefreshControl,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
@@ -22,6 +23,7 @@ const ChatsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
   const [animatedValue] = useState(new Animated.Value(0));
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -35,9 +37,11 @@ const ChatsScreen = () => {
         if (response.ok) {
           setAcceptedFriends(data);
           setLoading(false);
+          setRefreshing(false);
         }
       } catch (error) {
         console.log("error showing the accepted friends", error);
+        setRefreshing(false);
       }
     };
 
@@ -61,7 +65,11 @@ const ChatsScreen = () => {
 
     fetchAcceptedFriends();
     fetchPendingFriendRequests();
-  }, []);
+  }, [refreshing]);
+
+  const onRefresh = () => {
+    setRefreshing(true); // Turn on refreshing when pull down occurs
+  };
 
   const navigateToExplore = () => {
     navigation.navigate("Explore");
@@ -221,6 +229,9 @@ const ChatsScreen = () => {
           <View style={styles.borderLine}></View>
         </View>
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ alignItems: "center" }}
         >

@@ -16,6 +16,7 @@ import TabsWrapper from "./navigation/TabsWrapper";
 import ChatMessagesScreen from "./screens/ChatMessagesScreen";
 import Explore from "./screens/Explore";
 import MyProfile from "./screens/Profile/MyProfile";
+import MyConnections from "./screens/Profile/MyConnections";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +69,7 @@ function App() {
             />
             <Stack.Screen name="Explore" component={Explore} />
             <Stack.Screen name="MyProfile" component={MyProfile} />
+            <Stack.Screen name="MyConnection" component={MyConnections} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>
