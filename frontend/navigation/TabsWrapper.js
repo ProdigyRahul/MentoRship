@@ -1,5 +1,12 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Community from "../screens/Community";
 import Profile from "../screens/Profile";
@@ -8,12 +15,30 @@ import ChatsScreen from "../screens/ChatsScreen";
 
 const Tab = createBottomTabNavigator();
 
-const TabsWrapper = ({ navigation, route }) => {
-  const { name } = route;
+const TabsWrapper = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handlePlusButton = () => {
-    navigation.navigate("Explore");
+    setModalVisible(true);
   };
+
+  const handleMenuItemPress = (menuItem) => {
+    setModalVisible(false);
+    switch (menuItem) {
+      case "newConversation":
+        navigation.navigate("Explore");
+        break;
+      case "createGroupSession":
+        navigation.navigate("Session");
+        break;
+      case "createNewTopic":
+        navigation.navigate("Topics");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Tab.Navigator
@@ -47,14 +72,7 @@ const TabsWrapper = ({ navigation, route }) => {
                   size={26}
                   color={focused ? "#fff" : "#748c94"}
                 />
-                <Text
-                  style={{
-                    color: focused ? "#fff" : "#748c94",
-                    fontSize: 11,
-                  }}
-                >
-                  Home
-                </Text>
+                <Text style={styles.tabText}>Home</Text>
               </View>
             ),
           }}
@@ -70,14 +88,7 @@ const TabsWrapper = ({ navigation, route }) => {
                   size={26}
                   color={focused ? "#fff" : "#748c94"}
                 />
-                <Text
-                  style={{
-                    color: focused ? "#fff" : "#748c94",
-                    fontSize: 11,
-                  }}
-                >
-                  Community
-                </Text>
+                <Text style={styles.tabText}>Community</Text>
               </View>
             ),
           }}
@@ -93,14 +104,7 @@ const TabsWrapper = ({ navigation, route }) => {
                   size={26}
                   color={focused ? "#fff" : "#748c94"}
                 />
-                <Text
-                  style={{
-                    color: focused ? "#fff" : "#748c94",
-                    fontSize: 11,
-                  }}
-                >
-                  Profile
-                </Text>
+                <Text style={styles.tabText}>Profile</Text>
               </View>
             ),
           }}
@@ -109,6 +113,43 @@ const TabsWrapper = ({ navigation, route }) => {
       <TouchableOpacity style={styles.addButton} onPress={handlePlusButton}>
         <AntDesign name="plus" size={27} color="#fff" />
       </TouchableOpacity>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay} />
+        </TouchableWithoutFeedback>
+        <View style={styles.modalBottom}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => handleMenuItemPress("createGroupSession")}
+            >
+              <AntDesign name="camera" size={20} color="black" />
+              <Text style={styles.menuText}>Create New Group Session</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => handleMenuItemPress("createNewTopic")}
+            >
+              <FontAwesome name="hashtag" size={20} color="black" />
+              <Text style={styles.menuText}>Create New Topic</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => handleMenuItemPress("newConversation")}
+            >
+              <FontAwesome name="comments" size={20} color="black" />
+              <Text style={styles.menuText}>New Conversation</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -127,8 +168,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   tabItem: {
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+  },
+  tabText: {
+    color: "#748c94",
+    fontSize: 11,
   },
   addButton: {
     position: "absolute",
@@ -141,5 +187,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+  },
+  modalBottom: {
+    position: "absolute",
+    bottom: 150,
+    right: 15,
+    width: "100%",
+    alignItems: "center",
+  },
+  modalView: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    gap: 10,
+  },
+  menuText: {
+    marginLeft: 10,
+    fontSize: 16,
   },
 });

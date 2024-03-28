@@ -17,6 +17,9 @@ import ChatMessagesScreen from "./screens/ChatMessagesScreen";
 import Explore from "./screens/Explore";
 import MyProfile from "./screens/Profile/MyProfile";
 import MyConnections from "./screens/Profile/MyConnections";
+import MyEvents from "./screens/Profile/MyEvents";
+import CreateNewSession from "./screens/Sessions/CreateNewSession";
+import CreateNewTopic from "./screens/Topics/CreateNewTopic";
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +73,9 @@ function App() {
             <Stack.Screen name="Explore" component={Explore} />
             <Stack.Screen name="MyProfile" component={MyProfile} />
             <Stack.Screen name="MyConnection" component={MyConnections} />
+            <Stack.Screen name="MyEvents" component={MyEvents} />
+            <Stack.Screen name="Session" component={CreateNewSession} />
+            <Stack.Screen name="Topics" component={CreateNewTopic} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>

@@ -215,6 +215,9 @@ export default function Profile({ navigation }) {
                     flexDirection: "row",
                     alignItems: "center",
                   }}
+                  onPress={() => {
+                    navigation.navigate("MyEvents");
+                  }}
                 >
                   <FontAwesome5 name="calendar-alt" size={16} color="#000" />
                   <Text
@@ -325,14 +328,12 @@ export default function Profile({ navigation }) {
                 >
                   <Image
                     source={logo}
-                    style={{ width: 20, height: 20, marginRight: 10 }}
+                    style={{ width: 18, height: 18, marginRight: 9 }}
                   />
-                  {/* End of replacement */}
                   <Text
                     style={{
                       fontSize: 16,
                       textAlign: "left",
-                      marginLeft: 10,
                     }}
                   >
                     About MentoRship
