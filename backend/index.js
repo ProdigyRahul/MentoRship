@@ -769,18 +769,7 @@ app.post("/onboarded/:userId", async (req, res) => {
 
 // Endpoint to create a new session
 app.post("/create-session", async (req, res) => {
-  const {
-    createdBy,
-    sessionName,
-    description,
-    careerGoals,
-    public,
-    banner,
-    bannerAltText,
-    date,
-    time,
-    duration,
-  } = req.body;
+  const { createdBy, sessionName, description, careerGoals, public } = req.body;
   try {
     // Save session to database
     const newSession = new GroupSession({
@@ -789,11 +778,6 @@ app.post("/create-session", async (req, res) => {
       description,
       careerGoals,
       public,
-      banner,
-      bannerAltText,
-      date,
-      time,
-      duration,
     });
     const savedSession = await newSession.save();
     res.status(201).json(savedSession);
@@ -802,6 +786,7 @@ app.post("/create-session", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 // Endpoint to invite friends
 app.post("/invite-friends/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
