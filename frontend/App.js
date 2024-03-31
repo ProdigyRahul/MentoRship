@@ -23,6 +23,9 @@ import CreateNewTopic from "./screens/Topics/CreateNewTopic";
 import Password from "./screens/Profile/Password";
 import ChangePassword from "./screens/Profile/ChangePassword";
 import InviteParticipants from "./screens/Sessions/InviteParticipants";
+import SessionBanner from "./screens/Sessions/SessionBanner";
+import ScheduleSession from "./screens/Sessions/ScheduleSession";
+import Session from "./screens/Session";
 
 const Stack = createNativeStackNavigator();
 
@@ -93,6 +96,21 @@ function App() {
               name="InviteParticipants"
               component={InviteParticipants}
               options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="Banner"
+              component={SessionBanner}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="Schedule"
+              component={ScheduleSession}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="Sessions"
+              component={Session}
+              options={{ animation: "fade" }}
             />
           </Stack.Navigator>
         </NavigationContainer>

@@ -12,9 +12,30 @@ import {
   StatusBar,
   Image,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5"; // Changed import
+import Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "axios";
 import { UserType } from "../../UserContext";
+
+// Custom Checkbox Component
+const Checkbox = ({ checked, onPress }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: 4,
+          borderWidth: 1,
+          borderColor: checked ? "#09A1F6" : "#000000",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {checked && <Icon name="check" size={15} color="#09A1F6" />}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const NavigationLine = ({ active }) => (
   <View
@@ -45,6 +66,11 @@ export default function InviteParticipants({ navigation }) {
         `http://172.20.10.3:8080/user-friends/${userId}`
       );
       const { friends } = response.data;
+      const initialSelected = friends.reduce((acc, friend) => {
+        acc[friend._id] = false;
+        return acc;
+      }, {});
+      setSelectedFriends(initialSelected);
       setFriends(friends);
     } catch (error) {
       console.error("Error fetching friends:", error);
@@ -61,6 +87,15 @@ export default function InviteParticipants({ navigation }) {
     }));
   };
 
+  const toggleSelectAll = () => {
+    const allSelected = Object.values(selectedFriends).every((val) => val);
+    const updatedSelectedFriends = {};
+    Object.keys(selectedFriends).forEach((key) => {
+      updatedSelectedFriends[key] = !allSelected;
+    });
+    setSelectedFriends(updatedSelectedFriends);
+  };
+
   const handleInvite = async () => {
     setLoading(true);
     try {
@@ -73,6 +108,7 @@ export default function InviteParticipants({ navigation }) {
         { invitedFriends }
       );
       console.log("Successs");
+      navigation.navigate("Banner");
     } catch (error) {
       console.error("Error inviting friends:", error);
       Alert.alert("Error", "Failed to invite friends. Please try again.");
@@ -152,6 +188,15 @@ export default function InviteParticipants({ navigation }) {
               onBlur={() => setIsFocused(false)}
             />
           </View>
+          <View style={styles.selectAllContainer}>
+            <Text style={styles.leftText}>Add members from connections</Text>
+            <TouchableOpacity
+              style={styles.selectAllButton}
+              onPress={toggleSelectAll}
+            >
+              <Text style={styles.rightText}>Select All</Text>
+            </TouchableOpacity>
+          </View>
           {loading ? (
             <ActivityIndicator color="#09A1F6" size="large" />
           ) : (
@@ -167,17 +212,10 @@ export default function InviteParticipants({ navigation }) {
                   />
                   <Text style={styles.friendName}>{friend.name}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.selectBox}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    toggleFriendSelection(friend._id);
-                  }}
-                >
-                  {selectedFriends[friend._id] && (
-                    <Icon name="check" size={20} color="#09A1F6" />
-                  )}
-                </TouchableOpacity>
+                <Checkbox
+                  checked={selectedFriends[friend._id]}
+                  onPress={() => toggleFriendSelection(friend._id)}
+                />
               </View>
             ))
           )}
@@ -208,6 +246,7 @@ export default function InviteParticipants({ navigation }) {
           alignItems: "center",
           marginBottom: 10,
         }}
+        disabled={loading} // Disable button while loading
       >
         {loading ? (
           <ActivityIndicator color="#FFFFFF" size="small" />
@@ -219,7 +258,7 @@ export default function InviteParticipants({ navigation }) {
               fontWeight: "bold",
             }}
           >
-            Invite
+            Next
           </Text>
         )}
       </TouchableOpacity>
@@ -275,10 +314,26 @@ const styles = {
     borderRadius: 4,
     borderWidth: 1,
     borderColor: "#000000",
-    justifyContent: "center", // Center the icon vertically
-    alignItems: "center", // Center the icon horizontally
+    justifyContent: "center",
+    alignItems: "center",
   },
   selected: {
     backgroundColor: "#09A1F6",
+  },
+  selectAllContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 25,
+    marginBottom: 20,
+  },
+  leftText: {
+    fontSize: 16,
+    color: "#000",
+  },
+  rightText: {
+    fontSize: 14,
+    color: "#000",
+    fontWeight: "bold",
   },
 };
