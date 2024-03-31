@@ -297,48 +297,27 @@ export default function Profile({ navigation }) {
                   style={{
                     marginTop: 10,
                     flexDirection: "row",
+                    justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesome5 name="comment" size={16} color="#000" />
-
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    Chat with MentoRship
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    source={logo}
-                    style={{ width: 18, height: 18, marginRight: 9 }}
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <FontAwesome5 name="comment" size={16} color="#000" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      Chat with MentoRship
+                    </Text>
+                  </View>
+                  <FontAwesome5
+                    name="external-link-alt"
+                    size={16}
+                    color="#000"
                   />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                    }}
-                  >
-                    About MentoRship
-                  </Text>
                 </TouchableOpacity>
                 <View
                   style={{
@@ -352,21 +331,65 @@ export default function Profile({ navigation }) {
                   style={{
                     marginTop: 10,
                     flexDirection: "row",
+                    justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesome5 name="lock" size={16} color="#000" />
-
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    Privacy Policy
-                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={logo}
+                      style={{ width: 18, height: 18, marginRight: 9 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                      }}
+                    >
+                      About MentoRship
+                    </Text>
+                  </View>
+                  <FontAwesome5
+                    name="external-link-alt"
+                    size={16}
+                    color="#000"
+                  />
                 </TouchableOpacity>
+                <View
+                  style={{
+                    width: 350,
+                    height: 1.5,
+                    backgroundColor: "#D9D9D9",
+                    marginTop: 25,
+                  }}
+                ></View>
+                <TouchableOpacity
+                  style={{
+                    marginTop: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <FontAwesome5 name="lock" size={16} color="#000" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      Privacy Policy
+                    </Text>
+                  </View>
+                  <FontAwesome5
+                    name="external-link-alt"
+                    size={16}
+                    color="#000"
+                  />
+                </TouchableOpacity>
+
                 <View
                   style={{
                     width: 350,

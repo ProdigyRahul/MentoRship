@@ -41,18 +41,17 @@ export default function Login({ navigation }) {
     };
     try {
       const response = await axios.post(`http://172.20.10.3:8080/login`, user);
-      console.log(response);
       const token = response.data.token;
+
       // Save token to AsyncStorage
       await AsyncStorage.setItem("authToken", token);
 
       const decodedToken = jwt_decode(token);
       const userId = decodedToken.userId;
+
       // Stringify userId before storing
       await AsyncStorage.setItem("userId", userId);
       setUserId(userId);
-
-      showToast();
 
       // Check if the user is onboarded
       const onboardedResponse = await axios.get(
@@ -66,8 +65,21 @@ export default function Login({ navigation }) {
         navigation.navigate("Welcome");
       }
     } catch (error) {
-      Alert.alert("Login Error", "Invalid Email or Password");
-      console.log(error);
+      if (error.response.status === 403) {
+        // Account deactivated
+        Alert.alert(
+          "Account Deactivated",
+          "Your account has been deactivated. Please contact support team."
+        );
+      } else if (error.response.status === 401) {
+        // Invalid password
+        Alert.alert("Login Error", "Invalid Email or Password");
+        console.log(error);
+      } else {
+        // Other errors
+        Alert.alert("Error", "An error occurred while logging in");
+        console.log(error);
+      }
     } finally {
       setLoading(false);
     }

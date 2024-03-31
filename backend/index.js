@@ -97,7 +97,6 @@ const createToken = (userId) => {
   return token;
 };
 
-//endpoint for logging in of that particular user
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -108,10 +107,14 @@ app.post("/login", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({ message: "User is disabled" });
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(404).json({ message: "Invalid Password!" });
+      return res.status(401).json({ message: "Invalid Password!" });
     }
 
     // Check if the user is onboarded
@@ -676,6 +679,7 @@ app.get("/user-details/:userId", async (req, res) => {
       careerGoals: user.Career_Goals,
       student: user.Student,
       workingProfessional: user.Mentor,
+      FirstName: user.First_Name,
     });
   } catch (error) {
     console.log(error);
@@ -938,6 +942,75 @@ app.get("/public-profile/:userId", async (req, res) => {
     res.status(200).json(publicProfile);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to deactivate/delete user account
+app.delete("/delete-account/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { password } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify user password
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // Deactivate/delete the account by setting isActive to false
+    user.isActive = false;
+    await user.save();
+
+    // Respond with success message
+    res
+      .status(200)
+      .json({ message: "Account deactivated/deleted successfully" });
+  } catch (error) {
+    console.log("Error deactivating/deleting account:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to change password
+app.post("/change-password/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // If user not found, return error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify old password
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect old password" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10); // Hash with salt rounds 10
+
+    // Update user's password in the database
+    user.password = hashedPassword;
+    await user.save();
+
+    // Respond with success message
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.log("Error changing password:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

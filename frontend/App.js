@@ -70,7 +70,7 @@ function App() {
             <Stack.Screen
               name="Messages"
               component={ChatMessagesScreen}
-              options={{ animation: "slide_from_right" }}
+              options={{ animation: "ios" }}
             />
             <Stack.Screen name="Explore" component={Explore} />
             <Stack.Screen name="MyProfile" component={MyProfile} />
@@ -78,8 +78,16 @@ function App() {
             <Stack.Screen name="MyEvents" component={MyEvents} />
             <Stack.Screen name="Session" component={CreateNewSession} />
             <Stack.Screen name="Topics" component={CreateNewTopic} />
-            <Stack.Screen name="Password" component={Password} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen
+              name="Password"
+              component={Password}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
+              options={{ animation: "ios" }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>
