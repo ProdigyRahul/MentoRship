@@ -52,6 +52,8 @@ export default function Login({ navigation }) {
       await AsyncStorage.setItem("userId", userId);
       setUserId(userId);
 
+      showToast();
+
       // Check if the user is onboarded
       const onboardedResponse = await axios.get(
         `http://172.20.10.3:8080/user-onboarded/${userId}`
@@ -82,6 +84,7 @@ export default function Login({ navigation }) {
         marginTop: 70,
       }}
     >
+      <FlashMessage position="bottom" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
@@ -268,8 +271,6 @@ export default function Login({ navigation }) {
             New to MentoRship? Signup Now
           </Text>
         </TouchableOpacity>
-
-        <FlashMessage position="top" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
