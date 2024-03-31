@@ -784,7 +784,9 @@ app.post("/create-session", async (req, res) => {
       public,
     });
     const savedSession = await newSession.save();
-    res.status(201).json(savedSession);
+    res
+      .status(201)
+      .json({ session: savedSession, sessionId: savedSession._id });
   } catch (error) {
     console.error("Error creating session:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -882,28 +884,25 @@ app.get("/user-friends/:userId", async (req, res) => {
     const { userId } = req.params;
 
     // Find the user by userId and populate the friends field
-    const user = await User.findById(userId).populate(
-      "friends",
-      "name image Headline _id" // Include _id field for friend IDs
-    );
+    const user = await User.findById(userId).populate({
+      path: "friends",
+      select: "_id name image headline", // Include _id field for friend IDs
+    });
 
     // If user not found, return error
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Extract friend IDs only
-    const friendIds = user.friends.map((friend) => friend._id);
-    console.log("Friend IDs:", friendIds); // Log friend IDs
-
-    // Extract friend details (name, image, headline) from the populated friends array
+    // Extract friend details (name, image, headline, and _id) from the populated friends array
     const friends = user.friends.map((friend) => ({
+      _id: friend._id,
       name: friend.name,
       image: friend.image,
-      headline: friend.Headline,
+      headline: friend.headline, // Corrected to lowercase 'headline'
     }));
 
-    res.status(200).json({ friends, friendIds }); // Return both friends and friendIds
+    res.status(200).json({ friends }); // Return friends array with IDs
   } catch (error) {
     console.log("Error fetching user friends:", error);
     res.status(500).json({ message: "Internal server error" });

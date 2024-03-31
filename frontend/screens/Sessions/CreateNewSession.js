@@ -49,7 +49,7 @@ const RadioButton = ({ selected, label, description, onPress }) => (
 
 export default function CreateNewSession({ navigation }) {
   const [characterCount, setCharacterCount] = useState(0);
-  const { userId, setUserId } = useContext(UserType);
+  const { userId, setUserId, sessionId, setSessionId } = useContext(UserType);
   const [loading, setLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
   const [sessionName, setSessionName] = useState("");
@@ -74,6 +74,10 @@ export default function CreateNewSession({ navigation }) {
 
   const maxCharacterLimit = 75;
 
+  useEffect(() => {
+    console.log(sessionId);
+  }, [sessionId]);
+
   const handleNext = async () => {
     if (!sessionName || !sessionDescription || selectedGoals.length === 0) {
       Alert.alert("Validation Error", "Please fill in all fields.");
@@ -95,6 +99,10 @@ export default function CreateNewSession({ navigation }) {
         "http://172.20.10.3:8080/create-session",
         sessionData
       );
+      // Save the session ID in the UserType context
+      await setSessionId(response.data.sessionId);
+
+      navigation.navigate("InviteParticipants");
     } catch (error) {
       console.error("Error creating session:", error);
       Alert.alert("Error", "Failed to create session. Please try again.");
@@ -277,6 +285,7 @@ export default function CreateNewSession({ navigation }) {
         }}
       >
         <NavigationLine active={true} />
+        <NavigationLine active={false} />
         <NavigationLine active={false} />
         <NavigationLine active={false} />
       </View>

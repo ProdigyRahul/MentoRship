@@ -22,6 +22,7 @@ import CreateNewSession from "./screens/Sessions/CreateNewSession";
 import CreateNewTopic from "./screens/Topics/CreateNewTopic";
 import Password from "./screens/Profile/Password";
 import ChangePassword from "./screens/Profile/ChangePassword";
+import InviteParticipants from "./screens/Sessions/InviteParticipants";
 
 const Stack = createNativeStackNavigator();
 
@@ -86,6 +87,11 @@ function App() {
             <Stack.Screen
               name="ChangePassword"
               component={ChangePassword}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="InviteParticipants"
+              component={InviteParticipants}
               options={{ animation: "ios" }}
             />
           </Stack.Navigator>
