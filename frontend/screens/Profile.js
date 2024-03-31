@@ -271,6 +271,7 @@ export default function Profile({ navigation }) {
                     flexDirection: "row",
                     alignItems: "center",
                   }}
+                  onPress={() => navigation.navigate("Password")}
                 >
                   <FontAwesome5 name="cogs" size={16} color="#000" />
 
