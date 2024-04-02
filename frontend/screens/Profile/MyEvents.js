@@ -5,15 +5,31 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
 import { LinearGradient } from "expo-linear-gradient";
 import { UserType } from "../../UserContext";
+import Icon from "react-native-vector-icons/FontAwesome5";
+import { MaterialIcons } from "@expo/vector-icons";
+import GestureRecognizer, {
+  swipeDirections,
+} from "react-native-swipe-gestures";
 
-export default function MyEvents() {
+export default function MyEvents({ navigation }) {
   const [displayType, setDisplayType] = useState("Upcoming");
   const [sessions, setSessions] = useState([]);
   const { userId } = useContext(UserType);
+  const navigateBack = () => {
+    navigation.goBack();
+  };
+  const onSwipeRight = () => {
+    navigation.goBack();
+  };
+  const onSwipe = (gestureName) => {};
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 20,
+  };
 
   useEffect(() => {
     async function fetchSessions() {
@@ -55,36 +71,50 @@ export default function MyEvents() {
   }
 
   return (
-    <LinearGradient
-      colors={["#000000", "#007CB0"]}
-      style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      locations={[0.3, 1]}
+    <GestureRecognizer
+      onSwipe={(direction) => onSwipe(direction)}
+      onSwipeRight={onSwipeRight}
+      config={config}
+      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <Text
+      <LinearGradient
+        colors={["#000000", "#007CB0"]}
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        locations={[0.3, 1]}
+      >
+        <StatusBar barStyle="white-content" />
+        <View
           style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "#FFFFFF",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
             marginTop: 45,
-            textAlign: "center",
-            marginBottom: 20,
           }}
         >
-          My Events
-        </Text>
-
+          <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+            }}
+          >
+            Notifications
+          </Text>
+        </View>
         <View
           style={{
             flex: 1,
             backgroundColor: "#FFFFFF",
             borderTopStartRadius: 50,
             borderTopEndRadius: 50,
-            marginTop: 20,
             paddingHorizontal: 20,
             paddingTop: 20,
+            marginTop: 20,
             paddingBottom: 20,
             borderWidth: 1,
             borderColor: "#E5E5E5",
@@ -183,10 +213,8 @@ export default function MyEvents() {
                 >
                   <Icon name="clock" size={16} color="#757575" />
                   <Text style={{ marginLeft: 5 }}>
-                    {session.startTime
-                      ? session.startTime.substring(11, 16)
-                      : ""}{" "}
-                    ({session.duration} min)
+                    {session.time.substring(11, session.time.length - 8)} (
+                    {session.duration} min)
                   </Text>
                 </View>
                 <View
@@ -221,7 +249,7 @@ export default function MyEvents() {
             ))}
           </ScrollView>
         </View>
-      </SafeAreaView>
-    </LinearGradient>
+      </LinearGradient>
+    </GestureRecognizer>
   );
 }

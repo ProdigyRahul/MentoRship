@@ -90,7 +90,7 @@ const MentorRequestScreen = () => {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 20,
-            marginTop: 37,
+            marginTop: 45,
           }}
         >
           <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>

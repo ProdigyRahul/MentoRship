@@ -7,8 +7,8 @@ const bcrypt = require("bcrypt");
 const os = require("os");
 const app = express();
 const morgan = require("morgan");
-const port = 8080;
 const cors = require("cors");
+const dotenv = require("dotenv");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -17,11 +17,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 const jwt = require("jsonwebtoken");
+dotenv.config();
+
+const port = process.env.PORT;
 
 mongoose
-  .connect(
-    "mongodb+srv://22cs042:iiu3vedYCRb7UZht@mentorship.eoi0nsf.mongodb.net/mentorship"
-  )
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -92,7 +93,9 @@ const createToken = (userId) => {
   };
 
   // Generate the token with a secret key and expiration time
-  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "4h" });
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+    expiresIn: "4h",
+  });
 
   return token;
 };
