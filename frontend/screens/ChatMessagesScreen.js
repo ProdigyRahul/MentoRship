@@ -98,7 +98,7 @@ const ChatMessagesScreen = () => {
 
   const config = {
     velocityThreshold: 0.3,
-    directionalOffsetThreshold: 20,
+    directionalOffsetThreshold: 50,
   };
   const onSwipe = (gestureName) => {};
 

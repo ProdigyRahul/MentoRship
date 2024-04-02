@@ -1013,3 +1013,36 @@ app.post("/change-password/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// Endpoint to fetch all sessions of a user
+app.get("/user-sessions/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find all sessions where the user is the creator or an attendee
+    const sessions = await GroupSession.find({
+      $or: [{ createdBy: userId }, { "attendees.userId": userId }],
+    });
+
+    // Return the sessions
+    res.status(200).json({ sessions });
+  } catch (error) {
+    console.log("Error fetching user sessions:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint for requesting name of user
+app.get("/:userId/name", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ name: user.name });
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
