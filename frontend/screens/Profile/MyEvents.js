@@ -70,6 +70,17 @@ export default function MyEvents({ navigation }) {
     }
   }
 
+  // Filter sessions based on display type (Upcoming or Past)
+  const filteredSessions = sessions.filter((session) => {
+    const sessionDate = new Date(session.date);
+    const currentDate = new Date();
+    if (displayType === "Upcoming") {
+      return sessionDate >= currentDate;
+    } else {
+      return sessionDate < currentDate;
+    }
+  });
+
   return (
     <GestureRecognizer
       onSwipe={(direction) => onSwipe(direction)}
@@ -103,7 +114,7 @@ export default function MyEvents({ navigation }) {
               color: "#FFFFFF",
             }}
           >
-            Notifications
+            My Events
           </Text>
         </View>
         <View
@@ -171,7 +182,7 @@ export default function MyEvents({ navigation }) {
           </View>
 
           <ScrollView>
-            {sessions.map((session, index) => (
+            {filteredSessions.map((session, index) => (
               <View key={index} style={{ marginBottom: 20 }}>
                 <Text
                   style={{
