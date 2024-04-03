@@ -15,7 +15,6 @@ export default function Onboarding({ navigation }) {
         const token = await AsyncStorage.getItem("authToken");
         const userId = await AsyncStorage.getItem("userId");
         if (token && userId) {
-          // Update UserContext with userId if available
           setUserId(userId);
           navigation.replace("Chat");
         } else {
@@ -27,6 +26,7 @@ export default function Onboarding({ navigation }) {
     };
     checkLoginStatus();
   }, []);
+
   const handleGetStarted = () => {
     navigation.navigate("Signup");
   };

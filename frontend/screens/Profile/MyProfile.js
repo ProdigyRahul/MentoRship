@@ -17,8 +17,9 @@ import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
 const API_KEY = "SWhsTnlyUnI3TjFRcDV1ZE1XVFFoNlIzZ3NMTkcwaUtsZGNZNTdBNQ==";
 const BASE_URL = "https://api.countrystatecity.in/v1";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function MyProfile() {
+export default function MyProfile({ navigation }) {
   const [profileData, setProfileData] = useState({
     headline: "",
     country: null,
@@ -196,18 +197,28 @@ export default function MyProfile() {
           paddingBottom: 0,
         }}
       >
-        <Text
+        <View
           style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "#FFFFFF",
-            marginTop: 45,
-            textAlign: "left",
-            marginLeft: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingTop: 40,
           }}
         >
-          My Profile
-        </Text>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+              marginLeft: 10,
+            }}
+          >
+            My Profile
+          </Text>
+        </View>
         <ScrollView
           vertical={true}
           style={{

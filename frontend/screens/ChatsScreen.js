@@ -35,7 +35,7 @@ const ChatsScreen = () => {
   };
   const config = {
     velocityThreshold: 0.3,
-    directionalOffsetThreshold: 80,
+    directionalOffsetThreshold: 20,
   };
 
   useEffect(() => {
