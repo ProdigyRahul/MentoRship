@@ -9,6 +9,7 @@ import {
   Image,
   ActivityIndicator,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import React, {
   useState,
@@ -423,20 +424,32 @@ const ChatMessagesScreen = () => {
             <Pressable onPress={() => navigation.goBack()}>
               <FontAwesome name="angle-left" size={30} color="black" />
             </Pressable>
-
-            <Image
-              style={styles.userImage}
-              source={{ uri: recepientData?.image }}
-            />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("PublicProfile", { userId: recepientId })
+              }
+            >
+              <Image
+                style={styles.userImage}
+                source={{ uri: recepientData?.image }}
+              />
+            </TouchableOpacity>
             <View style={{ flexDirection: "column" }}>
-              <Text style={styles.userName}>{recepientData?.name}</Text>
-              <Text style={styles.lastSeenText}>
-                {lastSeen
-                  ? lastSeen === "Online"
-                    ? "Online"
-                    : `Last Seen: ${lastSeen}`
-                  : ""}
-              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("PublicProfile", { userId: recepientId })
+                }
+              >
+                <Text style={styles.userName}>{recepientData?.name}</Text>
+
+                <Text style={styles.lastSeenText}>
+                  {lastSeen
+                    ? lastSeen === "Online"
+                      ? "Online"
+                      : `Last Seen: ${lastSeen}`
+                    : ""}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>

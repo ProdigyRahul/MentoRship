@@ -26,6 +26,7 @@ import InviteParticipants from "./screens/Sessions/InviteParticipants";
 import SessionBanner from "./screens/Sessions/SessionBanner";
 import ScheduleSession from "./screens/Sessions/ScheduleSession";
 import Session from "./screens/Session";
+import PublicProfile from "./screens/PublicProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -110,6 +111,11 @@ function App() {
             <Stack.Screen
               name="Sessions"
               component={Session}
+              options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="PublicProfile"
+              component={PublicProfile}
               options={{ animation: "fade" }}
             />
           </Stack.Navigator>
