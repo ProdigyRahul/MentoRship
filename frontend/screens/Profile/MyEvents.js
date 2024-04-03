@@ -23,7 +23,14 @@ export default function MyEvents({ navigation }) {
     navigation.goBack();
   };
   const onSwipeRight = () => {
-    navigation.goBack();
+    if (displayType === "Past") {
+      setDisplayType(displayType === "Upcoming" ? "Past" : "Upcoming");
+    } else {
+      navigation.goBack();
+    }
+  };
+  const onSwipeLeft = () => {
+    setDisplayType(displayType === "Upcoming" ? "Past" : "Upcoming");
   };
   const onSwipe = (gestureName) => {};
   const config = {
@@ -85,6 +92,7 @@ export default function MyEvents({ navigation }) {
     <GestureRecognizer
       onSwipe={(direction) => onSwipe(direction)}
       onSwipeRight={onSwipeRight}
+      onSwipeLeft={onSwipeLeft}
       config={config}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
@@ -236,12 +244,12 @@ export default function MyEvents({ navigation }) {
                   }}
                 >
                   <Icon
-                    name={session.started ? "clock" : "check-circle"}
+                    name={displayType === "Upcoming" ? "clock" : "check-circle"}
                     size={16}
-                    color={session.started ? "#007CB0" : "#4CAF50"}
+                    color={displayType === "Upcoming" ? "#007CB0" : "#4CAF50"}
                   />
                   <Text style={{ marginLeft: 5 }}>
-                    {session.started ? "Attending" : "Attended"}
+                    {displayType === "Upcoming" ? "Attending" : "Attended"}
                   </Text>
                 </View>
                 <TouchableOpacity
