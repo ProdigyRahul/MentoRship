@@ -442,13 +442,16 @@ const ChatMessagesScreen = () => {
               >
                 <Text style={styles.userName}>{recepientData?.name}</Text>
 
-                <Text style={styles.lastSeenText}>
-                  {lastSeen
-                    ? lastSeen === "Online"
-                      ? "Online"
-                      : `Last Seen: ${lastSeen}`
-                    : ""}
-                </Text>
+                {/* Conditionally render the Last Seen text */}
+                {recepientId !== "65fe947733f40267003d6fb7" && (
+                  <Text style={styles.lastSeenText}>
+                    {lastSeen
+                      ? lastSeen === "Online"
+                        ? "Online"
+                        : `Last Seen: ${lastSeen}`
+                      : ""}
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -607,11 +610,11 @@ const ChatMessagesScreen = () => {
           >
             {recepientId !== "65fe947733f40267003d6fb7" && (
               <Entypo
+                onPress={pickImage}
                 name="camera"
                 size={24}
                 color="#0077FF"
-                style={{ opacity: 0.5, cursor: "not-allowed" }}
-                disabled
+                style={{ opacity: 1 }}
               />
             )}
             <Feather name="mic" size={24} color="#0077FF" />
