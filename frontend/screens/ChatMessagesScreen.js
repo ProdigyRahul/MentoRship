@@ -104,11 +104,11 @@ const ChatMessagesScreen = () => {
   const onSwipe = (gestureName) => {};
 
   // TODO: Remove Comments
-  // useEffect(() => {
-  //   const interval = setInterval(fetchMessages, 1000);
+  useEffect(() => {
+    const interval = setInterval(fetchMessages, 1000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchRecepientData = async () => {
@@ -549,30 +549,54 @@ const ChatMessagesScreen = () => {
             marginBottom: showEmojiSelector ? 0 : 25,
           }}
         >
-          <Entypo
-            onPress={handleEmojiPress}
-            style={{ marginRight: 5 }}
-            name="emoji-happy"
-            size={24}
-            color="#0077FF"
-          />
+          {recepientId !== "65fe947733f40267003d6fb7" && (
+            <Entypo
+              onPress={handleEmojiPress}
+              style={{ marginRight: 5, opacity: 0.5 }}
+              name="emoji-happy"
+              size={24}
+              color="#0077FF"
+              disabled
+            />
+          )}
 
-          <TextInput
-            value={message}
-            onChangeText={(text) => setMessage(text)}
-            style={{
-              flex: 1,
-              height: 40,
-              borderWidth: 1,
-              borderColor: "#CCCCCC",
-              borderRadius: 20,
-              paddingHorizontal: 10,
-              color: "#000000",
-            }}
-            placeholder="Type Your message..."
-            placeholderTextColor="#A9A9A9"
-          />
-
+          {recepientId !== "65fe947733f40267003d6fb7" && (
+            <TextInput
+              value={message}
+              onChangeText={(text) => setMessage(text)}
+              style={{
+                flex: 1,
+                height: 40,
+                borderWidth: 1,
+                borderColor: "#CCCCCC",
+                borderRadius: 20,
+                paddingHorizontal: 10,
+                color: "#000000",
+              }}
+              placeholder="Type Your message..."
+              placeholderTextColor="#A9A9A9"
+            />
+          )}
+          {recepientId === "65fe947733f40267003d6fb7" && (
+            <TextInput
+              editable={false}
+              value={message}
+              onChangeText={(text) => setMessage(text)}
+              style={{
+                flex: 1,
+                height: 40,
+                borderWidth: 1,
+                borderColor: "#CCCCCC",
+                borderRadius: 20,
+                paddingHorizontal: 10,
+                color: "#000000",
+                textAlign: "center",
+                backgroundColor: "#F2F2F2",
+              }}
+              placeholder="Disabled"
+              placeholderTextColor="#A9A9A9"
+            />
+          )}
           <View
             style={{
               flexDirection: "row",
@@ -581,23 +605,27 @@ const ChatMessagesScreen = () => {
               marginHorizontal: 8,
             }}
           >
-            <Entypo
-              onPress={pickImage}
-              name="camera"
-              size={24}
-              color="#0077FF"
-            />
+            {recepientId !== "65fe947733f40267003d6fb7" && (
+              <Entypo
+                name="camera"
+                size={24}
+                color="#0077FF"
+                style={{ opacity: 0.5, cursor: "not-allowed" }}
+                disabled
+              />
+            )}
             <Feather name="mic" size={24} color="#0077FF" />
           </View>
 
           <Pressable
             onPress={() => handleSend("text")}
-            style={{
-              backgroundColor: "#0077FF",
-              paddingVertical: 8,
-              paddingHorizontal: 12,
-              borderRadius: 20,
-            }}
+            style={[
+              styles.sendButton,
+              recepientId === "65fe947733f40267003d6fb7" && {
+                opacity: 0.5,
+              },
+            ]}
+            disabled={recepientId === "65fe947733f40267003d6fb7"}
           >
             <Text style={{ color: "#FFFFFF", fontWeight: "bold" }}>Send</Text>
           </Pressable>
