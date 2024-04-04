@@ -38,24 +38,25 @@ export default function Signup({ navigation }) {
 
     if (status !== "granted") {
       alert("Sorry, we need camera roll permissions to make this work!");
+      return;
     }
 
-    if (status === "granted") {
-      const response = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-      });
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+    });
 
-      console.log("Response:", response);
+    console.log("Response:", response);
 
-      if (!response.cancelled && response.assets.length > 0) {
-        const { uri } = response.assets[0];
-        console.log("Selected Image URI:", uri);
-        setProfileImage(uri);
-      }
+    if (!response.cancelled && response.assets && response.assets.length > 0) {
+      const { uri } = response.assets[0];
+      console.log("Selected Image URI:", uri);
+      setProfileImage(uri);
+      console.log("Profile Image State:", profileImage);
+    } else {
+      console.log("No image selected");
     }
   };
-
   const handleSignup = async () => {
     if (!name || !email || !password || !profileImage) {
       Alert.alert(

@@ -9,6 +9,9 @@ const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -53,10 +56,30 @@ const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
 
-//endpoint for registration of the user
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-app.post("/register", async (req, res) => {
-  const { name, email, password, image } = req.body;
+// Set up storage using Cloudinary
+const storages = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads",
+    allowed_formats: ["jpg", "jpeg", "png"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }],
+  },
+});
+// Create Multer instance with storage configuration
+const uploads = multer({ storage: storages });
+
+// Endpoint to register users with image upload
+// Endpoint to register users with image upload
+app.post("/register", uploads.single("image"), async (req, res) => {
+  const { name, email, password } = req.body;
+  const image = req.file ? req.file.path : null; // Check if image file is uploaded
 
   try {
     // Check if user with the same email already exists
@@ -71,12 +94,34 @@ app.post("/register", async (req, res) => {
     // Hash the password before saving it
     const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
 
-    // create a new User object with hashed password
+    // Create a new User object with hashed password and image path
     const newUser = new User({ name, email, password: hashedPassword, image });
 
-    // save the user to the database
+    // Save the user to the database
     await newUser.save();
 
+    // Automatically add the new user as a friend to your company user
+    const companyUser = await User.findById("65fe947733f40267003d6fb7");
+    companyUser.friends.push(newUser._id);
+    await companyUser.save();
+
+    // Automatically add the company user as a friend to the new user
+    newUser.friends.push(companyUser._id);
+    await newUser.save();
+
+    // Send automatic welcome message from your user to the new user
+    const welcomeMessage = new Message({
+      senderId: companyUser._id,
+      recepientId: newUser._id,
+      messageType: "text",
+      message: "Welcome to MentoRship! We're glad to have you here.",
+      timestamp: new Date(),
+      sent: true,
+      read: false,
+    });
+    await welcomeMessage.save();
+
+    // Generate JWT token for the new user
     const token = createToken(newUser._id);
     res.status(201).json({ token, message: "User registered successfully" });
   } catch (err) {
@@ -231,8 +276,6 @@ app.get("/accepted-friends/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-const multer = require("multer");
 
 // Configure multer for handling file uploads
 const storage = multer.diskStorage({
