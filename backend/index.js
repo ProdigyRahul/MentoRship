@@ -52,6 +52,10 @@ app.listen(port, () => {
   );
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
