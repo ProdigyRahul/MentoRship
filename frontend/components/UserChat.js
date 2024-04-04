@@ -26,6 +26,8 @@ const UserChat = ({ item }) => {
 
         if (userMessages.length > 0) {
           const lastMessageItem = userMessages[userMessages.length - 1];
+          const firstLine = lastMessageItem.message.split("\n")[0];
+          lastMessageItem.message = firstLine;
           setLastMessage(lastMessageItem);
           const unreadMessagesCount = userMessages.filter(
             (message) => !message.read

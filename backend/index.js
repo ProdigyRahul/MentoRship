@@ -80,7 +80,6 @@ const storages = new CloudinaryStorage({
 const uploads = multer({ storage: storages });
 
 // Endpoint to register users with image upload
-// Endpoint to register users with image upload
 app.post("/register", uploads.single("image"), async (req, res) => {
   const { name, email, password } = req.body;
   const image = req.file ? req.file.path : null; // Check if image file is uploaded
@@ -118,7 +117,26 @@ app.post("/register", uploads.single("image"), async (req, res) => {
       senderId: companyUser._id,
       recepientId: newUser._id,
       messageType: "text",
-      message: "Welcome to MentoRship! We're glad to have you here.",
+      message: `Welcome to MentoRship!
+
+Our mission is to create a space for genuine and candid conversations to help professionals advance their careers. Learn from others and share your life experiences with others to grow as well.
+
+• Guidelines: This is an inclusive community built on respect, trust, and transparency. Everyone is here to improve themselves. There is no room for hateful or derogatory comments or behavior.
+
+• Where to Start:
+
+    • Find Topics or Members that interest you. See what folks are discussing, and participate where you have questions or insights.
+
+    • Reach out and connect with people who align with your goals!
+
+    • Take a look at the Mentoring & Career readiness guides we provide.
+
+We are glad you joined us and look forward to helping you learn, grow and share with your connections.
+
+~ The MentoRship Team
+
+P.S. We are here if you need anything, just a message away.
+`,
       timestamp: new Date(),
       sent: true,
       read: false,
