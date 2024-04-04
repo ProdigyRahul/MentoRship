@@ -30,7 +30,7 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `http://172.20.10.3:8080/friend-request/${userId}`
+        `https://api.rahulmistry.in/friend-request/${userId}`
       );
       if (response.status === 200) {
         const friendRequestsData = response.data.map((friendRequest) => ({

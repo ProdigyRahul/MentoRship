@@ -135,7 +135,7 @@ export default function MyProfile() {
   const fetchProfileData = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/user-details/${userId}`
+        `https://api.rahulmistry.in/user-details/${userId}`
       );
       if (response.ok) {
         const data = await response.json();

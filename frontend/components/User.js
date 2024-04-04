@@ -11,7 +11,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-requests/sent/${userId}`
+          `https://api.rahulmistry.in/friend-requests/sent/${userId}`
         );
 
         const data = await response.json();
@@ -32,7 +32,7 @@ const User = ({ item }) => {
     const fetchUserFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friends/${userId}`
+          `https://api.rahulmistry.in/friends/${userId}`
         );
 
         const data = await response.json();
@@ -51,13 +51,16 @@ const User = ({ item }) => {
   }, []);
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://172.20.10.3:8080/friend-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ currentUserId, selectedUserId }),
-      });
+      const response = await fetch(
+        "https://api.rahulmistry.in/friend-request",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ currentUserId, selectedUserId }),
+        }
+      );
 
       if (response.ok) {
         setRequestSent(true);

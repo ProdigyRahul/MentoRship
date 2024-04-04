@@ -42,7 +42,7 @@ const ChatsScreen = () => {
     const fetchAcceptedFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/accepted-friends/${userId}`
+          `https://api.rahulmistry.in/accepted-friends/${userId}`
         );
         const data = await response.json();
 
@@ -60,7 +60,7 @@ const ChatsScreen = () => {
     const fetchPendingFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-request/${userId}`
+          `https://api.rahulmistry.in/friend-request/${userId}`
         );
         const data = await response.json();
 

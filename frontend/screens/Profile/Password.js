@@ -52,7 +52,7 @@ export default function Password({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://172.20.10.3:8080/user-details/${userId}`
+        `https://api.rahulmistry.in/user-details/${userId}`
       );
       setUserName(response.data.FirstName);
     } catch (error) {
@@ -71,7 +71,7 @@ export default function Password({ navigation }) {
 
       setLoading(true);
       const response = await axios.delete(
-        `http://172.20.10.3:8080/delete-account/${userId}`,
+        `https://api.rahulmistry.in/delete-account/${userId}`,
         {
           data: { password },
         }

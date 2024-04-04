@@ -96,7 +96,7 @@ export default function CreateNewSession({ navigation }) {
 
     try {
       const response = await axios.post(
-        "http://172.20.10.3:8080/create-session",
+        "https://api.rahulmistry.in/create-session",
         sessionData
       );
       // Save the session ID in the UserType context

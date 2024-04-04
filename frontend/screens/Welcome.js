@@ -247,7 +247,7 @@ export default function Welcome({ navigation }) {
     try {
       // Send user data to backend for first API call
       const response1 = await axios.post(
-        `http://172.20.10.3:8080/onboarding/v1`,
+        `https://api.rahulmistry.in/onboarding/v1`,
         userData
       );
 
@@ -256,7 +256,7 @@ export default function Welcome({ navigation }) {
         console.log("Successfully sent user data to onboarded/v1 API");
         // Send user data to backend for second API call
         const response2 = await axios.post(
-          `http://172.20.10.3:8080/onboarded/${userId}`
+          `https://api.rahulmistry.in/onboarded/${userId}`
         );
 
         // Check response and navigate if successful

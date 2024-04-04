@@ -28,7 +28,7 @@ export default function MyConnections({ navigation }) {
     try {
       // Fetch friends data from backend API
       const response = await fetch(
-        `http://172.20.10.3:8080/user-friends/${userId}`
+        `https://api.rahulmistry.in/user-friends/${userId}`
       );
       const { friends, friendIds } = await response.json();
       setFriends(friends);

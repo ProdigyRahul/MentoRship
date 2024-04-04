@@ -78,7 +78,7 @@ export default function Signup({ navigation }) {
       });
 
       const response = await axios.post(
-        "http://172.20.10.3:8080/register",
+        "https://api.rahulmistry.in/register",
         formData,
         {
           headers: {

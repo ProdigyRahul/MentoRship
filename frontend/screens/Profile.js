@@ -26,7 +26,7 @@ export default function Profile({ navigation }) {
       try {
         setTimeout(async () => {
           const response = await fetch(
-            `http://172.20.10.3:8080/user-data/${userId}`
+            `https://api.rahulmistry.in/user-data/${userId}`
           );
           const data = await response.json();
 

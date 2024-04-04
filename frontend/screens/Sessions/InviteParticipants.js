@@ -63,7 +63,7 @@ export default function InviteParticipants({ navigation }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://172.20.10.3:8080/user-friends/${userId}`
+        `https://api.rahulmistry.in/user-friends/${userId}`
       );
       const { friends } = response.data;
       const initialSelected = friends.reduce((acc, friend) => {
@@ -104,7 +104,7 @@ export default function InviteParticipants({ navigation }) {
         .map((friend) => friend._id);
       console.log("Selected Friends:", invitedFriends);
       const response = await axios.post(
-        `http://172.20.10.3:8080/invite-friends/${sessionId}`,
+        `https://api.rahulmistry.in/invite-friends/${sessionId}`,
         { invitedFriends }
       );
       console.log("Successs");

@@ -76,7 +76,7 @@ const ChatMessagesScreen = () => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/messages/${userId}/${recepientId}`
+        `https://api.rahulmistry.in/messages/${userId}/${recepientId}`
       );
       const data = await response.json();
 
@@ -114,7 +114,7 @@ const ChatMessagesScreen = () => {
     const fetchRecepientData = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/user/${recepientId}`
+          `https://api.rahulmistry.in/user/${recepientId}`
         );
 
         const data = await response.json();
@@ -146,7 +146,7 @@ const ChatMessagesScreen = () => {
       await Promise.all(
         messageIds.map(async (messageId) => {
           const response = await fetch(
-            `http://172.20.10.3:8080/messages/read/${messageId}`,
+            `https://api.rahulmistry.in/messages/read/${messageId}`,
             {
               method: "PUT",
             }
@@ -164,11 +164,11 @@ const ChatMessagesScreen = () => {
   const fetchLastSeen = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/user/last-seen/${recepientId}`
+        `https://api.rahulmistry.in/user/last-seen/${recepientId}`
       );
 
       // Update sender's last seen time
-      await fetch(`http://172.20.10.3:8080/user/last-seen/${userId}`, {
+      await fetch(`https://api.rahulmistry.in/user/last-seen/${userId}`, {
         method: "PUT",
       });
 
@@ -267,7 +267,7 @@ const ChatMessagesScreen = () => {
         formData.append("messageText", message);
       }
 
-      const response = await fetch("http://172.20.10.3:8080/messages", {
+      const response = await fetch("https://api.rahulmistry.in/messages", {
         method: "POST",
         body: formData,
       });
@@ -345,13 +345,16 @@ const ChatMessagesScreen = () => {
 
   const deleteMessages = async (messageIds) => {
     try {
-      const response = await fetch("http://172.20.10.3:8080/deleteMessages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: messageIds }),
-      });
+      const response = await fetch(
+        "https://api.rahulmistry.in/deleteMessages",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ messages: messageIds }),
+        }
+      );
 
       if (response.ok) {
         setSelectedMessages((prevSelectedMessages) =>

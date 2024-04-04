@@ -49,7 +49,7 @@ export default function ChangePassword({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://172.20.10.3:8080/change-password/${userId}`,
+        `https://api.rahulmistry.in/change-password/${userId}`,
         {
           oldPassword,
           newPassword,

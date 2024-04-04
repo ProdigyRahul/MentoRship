@@ -59,7 +59,7 @@ const ScheduleSession = ({ navigation }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://172.20.10.3:8080/select-schedule/${sessionId}`,
+        `https://api.rahulmistry.in/select-schedule/${sessionId}`,
         { date, time, duration }
       );
       console.log("Response:", response.data);

@@ -42,7 +42,7 @@ export default function MyEvents({ navigation }) {
     async function fetchSessions() {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/user-sessions/${userId}`
+          `https://api.rahulmistry.in/user-sessions/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch sessions");
@@ -65,7 +65,7 @@ export default function MyEvents({ navigation }) {
 
   async function fetchOrganizer(userId) {
     try {
-      const response = await fetch(`http://172.20.10.3:8080/${userId}/name`);
+      const response = await fetch(`https://api.rahulmistry.in/${userId}/name`);
       if (!response.ok) {
         throw new Error("Failed to fetch organizer details");
       }
