@@ -271,8 +271,8 @@ app.post("/messages", async (req, res) => {
       message: messageText,
       timestamp: new Date(),
       imageUrl: messageType === "image" ? req.file.path : null,
-      sent: true, // Mark the message as sent when created
-      read: false, // Mark the message as not read initially
+      sent: true,
+      read: false,
     });
 
     await newMessage.save();
