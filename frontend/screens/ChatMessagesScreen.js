@@ -104,11 +104,11 @@ const ChatMessagesScreen = () => {
   const onSwipe = (gestureName) => {};
 
   // TODO: Remove Comments
-  useEffect(() => {
-    const interval = setInterval(fetchMessages, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(fetchMessages, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     const fetchRecepientData = async () => {
@@ -425,9 +425,11 @@ const ChatMessagesScreen = () => {
               <FontAwesome name="angle-left" size={30} color="black" />
             </Pressable>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("PublicProfile", { userId: recepientId })
-              }
+              onPress={() => {
+                if (recepientId !== "65fe947733f40267003d6fb7") {
+                  navigation.navigate("PublicProfile", { userId: recepientId });
+                }
+              }}
             >
               <Image
                 style={styles.userImage}
@@ -436,9 +438,13 @@ const ChatMessagesScreen = () => {
             </TouchableOpacity>
             <View style={{ flexDirection: "column" }}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("PublicProfile", { userId: recepientId })
-                }
+                onPress={() => {
+                  if (recepientId !== "65fe947733f40267003d6fb7") {
+                    navigation.navigate("PublicProfile", {
+                      userId: recepientId,
+                    });
+                  }
+                }}
               >
                 <Text style={styles.userName}>{recepientData?.name}</Text>
 
@@ -617,7 +623,9 @@ const ChatMessagesScreen = () => {
                 style={{ opacity: 1 }}
               />
             )}
-            <Feather name="mic" size={24} color="#0077FF" />
+            {recepientId !== "65fe947733f40267003d6fb7" && (
+              <Feather name="mic" size={24} color="#0077FF" />
+            )}
           </View>
 
           <Pressable

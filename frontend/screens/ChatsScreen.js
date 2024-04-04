@@ -34,8 +34,8 @@ const ChatsScreen = () => {
     navigation.navigate("Community");
   };
   const config = {
-    velocityThreshold: 0.3,
-    directionalOffsetThreshold: 80,
+    velocityThreshold: 0.5,
+    directionalOffsetThreshold: 20,
   };
 
   useEffect(() => {

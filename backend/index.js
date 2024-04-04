@@ -69,7 +69,11 @@ const storages = new CloudinaryStorage({
   params: {
     folder: "uploads",
     allowed_formats: ["jpg", "jpeg", "png"],
-    transformation: [{ width: 500, height: 500, crop: "limit" }],
+    transformation: [
+      { width: 500, height: 500, crop: "limit" },
+      { quality: "auto" },
+      { fetch_format: "auto" },
+    ],
   },
 });
 // Create Multer instance with storage configuration
