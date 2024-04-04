@@ -27,7 +27,6 @@ import SessionBanner from "./screens/Sessions/SessionBanner";
 import ScheduleSession from "./screens/Sessions/ScheduleSession";
 import Session from "./screens/Session";
 import PublicProfile from "./screens/PublicProfile";
-import SplashScreen from "./screens/SplashScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,11 +37,6 @@ function App() {
       <UserContext>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              name="Spalsh"
-              component={SplashScreen}
-              options={{ animation: "fade" }}
-            />
             <Stack.Screen
               name="Onboarding"
               component={Onboarding}
