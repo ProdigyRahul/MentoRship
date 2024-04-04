@@ -1,3 +1,4 @@
 backend/.env
 backend/access.log
 frontend/.env
+/node_modules
