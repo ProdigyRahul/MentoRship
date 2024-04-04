@@ -18,35 +18,47 @@ import * as ImagePicker from "expo-image-picker";
 import jwt_decode from "jwt-decode";
 import { UserType } from "../UserContext";
 import FlashMessage, { showMessage } from "react-native-flash-message";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import axios from "axios";
 
 export default function Signup({ navigation }) {
-  // States for user details and image handling
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setUserId } = useContext(UserType);
-  // Function to display success message
-  const showToast = () => {
-    showMessage({
-      message: "Success",
-      description: "User registered successfully!",
-      type: "success",
-      duration: 1000,
-      autoHide: true,
-    });
+  const [nameBorderColor, setNameBorderColor] = useState("#D9D9D9");
+  const [emailBorderColor, setEmailBorderColor] = useState("#D9D9D9");
+  const [passwordBorderColor, setPasswordBorderColor] = useState("#D9D9D9");
+
+  const openImageLibrary = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("Permission status:", status);
+
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+
+    if (status === "granted") {
+      const response = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      });
+
+      console.log("Response:", response);
+
+      if (!response.cancelled && response.assets.length > 0) {
+        const { uri } = response.assets[0];
+        console.log("Selected Image URI:", uri);
+        setProfileImage(uri);
+        console.log("Profile Image State:", profileImage);
+      }
+    }
   };
 
-  // Function to navigate to login screen
-  const handleLoginNow = () => {
-    navigation.navigate("Login");
-  };
-
-  // Function to handle signup process
   const handleSignup = async () => {
-    if (!name || !email || !password || !imageUrl) {
+    if (!name || !email || !password || !profileImage) {
       Alert.alert(
         "Validation Error",
         "Please fill in all fields and upload an image."
@@ -55,39 +67,41 @@ export default function Signup({ navigation }) {
     }
     setLoading(true);
     try {
-      // Send user data to backend for registration
-      const response = await fetch("http://172.20.10.3:8080/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          name,
-          image: imageUrl,
-        }),
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("image", {
+        name: new Date().toISOString() + "_profile.jpg",
+        type: "image/jpg",
+        uri: profileImage,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        Alert.alert("Signup Failed", errorData.message);
-        return;
-      }
+      const response = await axios.post(
+        "http://172.20.10.3:8080/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      const responseData = await response.json();
-      console.log("Server Response:", responseData);
+      const responseData = response.data;
       const token = responseData.token;
       AsyncStorage.setItem("authToken", token);
       const decodedToken = jwt_decode(token);
       const userId = decodedToken.userId;
       setUserId(userId);
 
-      // Display success message and navigate to welcome screen
-      showToast();
-      setTimeout(() => {
-        navigation.navigate("Welcome");
-      }, 1000);
+      showMessage({
+        message: "Success",
+        description: "User registered successfully!",
+        type: "success",
+        duration: 1000,
+        autoHide: true,
+      });
+      navigation.navigate("Welcome");
     } catch (error) {
       console.error("Signup failed:", error);
       Alert.alert("Signup Failed", "An error occurred during signup.");
@@ -124,7 +138,8 @@ export default function Signup({ navigation }) {
             style={{
               height: 100,
               width: 100,
-              marginBottom: 10,
+              marginBottom: 0,
+              marginTop: 5,
             }}
           />
           <Text
@@ -223,6 +238,41 @@ export default function Signup({ navigation }) {
           >
             Signup With Email
           </Text>
+          <View
+            style={{
+              marginTop: 10,
+              marginBottom: 5,
+            }}
+          >
+            <TouchableOpacity onPress={openImageLibrary}>
+              <View style={{ alignItems: "center" }}>
+                <View
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 50,
+                    backgroundColor: profileImage ? "transparent" : "lightgray",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {profileImage ? (
+                    <Image
+                      source={{ uri: profileImage }}
+                      style={{ width: 100, height: 100, borderRadius: 50 }}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="camera"
+                      size={50}
+                      color="#000"
+                    />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           <TextInput
             onChangeText={(text) => setName(text)}
             placeholder="Name"
@@ -233,11 +283,16 @@ export default function Signup({ navigation }) {
               borderRadius: 20,
               marginTop: 15,
               paddingHorizontal: 20,
+              borderColor: nameBorderColor,
+              borderWidth: 1,
             }}
-          ></TextInput>
+            onFocus={() => setNameBorderColor("#09A1F6")}
+            onBlur={() => setNameBorderColor("#D9D9D9")}
+          />
+
           <TextInput
             onChangeText={(text) => setEmail(text)}
-            placeholder="Email:"
+            placeholder="Email"
             style={{
               backgroundColor: "#D9D9D9",
               width: 290,
@@ -245,11 +300,16 @@ export default function Signup({ navigation }) {
               borderRadius: 20,
               marginTop: 15,
               paddingHorizontal: 20,
+              borderColor: emailBorderColor,
+              borderWidth: 1,
             }}
-          ></TextInput>
+            onFocus={() => setEmailBorderColor("#09A1F6")}
+            onBlur={() => setEmailBorderColor("#D9D9D9")}
+          />
+
           <TextInput
             onChangeText={(text) => setPassword(text)}
-            placeholder="Password:"
+            placeholder="Password"
             secureTextEntry
             style={{
               backgroundColor: "#D9D9D9",
@@ -258,20 +318,12 @@ export default function Signup({ navigation }) {
               borderRadius: 20,
               marginTop: 15,
               paddingHorizontal: 20,
+              borderColor: passwordBorderColor,
+              borderWidth: 1,
             }}
-          ></TextInput>
-          <TextInput
-            onChangeText={(text) => setImageUrl(text)}
-            placeholder="Image URL:"
-            style={{
-              backgroundColor: "#D9D9D9",
-              width: 290,
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 20,
-            }}
-          ></TextInput>
+            onFocus={() => setPasswordBorderColor("#09A1F6")}
+            onBlur={() => setPasswordBorderColor("#D9D9D9")}
+          />
           <TouchableOpacity
             onPress={handleSignup}
             style={{
@@ -298,7 +350,7 @@ export default function Signup({ navigation }) {
               </Text>
             )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLoginNow}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text
               style={{
                 color: "#333333",

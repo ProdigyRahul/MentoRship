@@ -53,10 +53,37 @@ const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
 
-//endpoint for registration of the user
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-app.post("/register", async (req, res) => {
-  const { name, email, password, image } = req.body;
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Set up storage using Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads",
+    allowed_formats: ["jpg", "jpeg", "png"],
+    transformation: [
+      { width: 500, height: 500, crop: "limit" },
+      { quality: "auto:best" },
+    ],
+  },
+});
+
+// Create Multer instance with storage configuration
+const upload = multer({ storage: storage });
+
+// Endpoint to register users with image upload
+app.post("/register", upload.single("image"), async (req, res) => {
+  const { name, email, password } = req.body;
+  const image = req.file ? req.file.path : null; // Check if image file is uploaded
 
   try {
     // Check if user with the same email already exists
@@ -71,10 +98,10 @@ app.post("/register", async (req, res) => {
     // Hash the password before saving it
     const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
 
-    // create a new User object with hashed password
+    // Create a new User object with hashed password and image path
     const newUser = new User({ name, email, password: hashedPassword, image });
 
-    // save the user to the database
+    // Save the user to the database
     await newUser.save();
 
     const token = createToken(newUser._id);
@@ -232,48 +259,8 @@ app.get("/accepted-friends/:userId", async (req, res) => {
   }
 });
 
-const multer = require("multer");
-
-// Configure multer for handling file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "files/"); // Specify the desired destination folder
-  },
-  filename: function (req, file, cb) {
-    // Generate a unique filename for the uploaded file
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage });
-
 // Endpoint to post Messages and store it in the backend
-app.post("/messages", upload.single("imageFile"), async (req, res) => {
-  try {
-    const { senderId, recepientId, messageType, messageText } = req.body;
-
-    const newMessage = new Message({
-      senderId,
-      recepientId,
-      messageType,
-      message: messageText,
-      timestamp: new Date(),
-      imageUrl: messageType === "image" ? req.file.path : null,
-      sent: true, // Mark the message as sent when created
-      read: false, // Mark the message as not read initially
-    });
-
-    await newMessage.save();
-    res.status(200).json({ message: "Message sent Successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Endpoint to post Messages and store it in the backend
-app.post("/messages", upload.single("imageFile"), async (req, res) => {
+app.post("/messages", async (req, res) => {
   try {
     const { senderId, recepientId, messageType, messageText } = req.body;
 
