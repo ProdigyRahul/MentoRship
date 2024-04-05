@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   StatusBar,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
@@ -71,7 +72,7 @@ const MentorRequestScreen = () => {
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 20,
-          marginTop: 45,
+          marginTop: Platform.OS === "ios" ? 55 : 45,
         }}
       >
         <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { UserType } from "../../UserContext";
@@ -77,13 +78,13 @@ export default function MyEvents({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <StatusBar barStyle="white-content" />
+      <StatusBar barStyle="light-content" />
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 20,
-          marginTop: 45,
+          marginTop: Platform.OS === "ios" ? 55 : 45,
         }}
       >
         <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>

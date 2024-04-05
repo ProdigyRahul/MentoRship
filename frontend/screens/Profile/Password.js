@@ -128,7 +128,7 @@ export default function Password({ navigation }) {
             color: "#FFFFFF",
           }}
         >
-          My Events
+          Account Settings
         </Text>
       </View>
       <View style={styles.friendsContainer}>

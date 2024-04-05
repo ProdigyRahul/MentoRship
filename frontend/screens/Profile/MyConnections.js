@@ -10,6 +10,7 @@ import {
   Pressable,
   StatusBar,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -63,7 +64,7 @@ export default function MyConnections({ navigation }) {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 20,
-            marginTop: 45,
+            marginTop: Platform.OS === "ios" ? 55 : 45,
           }}
         >
           <TouchableOpacity
