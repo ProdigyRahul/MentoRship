@@ -239,6 +239,8 @@ const ChatsScreen = () => {
             borderTopEndRadius: 50,
             backgroundColor: "#FFFFFF",
             marginTop: 20,
+            marginBottom: 0,
+            paddingBottom: 85,
           }}
         >
           <View style={{ marginTop: 20, marginLeft: 20 }}>
