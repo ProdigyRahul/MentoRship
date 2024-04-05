@@ -52,7 +52,6 @@ app.listen(port, () => {
   );
 });
 
-// Serve the index.html file when accessing the root URL ("/")
 app.get("/", (req, res) => {
   res.sendFile("index.html", { root: __dirname });
 });
