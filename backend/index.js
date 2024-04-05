@@ -56,7 +56,7 @@ const path = require("path");
 
 // Serve the index.html file when accessing the root URL ("/")
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "backend", "index.html"));
 });
 
 const User = require("./models/user");
