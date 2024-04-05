@@ -10,12 +10,14 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   BackHandler,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { UserType } from "../../UserContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Password({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,7 +54,7 @@ export default function Password({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://172.20.10.3:8080/user-details/${userId}`
+        `https://api.rahulmistry.in/user-details/${userId}`
       );
       setUserName(response.data.FirstName);
     } catch (error) {
@@ -71,7 +73,7 @@ export default function Password({ navigation }) {
 
       setLoading(true);
       const response = await axios.delete(
-        `http://172.20.10.3:8080/delete-account/${userId}`,
+        `https://api.rahulmistry.in/delete-account/${userId}`,
         {
           data: { password },
         }
@@ -95,6 +97,9 @@ export default function Password({ navigation }) {
       setLoading(false);
     }
   };
+  const navigateBack = () => {
+    navigation.goBack();
+  };
 
   return (
     <LinearGradient
@@ -104,26 +109,43 @@ export default function Password({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Account Settings</Text>
-        <View style={styles.friendsContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ChangePassword")}
-          >
-            <View style={styles.item}>
-              <Icon name="lock" size={20} color="#000" />
-              <Text style={styles.itemText}>Change Password</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <View style={styles.item}>
-              <Text style={[styles.itemText, { color: "#FF0000" }]}>
-                Close Account
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <StatusBar barStyle="white-content" />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          marginTop: 45,
+        }}
+      >
+        <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
+          }}
+        >
+          Account Settings
+        </Text>
+      </View>
+      <View style={styles.friendsContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}>
+          <View style={styles.item}>
+            <Icon name="lock" size={20} color="#000" />
+            <Text style={styles.itemText}>Change Password</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <View style={styles.item}>
+            <Text style={[styles.itemText, { color: "#FF0000" }]}>
+              Close Account
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
       <Modal
         animationType="fade"
         transparent={true}

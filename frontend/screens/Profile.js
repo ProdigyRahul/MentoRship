@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -26,7 +27,7 @@ export default function Profile({ navigation }) {
       try {
         setTimeout(async () => {
           const response = await fetch(
-            `http://172.20.10.3:8080/user-data/${userId}`
+            `https://api.rahulmistry.in/user-data/${userId}`
           );
           const data = await response.json();
 
@@ -90,7 +91,7 @@ export default function Profile({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <SafeAreaView style={{ flex: 1, paddingBottom: 0 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         {userData && (
           <>
             <Text
@@ -98,281 +99,73 @@ export default function Profile({ navigation }) {
                 fontSize: 25,
                 fontWeight: "bold",
                 color: "#FFFFFF",
-                marginTop: 45,
+                marginTop: Platform.OS === "ios" ? 10 : 45,
                 textAlign: "left",
                 marginLeft: 20,
               }}
             >
               Profile
             </Text>
-            <View
-              style={{
-                flex: 1,
-                borderTopStartRadius: 50,
-                borderTopEndRadius: 50,
-                backgroundColor: "#FFFFFF",
-                marginTop: 20,
-                alignItems: "center",
-              }}
-            >
+            <View style={{ flex: 1, marginBottom: -50 }}>
               <View
                 style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  marginTop: 15,
-                  alignItems: "center",
-                  alignSelf: "flex-start",
-                  marginLeft: 25,
-                }}
-              >
-                <Image
-                  source={{ uri: userData.image }}
-                  style={{ width: 50, height: 50, borderRadius: 25 }}
-                />
-                <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-                  {userData.name}
-                </Text>
-              </View>
-
-              <ScrollView
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                  />
-                }
-                vertical={true}
-                style={{
                   flex: 1,
-                  marginRight: -5,
+                  borderTopStartRadius: 50,
+                  borderTopEndRadius: 50,
+                  backgroundColor: "#FFFFFF",
+                  marginTop: 20,
+                  alignItems: "center",
                 }}
               >
                 <View
                   style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
                     flexDirection: "row",
+                    gap: 10,
+                    marginTop: 15,
                     alignItems: "center",
-                  }}
-                  onPress={navigateMyProfile}
-                >
-                  <FontAwesome5 name="user" size={16} color="#000" />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    My Profile
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  onPress={navigateMyConnection}
-                >
-                  <FontAwesome5 name="users" size={16} color="#000" />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    My Connections
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    navigation.navigate("MyEvents");
+                    alignSelf: "flex-start",
+                    marginLeft: 25,
                   }}
                 >
-                  <FontAwesome5 name="calendar-alt" size={16} color="#000" />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    My Events
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome5 name="clock" size={16} color="#000" />
-
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    Mentoring Availability and Preferences
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  onPress={() => navigation.navigate("Password")}
-                >
-                  <FontAwesome5 name="cogs" size={16} color="#000" />
-
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
-                    }}
-                  >
-                    Account Settings
-                  </Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <FontAwesome5 name="comment" size={16} color="#000" />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: "left",
-                        marginLeft: 10,
-                      }}
-                    >
-                      Chat with MentoRship
-                    </Text>
-                  </View>
-                  <FontAwesome5
-                    name="external-link-alt"
-                    size={16}
-                    color="#000"
+                  <Image
+                    source={{ uri: userData.image }}
+                    style={{ width: 50, height: 50, borderRadius: 25 }}
                   />
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Image
-                      source={logo}
-                      style={{ width: 18, height: 18, marginRight: 9 }}
+                  <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                    {userData.name}
+                  </Text>
+                </View>
+
+                <ScrollView
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
                     />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: "left",
-                      }}
-                    >
-                      About MentoRship
-                    </Text>
-                  </View>
-                  <FontAwesome5
-                    name="external-link-alt"
-                    size={16}
-                    color="#000"
-                  />
-                </TouchableOpacity>
-                <View
+                  }
+                  vertical={true}
                   style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    flex: 1,
+                    marginRight: -5,
                   }}
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <FontAwesome5 name="lock" size={16} color="#000" />
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={navigateMyProfile}
+                  >
+                    <FontAwesome5 name="user" size={16} color="#000" />
                     <Text
                       style={{
                         fontSize: 16,
@@ -380,44 +173,260 @@ export default function Profile({ navigation }) {
                         marginLeft: 10,
                       }}
                     >
-                      Privacy Policy
+                      My Profile
                     </Text>
-                  </View>
-                  <FontAwesome5
-                    name="external-link-alt"
-                    size={16}
-                    color="#000"
-                  />
-                </TouchableOpacity>
-
-                <View
-                  style={{
-                    width: 350,
-                    height: 1.5,
-                    backgroundColor: "#D9D9D9",
-                    marginTop: 25,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  onPress={handleLogout}
-                >
-                  <FontAwesome5 name="sign-out-alt" size={16} color="#000" />
-                  <Text
+                  </TouchableOpacity>
+                  <View
                     style={{
-                      fontSize: 16,
-                      textAlign: "left",
-                      marginLeft: 10,
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={navigateMyConnection}
+                  >
+                    <FontAwesome5 name="users" size={16} color="#000" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      My Connections
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      navigation.navigate("MyEvents");
                     }}
                   >
-                    Logout
-                  </Text>
-                </TouchableOpacity>
-              </ScrollView>
+                    <FontAwesome5 name="calendar-alt" size={16} color="#000" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      My Events
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FontAwesome5 name="clock" size={16} color="#000" />
+
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      Mentoring Availability and Preferences
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={() => navigation.navigate("Password")}
+                  >
+                    <FontAwesome5 name="cogs" size={16} color="#000" />
+
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      Account Settings
+                    </Text>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <FontAwesome5 name="comment" size={16} color="#000" />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: "left",
+                          marginLeft: 10,
+                        }}
+                      >
+                        Chat with MentoRship
+                      </Text>
+                    </View>
+                    <FontAwesome5
+                      name="external-link-alt"
+                      size={16}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <Image
+                        source={logo}
+                        style={{ width: 18, height: 18, marginRight: 9 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: "left",
+                        }}
+                      >
+                        About MentoRship
+                      </Text>
+                    </View>
+                    <FontAwesome5
+                      name="external-link-alt"
+                      size={16}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <FontAwesome5 name="lock" size={16} color="#000" />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: "left",
+                          marginLeft: 10,
+                        }}
+                      >
+                        Privacy Policy
+                      </Text>
+                    </View>
+                    <FontAwesome5
+                      name="external-link-alt"
+                      size={16}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+
+                  <View
+                    style={{
+                      width: 350,
+                      height: 1.5,
+                      backgroundColor: "#D9D9D9",
+                      marginTop: 25,
+                    }}
+                  ></View>
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={handleLogout}
+                  >
+                    <FontAwesome5 name="sign-out-alt" size={16} color="#000" />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: "left",
+                        marginLeft: 10,
+                      }}
+                    >
+                      Logout
+                    </Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
             </View>
           </>
         )}

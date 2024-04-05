@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Community from "../screens/Community";
@@ -168,10 +169,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   tabItem: {
+    marginTop: Platform.OS === "ios" ? 17 : 0,
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: Platform.OS === "ios" ? "" : "center",
   },
+
   tabText: {
     color: "#748c94",
     fontSize: 11,

@@ -22,7 +22,7 @@ export default function Explore({ navigation }) {
       try {
         setTimeout(async () => {
           const response = await axios.get(
-            `http://172.20.10.3:8080/users/${userId}`
+            `https://api.rahulmistry.in/users/${userId}`
           );
           setUsers(response.data);
           setLoading(false);

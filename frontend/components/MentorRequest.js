@@ -9,7 +9,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
   const acceptRequest = async (friendRequestId) => {
     try {
       const response = await fetch(
-        "http://172.20.10.3:8080/friend-request/accept",
+        "https://api.rahulmistry.in/friend-request/accept",
         {
           method: "POST",
           headers: {

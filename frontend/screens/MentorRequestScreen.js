@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   StatusBar,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
@@ -13,9 +14,6 @@ import MentorRequest from "../components/MentorRequest";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import GestureRecognizer, {
-  swipeDirections,
-} from "react-native-swipe-gestures";
 
 const MentorRequestScreen = () => {
   const { userId, setUserId } = useContext(UserType);
@@ -30,7 +28,7 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `http://172.20.10.3:8080/friend-request/${userId}`
+        `https://api.rahulmistry.in/friend-request/${userId}`
       );
       if (response.status === 200) {
         const friendRequestsData = response.data.map((friendRequest) => ({
@@ -47,92 +45,82 @@ const MentorRequestScreen = () => {
     }
   };
 
-  console.log(friendRequests);
-
   const navigateBack = () => {
     navigation.goBack();
   };
 
-  const onSwipeRight = () => {
-    navigation.goBack();
-  };
-
-  const config = {
-    velocityThreshold: 0.3,
-    directionalOffsetThreshold: 20,
-  };
-  const onSwipe = (gestureName) => {};
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#000000" />
-        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
-      </View>
-    );
-  }
   return (
-    <GestureRecognizer
-      onSwipe={(direction) => onSwipe(direction)}
-      onSwipeRight={onSwipeRight}
-      config={config}
-      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
     >
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
+      <StatusBar barStyle="white-content" />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          marginTop: Platform.OS === "ios" ? 55 : 45,
+        }}
       >
-        <StatusBar barStyle="white-content" />
-        <View
+        <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            marginTop: 45,
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
           }}
         >
-          <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
-            <MaterialIcons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <Text
+          Notifications
+        </Text>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          borderTopStartRadius: 50,
+          borderTopEndRadius: 50,
+          backgroundColor: "#FFFFFF",
+          marginTop: 20,
+        }}
+      >
+        {loading ? (
+          <View
             style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "#FFFFFF",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#FFFFFF",
             }}
           >
-            Notifications
-          </Text>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            borderTopStartRadius: 50,
-            borderTopEndRadius: 50,
-            backgroundColor: "#FFFFFF",
-            marginTop: 20,
-          }}
-        >
-          <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
-            {friendRequests.length > 0}
-
-            {friendRequests.map((item, index) => (
-              <MentorRequest
-                key={index}
-                item={item}
-                friendRequests={friendRequests}
-                setFriendRequests={setFriendRequests}
-              />
-            ))}
+            <ActivityIndicator size="large" color="#000" />
+            <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
           </View>
-        </View>
-      </LinearGradient>
-    </GestureRecognizer>
+        ) : (
+          <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
+            {friendRequests.length > 0 ? (
+              friendRequests.map((item, index) => (
+                <MentorRequest
+                  key={index}
+                  item={item}
+                  friendRequests={friendRequests}
+                  setFriendRequests={setFriendRequests}
+                />
+              ))
+            ) : (
+              <Text style={{ fontSize: 16, textAlign: "center" }}>
+                No Notifications
+              </Text>
+            )}
+          </View>
+        )}
+      </View>
+    </LinearGradient>
   );
 };
 
 export default MentorRequestScreen;
-
-const styles = StyleSheet.create({});

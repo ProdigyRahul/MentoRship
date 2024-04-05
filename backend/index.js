@@ -361,7 +361,7 @@ app.post("/messages", upload.single("imageFile"), async (req, res) => {
     res.status(200).json({ message: "Message sent Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }``);
   }
 });
 

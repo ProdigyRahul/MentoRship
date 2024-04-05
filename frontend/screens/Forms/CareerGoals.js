@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -83,7 +84,7 @@ export default function CareerGoals({ navigation }) {
     try {
       // Send a POST request to your backend endpoint
       const response = await axios.post(
-        "http://172.20.10.3:8080/onboarding/v4",
+        "https://api.rahulmistry.in/onboarding/v4",
         {
           userId: userId, // Use the userId from your context or state
           careerGoals: Object.keys(checkBoxStates).filter(
@@ -226,7 +227,7 @@ export default function CareerGoals({ navigation }) {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         {loading ? (

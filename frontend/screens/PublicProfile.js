@@ -17,7 +17,7 @@ const PublicProfile = ({ route }) => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/public-profile/${userId}`
+          `https://api.rahulmistry.in/public-profile/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user data");

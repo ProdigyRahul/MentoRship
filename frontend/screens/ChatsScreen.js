@@ -9,15 +9,13 @@ import {
   Animated,
   Easing,
   RefreshControl,
+  Platform,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
 import { useNavigation } from "@react-navigation/native";
 import UserChat from "../components/UserChat";
 import { LinearGradient } from "expo-linear-gradient";
-import GestureRecognizer, {
-  swipeDirections,
-} from "react-native-swipe-gestures";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -42,25 +40,26 @@ const ChatsScreen = () => {
     const fetchAcceptedFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/accepted-friends/${userId}`
+          `https://api.rahulmistry.in/accepted-friends/${userId}`
         );
         const data = await response.json();
 
         if (response.ok) {
           setAcceptedFriends(data);
-          setLoading(false);
           setRefreshing(false);
         }
       } catch (error) {
         console.log("error showing the accepted friends", error);
         setRefreshing(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     const fetchPendingFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-request/${userId}`
+          `https://api.rahulmistry.in/friend-request/${userId}`
         );
         const data = await response.json();
 
@@ -80,7 +79,7 @@ const ChatsScreen = () => {
   }, [refreshing]);
 
   const onRefresh = () => {
-    setRefreshing(true); // Turn on refreshing when pull down occurs
+    setRefreshing(true);
   };
 
   const navigateToExplore = () => {
@@ -142,127 +141,124 @@ const ChatsScreen = () => {
     navigation.navigate("MentorRequest");
   };
 
-  if (loading) {
-    return (
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
-      >
-        <ActivityIndicator size="large" color="#FFFFFF" />
-        <Text style={{ marginTop: 10, color: "#FFFFFF" }}>Please wait...</Text>
-      </LinearGradient>
-    );
-  }
   return (
-    <GestureRecognizer
-      onSwipeLeft={onSwipeLeft}
-      config={config}
-      style={{
-        flex: 1,
-      }}
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
     >
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
+      <StatusBar barStyle="white-content" />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          marginTop: Platform.OS === "ios" ? 55 : 45,
+        }}
       >
-        <StatusBar barStyle="light-content" />
-        <View
+        <Text
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            marginTop: 45,
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
           }}
         >
-          <Text
+          MentoRship Chats
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable
+            onPress={navigateToMentorRequest}
+            style={{ marginRight: 7 }}
+          >
+            <View style={{ position: "relative" }}>
+              <Animated.View style={translateStyle}>
+                <MaterialIcons
+                  name="notifications"
+                  size={24}
+                  color="white"
+                  style={{ marginRight: 10 }}
+                />
+              </Animated.View>
+              {notificationCount > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -9,
+                    right: 0,
+                    height: 17,
+                    width: 17,
+                    backgroundColor: "red",
+                    borderRadius: 20,
+                    paddingHorizontal: 5.5,
+                    paddingVertical: 1,
+                    marginRight: 2,
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 11 }}>
+                    {notificationCount}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </Pressable>
+          {/* TODO: Search */}
+          <Pressable onPress={navigateToExplore}>
+            <MaterialIcons name="search" size={24} color="white" />
+          </Pressable>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          borderTopStartRadius: 50,
+          borderTopEndRadius: 50,
+          backgroundColor: "#FFFFFF",
+          marginTop: 20,
+          marginBottom: 0,
+          paddingBottom: 85,
+        }}
+      >
+        <View style={{ marginTop: 20, marginLeft: 20 }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
+            Your Conversations:
+          </Text>
+          <View style={styles.borderLine}></View>
+        </View>
+        {loading ? (
+          <View
             style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "#FFFFFF",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#FFFFFF",
             }}
           >
-            MentoRship Chats
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Pressable
-              onPress={navigateToMentorRequest}
-              style={{ marginRight: 7 }}
-            >
-              <View style={{ position: "relative" }}>
-                <Animated.View style={translateStyle}>
-                  <MaterialIcons
-                    name="notifications"
-                    size={24}
-                    color="white"
-                    style={{ marginRight: 10 }}
-                  />
-                </Animated.View>
-                {notificationCount > 0 && (
-                  <View
-                    style={{
-                      position: "absolute",
-                      top: -9,
-                      right: 0,
-                      height: 17,
-                      width: 17,
-                      backgroundColor: "red",
-                      borderRadius: 20,
-                      paddingHorizontal: 5.5,
-                      paddingVertical: 1,
-                      marginRight: 2,
-                    }}
-                  >
-                    <Text style={{ color: "white", fontSize: 11 }}>
-                      {notificationCount}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </Pressable>
-            {/* TODO: Search */}
-            <Pressable onPress={navigateToExplore}>
-              <MaterialIcons name="search" size={24} color="white" />
-            </Pressable>
+            <ActivityIndicator size="large" color="#000" />
+            <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
           </View>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            borderTopStartRadius: 50,
-            borderTopEndRadius: 50,
-            backgroundColor: "#FFFFFF",
-            marginTop: 20,
-          }}
-        >
-          <View style={{ marginTop: 20, marginLeft: 20 }}>
-            <Text
-              style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}
-            >
-              Your Conversations:
-            </Text>
-            <View style={styles.borderLine}></View>
-          </View>
+        ) : (
           <ScrollView
+            style={{
+              flex: 1,
+              marginRight: -5,
+            }}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
+            vertical={true}
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ alignItems: "center" }}
           >
             {acceptedFriends.map((item, index) => (
               <UserChat key={index} item={item} />
             ))}
           </ScrollView>
-        </View>
-      </LinearGradient>
-    </GestureRecognizer>
+        )}
+      </View>
+    </LinearGradient>
   );
 };
 

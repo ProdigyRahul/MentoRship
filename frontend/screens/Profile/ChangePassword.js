@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Keyboard,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { UserType } from "../../UserContext";
@@ -49,7 +50,7 @@ export default function ChangePassword({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://172.20.10.3:8080/change-password/${userId}`,
+        `https://api.rahulmistry.in/change-password/${userId}`,
         {
           oldPassword,
           newPassword,
@@ -80,13 +81,24 @@ export default function ChangePassword({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Change Password</Text>
-        </View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          paddingBottom: 0,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
+            marginTop: Platform.OS === "ios" ? 10 : 45,
+            textAlign: "left",
+            marginLeft: 20,
+          }}
+        >
+          Change Password
+        </Text>
         <View style={styles.friendsContainer}>
           <Text style={styles.label}>Enter Old Password</Text>
           <TextInput
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 40,
+    marginTop: 50,
   },
   title: {
     fontSize: 25,
@@ -174,6 +186,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 20,
     paddingTop: 30,
+    marginBottom: -50,
   },
   label: {
     fontWeight: "bold",

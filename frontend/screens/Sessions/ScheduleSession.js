@@ -8,6 +8,8 @@ import {
   TextInput,
   StatusBar,
   ActivityIndicator,
+  ActionSheetIOS,
+  Platform,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import axios from "axios";
@@ -59,7 +61,7 @@ const ScheduleSession = ({ navigation }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://172.20.10.3:8080/select-schedule/${sessionId}`,
+        `https://api.rahulmistry.in/select-schedule/${sessionId}`,
         { date, time, duration }
       );
       console.log("Response:", response.data);
@@ -73,6 +75,33 @@ const ScheduleSession = ({ navigation }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const showDurationActionSheet = () => {
+    const durations = [
+      "Select Duration",
+      "15 min",
+      "30 min",
+      "45 min",
+      "60 min",
+      "90 min",
+      "More than 90 min",
+      "Cancel",
+    ];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: durations,
+        cancelButtonIndex: durations.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== durations.length - 1) {
+          // Extract the numeric value from the selected option
+          const selectedDuration = durations[buttonIndex];
+          const numericValue = parseInt(selectedDuration.split(" ")[0]);
+          setDuration(numericValue);
+        }
+      }
+    );
   };
 
   return (
@@ -201,43 +230,74 @@ const ScheduleSession = ({ navigation }) => {
             />
           )}
         </View>
-        <View style={{ marginLeft: 10 }}>
-          <Text
-            style={{
-              fontSize: 15,
-              marginTop: 15,
-              color: "#5A5A5A",
-              marginBottom: 15,
-            }}
-          >
-            Duration
-          </Text>
-          <View
-            style={{
-              borderColor: "#D9D9D9",
-              borderWidth: 1,
-              borderRadius: 5,
-              paddingHorizontal: 10,
-              marginBottom: 20,
-              height: 50,
-            }}
-          >
-            <Picker
-              selectedValue={duration}
-              onValueChange={(itemValue) => setDuration(itemValue)}
-              style={{ height: 40, width: "100%", alignSelf: "center" }}
-              mode="dropdown"
+        {Platform.OS === "android" && (
+          <View style={{ marginLeft: 10 }}>
+            <Text
+              style={{
+                fontSize: 15,
+                marginTop: 15,
+                color: "#5A5A5A",
+                marginBottom: 15,
+              }}
             >
-              <Picker.Item label="Select Duration" value="" />
-              <Picker.Item label="15 min" value="15" />
-              <Picker.Item label="30 min" value="30" />
-              <Picker.Item label="45 min" value="45" />
-              <Picker.Item label="60 min" value="60" />
-              <Picker.Item label="90 min" value="90" />
-              <Picker.Item label="More than 90 min" value="500" />
-            </Picker>
+              Duration
+            </Text>
+            <View
+              style={{
+                borderColor: "#D9D9D9",
+                borderWidth: 1,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                marginBottom: 20,
+                height: 50,
+              }}
+            >
+              <Picker
+                selectedValue={duration}
+                onValueChange={(itemValue) => setDuration(itemValue)}
+                style={{ height: 40, width: "100%", alignSelf: "center" }}
+                mode="dropdown"
+              >
+                <Picker.Item label="Select Duration" value="" />
+                <Picker.Item label="15 min" value="15" />
+                <Picker.Item label="30 min" value="30" />
+                <Picker.Item label="45 min" value="45" />
+                <Picker.Item label="60 min" value="60" />
+                <Picker.Item label="90 min" value="90" />
+                <Picker.Item label="More than 90 min" value="500" />
+              </Picker>
+            </View>
           </View>
-        </View>
+        )}
+
+        {Platform.OS === "ios" && (
+          <View style={{ marginLeft: 10 }}>
+            <Text
+              style={{
+                fontSize: 15,
+                marginTop: 15,
+                color: "#5A5A5A",
+                marginBottom: 15,
+              }}
+            >
+              Duration
+            </Text>
+            <TouchableOpacity
+              onPress={() => showDurationActionSheet()}
+              style={{
+                borderColor: "#D9D9D9",
+                borderWidth: 1,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                marginBottom: 20,
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{}}>{duration || "Select Duration"}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
       <View
         style={{
