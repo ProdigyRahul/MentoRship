@@ -52,11 +52,37 @@ app.listen(port, () => {
   );
 });
 
-const path = require("path");
-
-// Serve the index.html file when accessing the root URL ("/")
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "backend", "index.html"));
+  res.send(`<!DOCTYPE html>
+  <html lang="en">
+  
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Backend API Status</title>
+      <style>
+          body {
+              margin: 0;
+              padding: 0;
+              height: 100vh;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #000;
+              color: #fff;
+              font-family: Arial, sans-serif;
+              font-size: 24px;
+          }
+      </style>
+  </head>
+  
+  <body>
+      <div>
+          <p>The Backend API is running perfectly</p>
+      </div>
+  </body>
+  
+  </html>`);
 });
 
 const User = require("./models/user");
