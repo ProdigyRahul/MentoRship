@@ -52,12 +52,12 @@ app.listen(port, () => {
   );
 });
 
-app.get("/", (req, res) => {
-  res.sendFile("index.html");
-});
+// app.get("/", (req, res) => {
+//   res.sendFile("index.html");
+// });
 
-// // Serve static files from the root directory
-// app.use(express.static(__dirname));
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
 const User = require("./models/user");
 const Message = require("./models/message");
