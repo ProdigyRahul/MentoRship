@@ -53,7 +53,7 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: __dirname });
+  res.sendFile("index.html");
 });
 
 // Serve static files from the root directory
