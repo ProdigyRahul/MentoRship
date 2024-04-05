@@ -16,9 +16,6 @@ import { UserType } from "../UserContext";
 import { useNavigation } from "@react-navigation/native";
 import UserChat from "../components/UserChat";
 import { LinearGradient } from "expo-linear-gradient";
-import GestureRecognizer, {
-  swipeDirections,
-} from "react-native-swipe-gestures";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -158,119 +155,109 @@ const ChatsScreen = () => {
     );
   }
   return (
-    <GestureRecognizer
-      onSwipeLeft={onSwipeLeft}
-      config={config}
-      style={{
-        flex: 1,
-      }}
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
     >
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
+      <StatusBar barStyle="white-content" />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          marginTop: Platform.OS === "ios" ? 55 : 45,
+        }}
       >
-        <StatusBar barStyle="white-content" />
-        <View
+        <Text
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            marginTop: Platform.OS === "ios" ? 55 : 45,
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
           }}
         >
-          <Text
-            style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "#FFFFFF",
-            }}
+          MentoRship Chats
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable
+            onPress={navigateToMentorRequest}
+            style={{ marginRight: 7 }}
           >
-            MentoRship Chats
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Pressable
-              onPress={navigateToMentorRequest}
-              style={{ marginRight: 7 }}
-            >
-              <View style={{ position: "relative" }}>
-                <Animated.View style={translateStyle}>
-                  <MaterialIcons
-                    name="notifications"
-                    size={24}
-                    color="white"
-                    style={{ marginRight: 10 }}
-                  />
-                </Animated.View>
-                {notificationCount > 0 && (
-                  <View
-                    style={{
-                      position: "absolute",
-                      top: -9,
-                      right: 0,
-                      height: 17,
-                      width: 17,
-                      backgroundColor: "red",
-                      borderRadius: 20,
-                      paddingHorizontal: 5.5,
-                      paddingVertical: 1,
-                      marginRight: 2,
-                    }}
-                  >
-                    <Text style={{ color: "white", fontSize: 11 }}>
-                      {notificationCount}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </Pressable>
-            {/* TODO: Search */}
-            <Pressable onPress={navigateToExplore}>
-              <MaterialIcons name="search" size={24} color="white" />
-            </Pressable>
-          </View>
+            <View style={{ position: "relative" }}>
+              <Animated.View style={translateStyle}>
+                <MaterialIcons
+                  name="notifications"
+                  size={24}
+                  color="white"
+                  style={{ marginRight: 10 }}
+                />
+              </Animated.View>
+              {notificationCount > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -9,
+                    right: 0,
+                    height: 17,
+                    width: 17,
+                    backgroundColor: "red",
+                    borderRadius: 20,
+                    paddingHorizontal: 5.5,
+                    paddingVertical: 1,
+                    marginRight: 2,
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 11 }}>
+                    {notificationCount}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </Pressable>
+          {/* TODO: Search */}
+          <Pressable onPress={navigateToExplore}>
+            <MaterialIcons name="search" size={24} color="white" />
+          </Pressable>
         </View>
-        <View
+      </View>
+      <View
+        style={{
+          flex: 1,
+          borderTopStartRadius: 50,
+          borderTopEndRadius: 50,
+          backgroundColor: "#FFFFFF",
+          marginTop: 20,
+          marginBottom: 0,
+          paddingBottom: 85,
+        }}
+      >
+        <View style={{ marginTop: 20, marginLeft: 20 }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
+            Your Conversations:
+          </Text>
+          <View style={styles.borderLine}></View>
+        </View>
+        <ScrollView
           style={{
             flex: 1,
-            borderTopStartRadius: 50,
-            borderTopEndRadius: 50,
-            backgroundColor: "#FFFFFF",
-            marginTop: 20,
-            marginBottom: 0,
-            paddingBottom: 85,
+            marginRight: -5,
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          vertical={true}
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
         >
-          <View style={{ marginTop: 20, marginLeft: 20 }}>
-            <Text
-              style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}
-            >
-              Your Conversations:
-            </Text>
-            <View style={styles.borderLine}></View>
-          </View>
-          <ScrollView
-            style={{
-              flex: 1,
-              marginRight: -5,
-            }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            vertical={true}
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {acceptedFriends.map((item, index) => (
-              <UserChat key={index} item={item} />
-            ))}
-          </ScrollView>
-        </View>
-      </LinearGradient>
-    </GestureRecognizer>
+          {acceptedFriends.map((item, index) => (
+            <UserChat key={index} item={item} />
+          ))}
+        </ScrollView>
+      </View>
+    </LinearGradient>
   );
 };
 

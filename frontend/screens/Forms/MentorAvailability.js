@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -161,7 +162,7 @@ export default function MentorAvailability({ navigation }) {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -226,7 +227,7 @@ export default function CareerGoals({ navigation }) {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         {loading ? (

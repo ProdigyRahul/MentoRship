@@ -17,9 +17,6 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { UserType } from "../../UserContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import GestureRecognizer, {
-  swipeDirections,
-} from "react-native-swipe-gestures";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Password({ navigation }) {
@@ -52,16 +49,6 @@ export default function Password({ navigation }) {
 
     return () => backHandler.remove();
   }, [modalVisible]);
-
-  const onSwipeRight = () => {
-    navigation.goBack();
-  };
-  const onSwipeLeft = () => {};
-  const onSwipe = (gestureName) => {};
-  const config = {
-    velocityThreshold: 0.3,
-    directionalOffsetThreshold: 20,
-  };
 
   const fetchUserName = async () => {
     try {
@@ -115,117 +102,107 @@ export default function Password({ navigation }) {
   };
 
   return (
-    <GestureRecognizer
-      onSwipe={(direction) => onSwipe(direction)}
-      onSwipeRight={onSwipeRight}
-      onSwipeLeft={onSwipeLeft}
-      config={config}
-      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
     >
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1 }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
+      <StatusBar barStyle="white-content" />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          marginTop: 45,
+        }}
       >
-        <StatusBar barStyle="white-content" />
-        <View
+        <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            marginTop: 45,
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "#FFFFFF",
           }}
         >
-          <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
-            <MaterialIcons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "#FFFFFF",
-            }}
-          >
-            My Events
-          </Text>
-        </View>
-        <View style={styles.friendsContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ChangePassword")}
-          >
-            <View style={styles.item}>
-              <Icon name="lock" size={20} color="#000" />
-              <Text style={styles.itemText}>Change Password</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <View style={styles.item}>
-              <Text style={[styles.itemText, { color: "#FF0000" }]}>
-                Close Account
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Close Account</Text>
-                {loading ? (
-                  <ActivityIndicator size="large" color="#000" />
-                ) : (
-                  <>
-                    <Text style={styles.modalText}>
-                      {userName
-                        ? `${userName}, We are sorry to see you go.`
-                        : "Loading..."}
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { borderColor: isFocused ? "#09A1F6" : "#CCCCCC" }, // Change border color based on focus state
-                      ]}
-                      placeholder="Confirm Your Password"
-                      secureTextEntry={true}
-                      value={password}
-                      onChangeText={setPassword}
-                      onFocus={() => setIsFocused(true)} // Set focus state to true
-                      onBlur={() => setIsFocused(false)} // Set focus state to false
-                    />
-                    {error && <Text style={styles.errorText}>{error}</Text>}
-                    {/* Render error text */}
-                    <Text style={[styles.modalText, { marginBottom: 20 }]}>
-                      If you have any questions, please visit our
-                      <Text style={{ color: "#09A1F6" }}> Help Center</Text>.
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.redButton}
-                      onPress={handleConfirmClose}
-                    >
-                      <Text style={styles.redButtonText}>Close Account</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-        {showNotification && (
-          <View style={styles.notificationContainer}>
-            <Text style={styles.notificationText}>
-              Account deactivated successfully!
+          My Events
+        </Text>
+      </View>
+      <View style={styles.friendsContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}>
+          <View style={styles.item}>
+            <Icon name="lock" size={20} color="#000" />
+            <Text style={styles.itemText}>Change Password</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <View style={styles.item}>
+            <Text style={[styles.itemText, { color: "#FF0000" }]}>
+              Close Account
             </Text>
           </View>
-        )}
-      </LinearGradient>
-    </GestureRecognizer>
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Close Account</Text>
+              {loading ? (
+                <ActivityIndicator size="large" color="#000" />
+              ) : (
+                <>
+                  <Text style={styles.modalText}>
+                    {userName
+                      ? `${userName}, We are sorry to see you go.`
+                      : "Loading..."}
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { borderColor: isFocused ? "#09A1F6" : "#CCCCCC" }, // Change border color based on focus state
+                    ]}
+                    placeholder="Confirm Your Password"
+                    secureTextEntry={true}
+                    value={password}
+                    onChangeText={setPassword}
+                    onFocus={() => setIsFocused(true)} // Set focus state to true
+                    onBlur={() => setIsFocused(false)} // Set focus state to false
+                  />
+                  {error && <Text style={styles.errorText}>{error}</Text>}
+                  {/* Render error text */}
+                  <Text style={[styles.modalText, { marginBottom: 20 }]}>
+                    If you have any questions, please visit our
+                    <Text style={{ color: "#09A1F6" }}> Help Center</Text>.
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.redButton}
+                    onPress={handleConfirmClose}
+                  >
+                    <Text style={styles.redButtonText}>Close Account</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      {showNotification && (
+        <View style={styles.notificationContainer}>
+          <Text style={styles.notificationText}>
+            Account deactivated successfully!
+          </Text>
+        </View>
+      )}
+    </LinearGradient>
   );
 }
 

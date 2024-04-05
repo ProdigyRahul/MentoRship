@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ActionSheetIOS,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -28,7 +30,7 @@ const NavigationLine = ({ active }) => (
 
 export default function Education({ navigation }) {
   const [selectedExperience, setSelectedExperience] = useState("");
-  const [selectedAffilation, setSelectionAffilation] = useState("charusat");
+  const [selectedAffilation, setSelectionAffilation] = useState("Charusat");
   const [headline, setHeadline] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
   const [noCollegeExperience, setNoCollegeExperience] = useState(false);
@@ -42,6 +44,75 @@ export default function Education({ navigation }) {
   const [gradeYear, setGradeYear] = useState("");
   const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(false);
+
+  // Function to show Action Sheet for selecting starting year
+  const showStartingYearActionSheet = () => {
+    const startYear = 1975;
+    const endYear = new Date().getFullYear();
+    const years = Array.from(
+      { length: endYear - startYear + 1 },
+      (_, index) => endYear - index
+    );
+
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [...years.map(String), "Cancel"],
+        cancelButtonIndex: years.length,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== years.length) {
+          setGradeYear(years[buttonIndex]);
+        }
+      }
+    );
+  };
+
+  // Function to show Action Sheet for selecting experience
+  const showExperienceActionSheet = () => {
+    const experienceOptions = [
+      "None",
+      "Intern",
+      "Entry Level",
+      "Senior Associate",
+      "Manager",
+      "Director",
+      "Executive",
+      "Cancel",
+    ];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: experienceOptions,
+        cancelButtonIndex: experienceOptions.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== experienceOptions.length - 1) {
+          setSelectedExperience(experienceOptions[buttonIndex]);
+        }
+      }
+    );
+  };
+
+  // Function to show Action Sheet for selecting affiliation
+  const showAffiliationActionSheet = () => {
+    const affiliationOptions = [
+      "Charusat",
+      "Rahul Mistry",
+      "Melita Castelino",
+      "Other",
+      "Cancel",
+    ];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: affiliationOptions,
+        cancelButtonIndex: affiliationOptions.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== affiliationOptions.length - 1) {
+          setSelectionAffilation(affiliationOptions[buttonIndex]);
+        }
+      }
+    );
+  };
 
   const maxCharacterLimit = 60;
 
@@ -104,7 +175,7 @@ export default function Education({ navigation }) {
       return;
     }
 
-    if (!selectedExperience || selectedExperience === "None") {
+    if (!selectedExperience) {
       Alert.alert(
         "Error",
         "Please select your experience",
@@ -195,12 +266,12 @@ export default function Education({ navigation }) {
         }}
       ></View>
 
-      <ScrollView vertical={true}>
+      <ScrollView vertical={true} horizontal={false}>
         <Text
           style={{
             fontSize: 15,
             marginTop: 10,
-            paddingHorizontal: 15,
+            paddingHorizontal: 10,
           }}
         >
           Share your educational and professional background with the community.
@@ -210,34 +281,67 @@ export default function Education({ navigation }) {
             paddingHorizontal: 15,
           }}
         >
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>
-            Affiliation (optional)
-          </Text>
-          <View
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "95%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 5,
-              borderColor: "#D9D9D9",
-              justifyContent: "center",
-              borderWidth: 1,
-            }}
-          >
-            <Picker
-              selectedValue={selectedAffilation}
-              onValueChange={(itemValue) => handleAffilationChange(itemValue)}
-              style={{ height: 50, width: "100%" }}
-            >
-              <Picker.Item label="Select Affiliation" value="" />
-              <Picker.Item label="Charusat" value="charusat" />
-              <Picker.Item label="Rahul Mistry" value="rahul" />
-              <Picker.Item label="Melita Castelino" value="melita" />
-              <Picker.Item label="Other" value="other" />
-            </Picker>
-          </View>
+          {Platform.OS === "android" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Affiliation (optional)
+              </Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={selectedAffilation}
+                  onValueChange={(itemValue) =>
+                    handleAffilationChange(itemValue)
+                  }
+                  style={{ height: 50, width: "100%" }}
+                >
+                  <Picker.Item label="Select Affiliation" value="" />
+                  <Picker.Item label="Charusat" value="Charusat" />
+                  <Picker.Item label="Rahul Mistry" value="Rahul" />
+                  <Picker.Item label="Melita Castelino" value="Melita" />
+                  <Picker.Item label="Other" value="Other" />
+                </Picker>
+              </View>
+            </>
+          )}
+          {Platform.OS === "ios" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Affiliation (optional)
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  showAffiliationActionSheet();
+                }}
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Text style={{ marginLeft: 10 }}>
+                  {selectedAffilation || "Select Affiliation"}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Headline *</Text>
           <TextInput
             placeholder="Enter your attention-grabbing headline for your profile"
@@ -257,34 +361,72 @@ export default function Education({ navigation }) {
           <Text style={{ marginTop: 5, color: "#9C9C9C" }}>
             {characterCount}/{maxCharacterLimit}
           </Text>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Experience *</Text>
-          <View
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "95%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 5,
-              borderColor: "#D9D9D9",
-              justifyContent: "center",
-              borderWidth: 1,
-            }}
-          >
-            <Picker
-              selectedValue={selectedExperience}
-              onValueChange={(itemValue) => handlechangeExperience(itemValue)}
-              style={{ height: 50, width: "100%" }}
-            >
-              <Picker.Item label="None" value="" />
-              <Picker.Item label="Intern" value="intern" />
-              <Picker.Item label="Entery Level" value="entrylevel" />
-              <Picker.Item label="Senior Associate" value="seniorassociate" />
-              <Picker.Item label="Manager" value="manager" />
-              <Picker.Item label="Director" value="director" />
-              <Picker.Item label="Executive" value="executive" />
-            </Picker>
-          </View>
+          {Platform.OS === "android" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Experience *
+              </Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={selectedExperience}
+                  onValueChange={(itemValue) =>
+                    handlechangeExperience(itemValue)
+                  }
+                  style={{ height: 50, width: "100%" }}
+                >
+                  <Picker.Item label="None" value="none" />
+                  <Picker.Item label="Intern" value="intern" />
+                  <Picker.Item label="Entery Level" value="entrylevel" />
+                  <Picker.Item
+                    label="Senior Associate"
+                    value="seniorassociate"
+                  />
+                  <Picker.Item label="Manager" value="manager" />
+                  <Picker.Item label="Director" value="director" />
+                  <Picker.Item label="Executive" value="executive" />
+                </Picker>
+              </View>
+            </>
+          )}
+          {Platform.OS === "ios" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Experience *
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  showExperienceActionSheet();
+                }}
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "95%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Text style={{ marginLeft: 10 }}>
+                  {selectedExperience || "Select Experience"}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
           {/* I dont have college experience button  */}
           <View
             style={{
@@ -368,41 +510,77 @@ export default function Education({ navigation }) {
             </View>
           )}
           {/* Grade Year */}
-          {showGradeYear && (
-            <View>
-              <Text style={{ marginTop: 15, fontWeight: 300 }}>
-                Starting Year
-              </Text>
-              <View
-                style={{
-                  backgroundColor: "#F1F1F3",
-                  width: "95%",
-                  height: 50,
-                  borderRadius: 20,
-                  marginTop: 15,
-                  paddingHorizontal: 5,
-                  borderColor: "#D9D9D9",
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  marginBottom: 10,
-                }}
-              >
-                <Picker
-                  selectedValue={gradeYear}
-                  onValueChange={(itemValue) => setGradeYear(itemValue)}
-                  style={{ height: 50, width: "100%" }}
-                  mode="dropdown"
-                >
-                  {Array.from({ length: 50 }, (_, index) => (
-                    <Picker.Item
-                      key={index}
-                      label={(new Date().getFullYear() - index).toString()}
-                      value={(new Date().getFullYear() - index).toString()}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </View>
+          {Platform.OS === "android" && (
+            <>
+              {showGradeYear && (
+                <View>
+                  <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                    Starting Year
+                  </Text>
+                  <View
+                    style={{
+                      backgroundColor: "#F1F1F3",
+                      width: "95%",
+                      height: 50,
+                      borderRadius: 20,
+                      marginTop: 15,
+                      paddingHorizontal: 5,
+                      borderColor: "#D9D9D9",
+                      justifyContent: "center",
+                      borderWidth: 1,
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Picker
+                      selectedValue={gradeYear}
+                      onValueChange={(itemValue) => setGradeYear(itemValue)}
+                      style={{ height: 50, width: "100%" }}
+                      mode="dropdown"
+                    >
+                      {Array.from({ length: 50 }, (_, index) => (
+                        <Picker.Item
+                          key={index}
+                          label={(new Date().getFullYear() - index).toString()}
+                          value={(new Date().getFullYear() - index).toString()}
+                        />
+                      ))}
+                    </Picker>
+                  </View>
+                </View>
+              )}
+            </>
+          )}
+          {Platform.OS === "ios" && (
+            <>
+              {showGradeYear && (
+                <View>
+                  <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                    Starting Year
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      showStartingYearActionSheet();
+                    }}
+                    style={{
+                      backgroundColor: "#F1F1F3",
+                      width: "95%",
+                      height: 50,
+                      borderRadius: 20,
+                      marginTop: 15,
+                      paddingHorizontal: 5,
+                      borderColor: "#D9D9D9",
+                      justifyContent: "center",
+                      borderWidth: 1,
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Text style={{ marginLeft: 10 }}>
+                      {gradeYear || "Select Starting Year"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </>
           )}
         </View>
       </ScrollView>
@@ -426,11 +604,11 @@ export default function Education({ navigation }) {
           backgroundColor: "#09A1F6",
           padding: 10,
           borderRadius: 30,
-          width: "90%",
+          width: "95%",
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         {loading ? (

@@ -10,6 +10,8 @@ import {
   TouchableWithoutFeedback,
   Alert,
   ActivityIndicator,
+  ActionSheetIOS,
+  Platform,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -134,6 +136,49 @@ export default function Welcome({ navigation }) {
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [Pronouns, setPronouns] = useState("");
+
+  // Function to open ActionSheetIOS for Gender selection
+  const showGenderOptions = () => {
+    const genderOptions = ["Male", "Female", "Rather not say", "Cancel"];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: genderOptions,
+        cancelButtonIndex: genderOptions.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== genderOptions.length - 1) {
+          handleGenderChange(genderOptions[buttonIndex]);
+        }
+      }
+    );
+  };
+
+  // Function to open ActionSheetIOS for Race/Ethnicity selection
+  const showRaceOptions = () => {
+    const raceOptions = [
+      "American Indian or Alaskan Native",
+      "Hispanic or Latino origin of any race",
+      "Asian",
+      "Native Hawaiian or Other Pacific Islander",
+      "Black or African American",
+      "White",
+      "Unknown",
+      "Prefer not to state",
+      "Cancel",
+    ];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: raceOptions,
+        cancelButtonIndex: raceOptions.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== raceOptions.length - 1) {
+          handleRaceChange(raceOptions[buttonIndex]);
+        }
+      }
+    );
+  };
+
   const handleRaceChange = (race) => {
     setSelectedRace(race);
   };
@@ -440,77 +485,126 @@ export default function Welcome({ navigation }) {
             value={Pronouns}
             onChangeText={(text) => handlePronounsChange(text)}
           ></TextInput>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
-          <View
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "100%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 5,
-              borderColor: "#D9D9D9",
-              justifyContent: "center",
-              borderWidth: 1,
-            }}
-          >
-            <Picker
-              selectedValue={selectedGender}
-              onValueChange={(itemValue) => handleGenderChange(itemValue)}
-              style={{ height: 50, width: "100%" }}
-              mode="dropdown"
-            >
-              <Picker.Item label="Select Gender" value="" />
-              <Picker.Item label="Male" value="male" />
-              <Picker.Item label="Female" value="female" />
-              <Picker.Item label="Rather not say" value="notSay" />
-            </Picker>
-          </View>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>
-            Race/Ethnicity *
-          </Text>
-          <View
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "100%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 5,
-              borderColor: "#D9D9D9",
-              justifyContent: "center",
-              borderWidth: 1,
-            }}
-          >
-            <Picker
-              selectedValue={selectedRace}
-              onValueChange={(itemValue) => handleRaceChange(itemValue)}
-              style={{ height: 50, width: "100%" }}
-              mode="dropdown"
-            >
-              <Picker.Item label="Enter your race" value="" />
-              <Picker.Item
-                label="American Indian or Alaskan Native"
-                value="americanIndian"
-              />
-              <Picker.Item
-                label="Hispanic or Latino origin of any race"
-                value="hispanicLatino"
-              />
-              <Picker.Item label="Asian" value="asian" />
-              <Picker.Item
-                label="Native Hawaiian or Other Pacific Islander"
-                value="pacificIslander"
-              />
-              <Picker.Item
-                label="Black or African American"
-                value="africanAmerican"
-              />
-              <Picker.Item label="White" value="white" />
-              <Picker.Item label="Unknown" value="unknown" />
-              <Picker.Item label="Prefer not to state" value="notToState" />
-            </Picker>
-          </View>
+          {Platform.OS === "ios" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
+              <TouchableOpacity
+                onPress={showGenderOptions}
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Text style={{ marginLeft: 10 }}>
+                  {selectedGender || "Select Gender"}
+                </Text>
+              </TouchableOpacity>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Race/Ethnicity *
+              </Text>
+              <TouchableOpacity
+                onPress={showRaceOptions}
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Text style={{ marginLeft: 10 }}>
+                  {selectedRace || "Enter your race"}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {Platform.OS === "android" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={selectedGender}
+                  onValueChange={(itemValue) => handleGenderChange(itemValue)}
+                  style={{ height: 50, width: "100%" }}
+                  mode="dropdown"
+                >
+                  <Picker.Item label="Select Gender" value="" />
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
+                  <Picker.Item label="Rather not say" value="notSay" />
+                </Picker>
+              </View>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>
+                Race/Ethnicity *
+              </Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={selectedRace}
+                  onValueChange={(itemValue) => handleRaceChange(itemValue)}
+                  style={{ height: 50, width: "100%" }}
+                  mode="dropdown"
+                >
+                  <Picker.Item label="Enter your race" value="" />
+                  <Picker.Item
+                    label="American Indian or Alaskan Native"
+                    value="americanIndian"
+                  />
+                  <Picker.Item
+                    label="Hispanic or Latino origin of any race"
+                    value="hispanicLatino"
+                  />
+                  <Picker.Item label="Asian" value="asian" />
+                  <Picker.Item
+                    label="Native Hawaiian or Other Pacific Islander"
+                    value="pacificIslander"
+                  />
+                  <Picker.Item
+                    label="Black or African American"
+                    value="africanAmerican"
+                  />
+                  <Picker.Item label="White" value="white" />
+                  <Picker.Item label="Unknown" value="unknown" />
+                  <Picker.Item label="Prefer not to state" value="notToState" />
+                </Picker>
+              </View>
+            </>
+          )}
+
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Country *</Text>
           <View
             style={{
@@ -841,7 +935,7 @@ export default function Welcome({ navigation }) {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         {loading ? (

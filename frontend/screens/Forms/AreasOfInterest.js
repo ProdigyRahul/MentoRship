@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Platform,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { CheckBox } from "react-native-elements";
@@ -480,7 +481,7 @@ const AreasOfInterest = ({ navigation }) => {
           height: 50,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: Platform.OS === "ios" ? -10 : 10,
         }}
       >
         <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>
