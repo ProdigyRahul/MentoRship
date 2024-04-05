@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   tabItem: {
-    marginTop: Platform.OS === "ios" ? 15 : 0,
+    marginTop: Platform.OS === "ios" ? 17 : 0,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: Platform.OS === "ios" ? "" : "center",
