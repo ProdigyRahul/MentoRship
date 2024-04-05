@@ -231,6 +231,10 @@ export default function MyProfile({ navigation }) {
     setProfileData({ ...profileData, [field]: value });
   };
 
+  const handleRaceChange = (raceEthnicity) => {
+    setProfileData({ ...profileData, raceEthnicity: raceEthnicity });
+  };
+
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}

@@ -175,6 +175,7 @@ export default function Signup({ navigation }) {
             style={{
               flexDirection: "row",
               gap: 10,
+              marginTop: -15,
             }}
           >
             <TouchableOpacity>
@@ -240,7 +241,7 @@ export default function Signup({ navigation }) {
           </Text>
           <View
             style={{
-              marginTop: 10,
+              marginTop: 5,
               marginBottom: 5,
             }}
           >
@@ -254,6 +255,7 @@ export default function Signup({ navigation }) {
                     backgroundColor: profileImage ? "transparent" : "lightgray",
                     justifyContent: "center",
                     alignItems: "center",
+                    marginTop: -2,
                   }}
                 >
                   {profileImage ? (
@@ -281,7 +283,7 @@ export default function Signup({ navigation }) {
               width: 290,
               height: 50,
               borderRadius: 20,
-              marginTop: 15,
+              marginTop: 5,
               paddingHorizontal: 20,
               borderColor: nameBorderColor,
               borderWidth: 1,
@@ -331,7 +333,7 @@ export default function Signup({ navigation }) {
               width: 250,
               backgroundColor: "#09A1F6",
               borderRadius: 10,
-              marginTop: 20,
+              marginTop: 10,
               alignItems: "center",
               justifyContent: "center",
             }}

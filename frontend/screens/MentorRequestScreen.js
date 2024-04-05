@@ -45,19 +45,10 @@ const MentorRequestScreen = () => {
     }
   };
 
-  console.log(friendRequests);
-
   const navigateBack = () => {
     navigation.goBack();
   };
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#000000" />
-        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
-      </View>
-    );
-  }
+
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -97,23 +88,39 @@ const MentorRequestScreen = () => {
           marginTop: 20,
         }}
       >
-        <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
-          {friendRequests.length > 0}
-
-          {friendRequests.map((item, index) => (
-            <MentorRequest
-              key={index}
-              item={item}
-              friendRequests={friendRequests}
-              setFriendRequests={setFriendRequests}
-            />
-          ))}
-        </View>
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#FFFFFF",
+            }}
+          >
+            <ActivityIndicator size="large" color="#000" />
+            <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
+          </View>
+        ) : (
+          <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
+            {friendRequests.length > 0 ? (
+              friendRequests.map((item, index) => (
+                <MentorRequest
+                  key={index}
+                  item={item}
+                  friendRequests={friendRequests}
+                  setFriendRequests={setFriendRequests}
+                />
+              ))
+            ) : (
+              <Text style={{ fontSize: 16, textAlign: "center" }}>
+                No Notifications
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     </LinearGradient>
   );
 };
 
 export default MentorRequestScreen;
-
-const styles = StyleSheet.create({});

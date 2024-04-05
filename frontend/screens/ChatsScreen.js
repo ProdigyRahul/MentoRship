@@ -46,12 +46,13 @@ const ChatsScreen = () => {
 
         if (response.ok) {
           setAcceptedFriends(data);
-          setLoading(false);
           setRefreshing(false);
         }
       } catch (error) {
         console.log("error showing the accepted friends", error);
         setRefreshing(false);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -78,7 +79,7 @@ const ChatsScreen = () => {
   }, [refreshing]);
 
   const onRefresh = () => {
-    setRefreshing(true); // Turn on refreshing when pull down occurs
+    setRefreshing(true);
   };
 
   const navigateToExplore = () => {
@@ -140,20 +141,6 @@ const ChatsScreen = () => {
     navigation.navigate("MentorRequest");
   };
 
-  if (loading) {
-    return (
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
-      >
-        <ActivityIndicator size="large" color="#FFFFFF" />
-        <Text style={{ marginTop: 10, color: "#FFFFFF" }}>Please wait...</Text>
-      </LinearGradient>
-    );
-  }
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -240,22 +227,36 @@ const ChatsScreen = () => {
           </Text>
           <View style={styles.borderLine}></View>
         </View>
-        <ScrollView
-          style={{
-            flex: 1,
-            marginRight: -5,
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          vertical={true}
-          contentContainerStyle={{ flexGrow: 1 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {acceptedFriends.map((item, index) => (
-            <UserChat key={index} item={item} />
-          ))}
-        </ScrollView>
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#FFFFFF",
+            }}
+          >
+            <ActivityIndicator size="large" color="#000" />
+            <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
+          </View>
+        ) : (
+          <ScrollView
+            style={{
+              flex: 1,
+              marginRight: -5,
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            vertical={true}
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {acceptedFriends.map((item, index) => (
+              <UserChat key={index} item={item} />
+            ))}
+          </ScrollView>
+        )}
       </View>
     </LinearGradient>
   );
