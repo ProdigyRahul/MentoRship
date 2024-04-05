@@ -9,6 +9,7 @@ import {
   Animated,
   Easing,
   RefreshControl,
+  Platform,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
@@ -171,14 +172,14 @@ const ChatsScreen = () => {
         end={{ x: 1, y: 0 }}
         locations={[0.3, 1]}
       >
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="white-content" />
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
             paddingHorizontal: 20,
-            marginTop: 45,
+            marginTop: Platform.OS === "ios" ? 55 : 45,
           }}
         >
           <Text
@@ -252,11 +253,16 @@ const ChatsScreen = () => {
             <View style={styles.borderLine}></View>
           </View>
           <ScrollView
+            style={{
+              flex: 1,
+              marginRight: -5,
+            }}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
+            vertical={true}
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ alignItems: "center" }}
           >
             {acceptedFriends.map((item, index) => (
               <UserChat key={index} item={item} />

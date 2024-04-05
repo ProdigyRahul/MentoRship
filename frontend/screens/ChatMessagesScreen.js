@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   StatusBar,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import React, {
   useState,
@@ -420,7 +421,10 @@ const ChatMessagesScreen = () => {
       config={config}
       style={{ flex: 1, backgroundColor: "#FFFFFF" }}
     >
-      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+      >
         <StatusBar barStyle="dark-content" />
         <View style={styles.header}>
           <View style={styles.userInfo}>
@@ -480,6 +484,7 @@ const ChatMessagesScreen = () => {
           ref={scrollViewRef}
           contentContainerStyle={{ flexGrow: 1 }}
           onContentSizeChange={handleContentSizeChange}
+          scrollEnabled={true}
         >
           {messages.map((item, index) => {
             if (item.messageType === "text") {
@@ -667,7 +672,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#CCCCCC",
-    marginTop: 25,
+    marginTop: Platform.OS === "ios" ? 35 : 25,
   },
   userInfo: {
     flexDirection: "row",

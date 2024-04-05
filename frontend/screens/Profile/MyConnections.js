@@ -8,7 +8,11 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
+  StatusBar,
+  TouchableOpacity,
 } from "react-native";
+
+import { MaterialIcons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { UserType } from "../../UserContext";
 import { LinearGradient } from "expo-linear-gradient";
@@ -51,8 +55,33 @@ export default function MyConnections({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>My Connections</Text>
+      <StatusBar barStyle="white-content" />
+
+      <View style={styles.container}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            marginTop: 45,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 15 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+            }}
+          >
+            My Connections
+          </Text>
+        </View>
         <View style={styles.friendsContainer}>
           {isLoading ? (
             <View style={styles.loadingContainer}>
@@ -87,7 +116,7 @@ export default function MyConnections({ navigation }) {
             </ScrollView>
           )}
         </View>
-      </SafeAreaView>
+      </View>
     </LinearGradient>
   );
 }

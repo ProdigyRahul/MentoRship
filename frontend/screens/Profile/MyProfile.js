@@ -5,6 +5,7 @@ import {
   TextInput,
   ScrollView,
   Image,
+  Platform,
 } from "react-native";
 import React, { useContext, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
@@ -201,7 +202,7 @@ export default function MyProfile() {
             fontSize: 25,
             fontWeight: "bold",
             color: "#FFFFFF",
-            marginTop: 45,
+            marginTop: Platform.OS === "ios" ? 10 : 45,
             textAlign: "left",
             marginLeft: 20,
           }}
@@ -213,6 +214,7 @@ export default function MyProfile() {
           style={{
             flex: 1,
             marginRight: -5,
+            marginBottom: -50,
           }}
         >
           <View
@@ -222,6 +224,7 @@ export default function MyProfile() {
               borderTopEndRadius: 50,
               backgroundColor: "#FFFFFF",
               marginTop: 20,
+              paddingBottom: 50,
             }}
           >
             <View>
