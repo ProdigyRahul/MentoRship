@@ -52,9 +52,13 @@ app.listen(port, () => {
   );
 });
 
+// Serve the index.html file when accessing the root URL ("/")
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.sendFile("index.html", { root: __dirname });
 });
+
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
 const User = require("./models/user");
 const Message = require("./models/message");
