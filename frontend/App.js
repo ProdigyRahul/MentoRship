@@ -28,6 +28,7 @@ import ScheduleSession from "./screens/Sessions/ScheduleSession";
 import Session from "./screens/Session";
 import PublicProfile from "./screens/PublicProfile";
 import SplashScreen from "./screens/SplashScreen";
+import InviteTopicParticipants from "./screens/Topics/InviteTopicParticipants";
 
 const Stack = createNativeStackNavigator();
 
@@ -123,6 +124,11 @@ function App() {
               name="PublicProfile"
               component={PublicProfile}
               options={{ animation: "fade" }}
+            />
+            <Stack.Screen
+              name="AddTopicMembers"
+              component={InviteTopicParticipants}
+              options={{ animation: "ios" }}
             />
           </Stack.Navigator>
         </NavigationContainer>

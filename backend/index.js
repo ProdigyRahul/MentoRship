@@ -88,6 +88,7 @@ app.get("/", (req, res) => {
 const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
+const Topic = require("./models/topic");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -1147,3 +1148,185 @@ app.get("/:userId/name", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// API to create Topic
+app.post("/create-topic", async (req, res) => {
+  const { createdBy, topicName, description, careerGoals, public } = req.body;
+  try {
+    // Save topic to database
+    const newTopic = new Topic({
+      createdBy,
+      topicName,
+      description,
+      careerGoals,
+      isPublic: public,
+    });
+    const savedTopic = await newTopic.save();
+    res
+      .status(201)
+      .json({ topicId: savedTopic._id, message: "Topic created successfully" });
+  } catch (error) {
+    console.error("Error creating topic:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+// Endpoint to post Messages and store it in the backend for a specific topic
+app.post(
+  "/topics/:topicId/messages",
+  upload.single("imageFile"),
+  async (req, res) => {
+    try {
+      const { senderId, messageType, messageText } = req.body;
+      const { topicId } = req.params;
+
+      const newMessage = {
+        senderId,
+        messageType,
+        message: messageText,
+        timestamp: new Date(),
+        imageUrl: messageType === "image" ? req.file.path : null,
+        sent: true, // Mark the message as sent when created
+        read: false, // Mark the message as not read initially
+      };
+
+      // Find the topic by ID
+      const topic = await Topic.findById(topicId);
+      if (!topic) {
+        return res.status(404).json({ message: "Topic not found" });
+      }
+
+      // Add the new message to the topic's messages array
+      topic.groupMessages.push(newMessage);
+
+      // Save the updated topic with the new message
+      await topic.save();
+
+      res.status(200).json({ message: "Message sent successfully" });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+// Endpoint to mark a message as read within a specific topic
+app.put("/topics/:topicId/messages/read/:messageId", async (req, res) => {
+  try {
+    const { topicId, messageId } = req.params;
+
+    // Find the topic by ID
+    const topic = await Topic.findById(topicId);
+    if (!topic) {
+      return res.status(404).json({ message: "Topic not found" });
+    }
+
+    // Find the message by ID within the topic's messages
+    const message = topic.groupMessages.id(messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+
+    // Mark the message as read
+    message.read = true;
+
+    // Save the updated topic with the message marked as read
+    await topic.save();
+
+    res.status(200).json({ message: "Message marked as read successfully" });
+  } catch (error) {
+    console.error("Error marking message as read:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to get all messages for a specific topic
+app.get("/topics/:topicId/messages", async (req, res) => {
+  try {
+    const { topicId } = req.params;
+
+    // Find the topic by ID
+    const topic = await Topic.findById(topicId);
+    if (!topic) {
+      return res.status(404).json({ message: "Topic not found" });
+    }
+
+    // Sort messages by timestamp in ascending order
+    topic.groupMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+    res.status(200).json({ messages: topic.groupMessages });
+  } catch (error) {
+    console.error("Error retrieving messages:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post("/invite-topic/:topicId", async (req, res) => {
+  const { topicId } = req.params;
+  const { invitedFriends } = req.body;
+  try {
+    // Fetch topic by ID
+    const topic = await Topic.findById(topicId);
+    if (!topic) {
+      return res.status(404).json({ message: "Topic not found" });
+    }
+
+    // Ensure invitedFriends is an array
+    if (!Array.isArray(invitedFriends)) {
+      return res
+        .status(400)
+        .json({ message: "Invited friends should be an array" });
+    }
+
+    // Add invited friends to the topic participants
+    for (const friendId of invitedFriends) {
+      const friend = await User.findById(friendId);
+      if (friend) {
+        topic.participants.push({
+          userId: friend._id,
+          name: friend.name,
+          image: friend.image,
+        });
+      }
+    }
+
+    // Save the updated topic
+    await topic.save();
+
+    res.status(200).json({ message: "Friends invited to topic successfully" });
+  } catch (error) {
+    console.error("Error inviting friends to topic:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// API to add image URL to the topic
+app.post(
+  "/add-image-to-topic/:topicId",
+  uploads.single("image"),
+  async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      const image = req.file ? req.file.path : null;
+      const imageUrl = image;
+
+      // Find the topic by ID
+      const topic = await Topic.findById(topicId);
+
+      // If topic not found, return error
+      if (!topic) {
+        return res.status(404).json({ message: "Topic not found" });
+      }
+
+      // Add image URL to the topic
+      topic.imageUrl = imageUrl;
+
+      // Save the updated topic
+      await topic.save();
+
+      res.status(200).json({ message: "Image added to topic successfully" });
+    } catch (error) {
+      console.error("Error adding image to topic:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
