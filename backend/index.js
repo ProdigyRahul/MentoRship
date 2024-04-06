@@ -1148,10 +1148,9 @@ app.get("/:userId/name", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 // API to create Topic
 app.post("/create-topic", async (req, res) => {
-  const { createdBy, topicName, description, careerGoals, public } = req.body;
+  const { createdBy, topicName, description, careerGoals, isPublic } = req.body;
   try {
     // Save topic to database
     const newTopic = new Topic({
@@ -1159,7 +1158,7 @@ app.post("/create-topic", async (req, res) => {
       topicName,
       description,
       careerGoals,
-      isPublic: public,
+      isPublic,
       imageURL: "",
     });
     const savedTopic = await newTopic.save();
@@ -1171,6 +1170,7 @@ app.post("/create-topic", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 // Endpoint to post Messages and store it in the backend for a specific topic
 app.post(
   "/topics/:topicId/messages",
@@ -1180,8 +1180,15 @@ app.post(
       const { senderId, messageType, messageText } = req.body;
       const { topicId } = req.params;
 
+      // Fetch sender's name from the database based on senderId
+      const sender = await User.findById(senderId);
+      if (!sender) {
+        return res.status(404).json({ message: "Sender not found" });
+      }
+
       const newMessage = {
         senderId,
+        senderName: sender.name, // Include sender's name
         messageType,
         message: messageText,
         timestamp: new Date(),
@@ -1261,6 +1268,7 @@ app.get("/topics/:topicId/messages", async (req, res) => {
   }
 });
 
+// Endpoint to invite friends to a topic
 app.post("/invite-topic/:topicId", async (req, res) => {
   const { topicId } = req.params;
   const { invitedFriends } = req.body;
@@ -1303,7 +1311,7 @@ app.post("/invite-topic/:topicId", async (req, res) => {
 // API to add image URL to the topic
 app.post(
   "/add-image-to-topic/:topicId",
-  uploads.single("image"),
+  upload.single("image"),
   async (req, res) => {
     try {
       const { topicId } = req.params;

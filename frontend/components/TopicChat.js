@@ -1,15 +1,26 @@
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { UserType } from "../UserContext";
 
 const TopicChat = ({ topic }) => {
+  const navigation = useNavigation();
+  const { userId } = useContext(UserType);
+
+  const handlePress = () => {
+    navigation.navigate("TopicChatMessages", {
+      topicId: topic._id,
+      userId: userId,
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <Pressable onPress={handlePress} style={styles.container}>
       <Image source={{ uri: topic.imageURL }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.topicName}>{topic.topicName}</Text>
-        {/* Additional details if needed */}
       </View>
-    </View>
+    </Pressable>
   );
 };
 

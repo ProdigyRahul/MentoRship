@@ -265,13 +265,13 @@ const ChatsScreen = () => {
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Render UserChat components */}
-            {acceptedFriends.map((item, index) => (
-              <UserChat key={index} item={item} />
-            ))}
             {/* Render TopicChat components */}
             {topics.map((topic, index) => (
               <TopicChat key={index} topic={topic} />
+            ))}
+            {/* Render UserChat components */}
+            {acceptedFriends.map((item, index) => (
+              <UserChat key={index} item={item} />
             ))}
           </ScrollView>
         )}

@@ -53,10 +53,24 @@ const TopicSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+      messageType: {
+        type: String,
+        enum: ["text", "image"],
+        default: "text",
+      },
       message: String,
       timestamp: {
         type: Date,
         default: Date.now,
+      },
+      imageUrl: String,
+      sent: {
+        type: Boolean,
+        default: true,
+      },
+      read: {
+        type: Boolean,
+        default: false,
       },
     },
   ],
