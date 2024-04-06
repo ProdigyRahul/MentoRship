@@ -83,7 +83,6 @@ export default function TopicBanner({ navigation }) {
       );
 
       console.log("Image upload response:", response.data);
-      // Handle success response and navigation accordingly
       navigation.navigate("Chat");
     } catch (error) {
       console.error("Error uploading image:", error);

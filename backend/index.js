@@ -1331,3 +1331,20 @@ app.post(
     }
   }
 );
+
+// Endpoint to fetch topics associated with a user
+app.get("/user-topics/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find topics where createdBy matches userId or participants contains userId
+    const topics = await Topic.find({
+      $or: [{ createdBy: userId }, { "participants.userId": userId }],
+    }).select("topicName imageURL");
+
+    res.status(200).json({ topics });
+  } catch (error) {
+    console.error("Error fetching user topics:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});

@@ -1,3 +1,4 @@
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,17 +12,17 @@ import {
   RefreshControl,
   Platform,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
-import { UserType } from "../UserContext";
-import { useNavigation } from "@react-navigation/native";
-import UserChat from "../components/UserChat";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { UserType } from "../UserContext";
+import UserChat from "../components/UserChat";
+import TopicChat from "../components/TopicChat";
 
 const ChatsScreen = () => {
   const [acceptedFriends, setAcceptedFriends] = useState([]);
-  const { userId, setUserId } = useContext(UserType);
+  const [topics, setTopics] = useState([]); // State for topics
+  const { userId } = useContext(UserType);
   const [loading, setLoading] = useState(true);
   const [notificationCount, setNotificationCount] = useState(0);
   const [animatedValue] = useState(new Animated.Value(0));
@@ -30,10 +31,6 @@ const ChatsScreen = () => {
 
   const onSwipeLeft = () => {
     navigation.navigate("Community");
-  };
-  const config = {
-    velocityThreshold: 0.5,
-    directionalOffsetThreshold: 20,
   };
 
   useEffect(() => {
@@ -50,6 +47,25 @@ const ChatsScreen = () => {
         }
       } catch (error) {
         console.log("error showing the accepted friends", error);
+        setRefreshing(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchTopics = async () => {
+      try {
+        const response = await fetch(
+          `https://api.rahulmistry.in/user-topics/${userId}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setTopics(data.topics);
+          setRefreshing(false);
+        }
+      } catch (error) {
+        console.log("error fetching topics", error);
         setRefreshing(false);
       } finally {
         setLoading(false);
@@ -75,8 +91,9 @@ const ChatsScreen = () => {
     };
 
     fetchAcceptedFriends();
+    fetchTopics();
     fetchPendingFriendRequests();
-  }, [refreshing]);
+  }, [userId, refreshing]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -87,9 +104,7 @@ const ChatsScreen = () => {
   };
 
   const startAnimation = () => {
-    // Define the animation sequence
     Animated.sequence([
-      // Move bell downwards
       Animated.timing(animatedValue, {
         toValue: 10,
         duration: 500,
@@ -135,7 +150,6 @@ const ChatsScreen = () => {
     transform: [{ translateY: animatedValue }],
   };
 
-  console.log("friends", acceptedFriends);
   const navigateToMentorRequest = () => {
     setNotificationCount(0);
     navigation.navigate("MentorRequest");
@@ -204,7 +218,6 @@ const ChatsScreen = () => {
               )}
             </View>
           </Pressable>
-          {/* TODO: Search */}
           <Pressable onPress={navigateToExplore}>
             <MaterialIcons name="search" size={24} color="white" />
           </Pressable>
@@ -252,8 +265,13 @@ const ChatsScreen = () => {
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
           >
+            {/* Render UserChat components */}
             {acceptedFriends.map((item, index) => (
               <UserChat key={index} item={item} />
+            ))}
+            {/* Render TopicChat components */}
+            {topics.map((topic, index) => (
+              <TopicChat key={index} topic={topic} />
             ))}
           </ScrollView>
         )}
