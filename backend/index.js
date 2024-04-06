@@ -1370,3 +1370,26 @@ app.get("/user-topics/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// Endpoint to get topic name and imageURL by ID
+app.get("/topics/:topicId/details", async (req, res) => {
+  const { topicId } = req.params;
+
+  try {
+    // Find the topic by ID
+    const topic = await Topic.findById(topicId)
+      .select("topicName imageURL")
+      .exec();
+    if (!topic) {
+      return res.status(404).json({ message: "Topic not found" });
+    }
+
+    // Extract topic name and imageURL
+    const { topicName, imageURL } = topic;
+
+    res.status(200).json({ topicName, imageURL });
+  } catch (error) {
+    console.error("Error fetching topic details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});

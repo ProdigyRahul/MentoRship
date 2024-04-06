@@ -9,8 +9,13 @@ import {
   TouchableOpacity,
   Platform,
   KeyboardAvoidingView,
+  Keyboard,
+  StatusBar,
+  Pressable,
+  Image,
 } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 const TopicChatMessagesScreen = ({ route }) => {
   const { topicId, userId } = route.params;
@@ -18,7 +23,30 @@ const TopicChatMessagesScreen = ({ route }) => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const scrollViewRef = useRef(null);
+  const [topicName, setTopicName] = useState("");
+  const [topicImage, setTopicImage] = useState("");
 
+  const fetchTopicData = async () => {
+    try {
+      const response = await fetch(
+        `http://172.20.10.3:8080/topics/${topicId}/details`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setTopicName(data.topicName);
+        setTopicImage(data.imageURL);
+        console.log("Topic Name:", data.topicName);
+        console.log("Topic Image URL:", data.imageURL);
+      } else {
+        console.error("Error fetching topic data:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching topic data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchTopicData();
+  }, []);
   const fetchMessages = async () => {
     try {
       const response = await fetch(
@@ -28,7 +56,6 @@ const TopicChatMessagesScreen = ({ route }) => {
       if (response.ok) {
         setMessages(data.messages);
         setLoading(false);
-        scrollToBottom();
       } else {
         console.error("Error fetching messages:", data.message);
       }
@@ -44,12 +71,23 @@ const TopicChatMessagesScreen = ({ route }) => {
   }, [topicId]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Listen for keyboard events
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        scrollToBottom();
+      }
+    );
+
+    // Cleanup function
+    return () => {
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: false });
+      scrollViewRef.current.scrollToEnd({ animated: true });
     }
   };
 
@@ -76,6 +114,7 @@ const TopicChatMessagesScreen = ({ route }) => {
           { ...data.message, senderName: "You", sent: true },
         ]);
         setNewMessage("");
+        scrollToBottom();
       } else {
         console.error("Error sending message:", data.message);
       }
@@ -86,9 +125,38 @@ const TopicChatMessagesScreen = ({ route }) => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1, backgroundColor: "#FFFFFF" }}
+      behavior={Platform.OS === "ios" ? "padding" : null}
     >
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.header}>
+        <View style={styles.userInfo}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <FontAwesome name="angle-left" size={30} color="black" />
+          </Pressable>
+          {topicImage && (
+            <TouchableOpacity>
+              <Image style={styles.userImage} source={{ uri: topicImage }} />
+            </TouchableOpacity>
+          )}
+          <View style={{ flexDirection: "column" }}>
+            <TouchableOpacity>
+              <Text style={styles.userName}>{topicName}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable
+            onPress={() => console.log("Call")}
+            style={{ marginRight: 10 }}
+          >
+            <MaterialCommunityIcons name="phone" size={24} color="black" />
+          </Pressable>
+          <Pressable onPress={() => console.log("More options")}>
+            <Entypo name="dots-three-vertical" size={24} color="black" />
+          </Pressable>
+        </View>
+      </View>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollViewContent}
@@ -175,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderTopWidth: 1,
     borderTopColor: "#CCCCCC",
   },
@@ -186,13 +254,17 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderRadius: 20,
     paddingHorizontal: 10,
-    marginRight: 10,
+    color: "#000000",
+    marginLeft: 5,
   },
   sendButton: {
     backgroundColor: "#0077FF",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    marginLeft: 5,
   },
   sendButtonText: {
     color: "#FFFFFF",
@@ -204,6 +276,32 @@ const styles = StyleSheet.create({
 
   textWhite: {
     color: "#FFFFFF",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#CCCCCC",
+    marginTop: Platform.OS === "ios" ? 35 : 25,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    resizeMode: "cover",
+    marginRight: 5,
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginLeft: 10,
   },
 });
 
