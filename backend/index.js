@@ -1160,6 +1160,7 @@ app.post("/create-topic", async (req, res) => {
       description,
       careerGoals,
       isPublic: public,
+      imageURL: "",
     });
     const savedTopic = await newTopic.save();
     res
@@ -1318,7 +1319,7 @@ app.post(
       }
 
       // Add image URL to the topic
-      topic.imageUrl = imageUrl;
+      topic.imageURL = imageUrl;
 
       // Save the updated topic
       await topic.save();

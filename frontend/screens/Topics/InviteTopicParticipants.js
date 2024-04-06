@@ -108,7 +108,7 @@ export default function InviteTopicParticipants({ navigation }) {
         { invitedFriends }
       );
       console.log("Successs");
-      navigation.navigate("Banner");
+      navigation.navigate("TopicBanner");
     } catch (error) {
       console.error("Error inviting friends:", error);
       Alert.alert("Error", "Failed to invite friends. Please try again.");
@@ -231,7 +231,6 @@ export default function InviteTopicParticipants({ navigation }) {
       >
         <NavigationLine active={true} />
         <NavigationLine active={true} />
-        <NavigationLine active={false} />
         <NavigationLine active={false} />
       </View>
       <TouchableOpacity

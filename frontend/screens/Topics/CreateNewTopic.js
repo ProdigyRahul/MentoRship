@@ -287,7 +287,6 @@ export default function CreateNewTopic({ navigation }) {
         <NavigationLine active={true} />
         <NavigationLine active={false} />
         <NavigationLine active={false} />
-        <NavigationLine active={false} />
       </View>
       <TouchableOpacity
         onPress={handleNext}
