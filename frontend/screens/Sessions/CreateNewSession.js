@@ -204,7 +204,7 @@ export default function CreateNewSession({ navigation }) {
             placeholder="Enter Your Session Name here                                        "
             style={{
               backgroundColor: "#F1F1F3",
-              width: "95%",
+              width: 350,
               height: 50,
               borderRadius: 20,
               marginTop: 15,

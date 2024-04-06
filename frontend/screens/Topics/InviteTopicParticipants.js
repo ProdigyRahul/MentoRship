@@ -53,7 +53,7 @@ export default function InviteTopicParticipants({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [friends, setFriends] = useState([]);
   const [selectedFriends, setSelectedFriends] = useState({});
-  const { userId, sessionId } = useContext(UserType);
+  const { userId, topicId } = useContext(UserType);
 
   useEffect(() => {
     fetchFriends(userId);
@@ -104,7 +104,7 @@ export default function InviteTopicParticipants({ navigation }) {
         .map((friend) => friend._id);
       console.log("Selected Friends:", invitedFriends);
       const response = await axios.post(
-        `https://api.rahulmistry.in/invite-friends/${sessionId}`,
+        `https://api.rahulmistry.in/invite-topic/${topicId}`,
         { invitedFriends }
       );
       console.log("Successs");
@@ -171,8 +171,8 @@ export default function InviteTopicParticipants({ navigation }) {
               color: "#5A5A5A",
             }}
           >
-            Select members for this session. You can invite friends by selecting
-            them below.
+            Select members for this topic. You can invite your connections by
+            selecting them below.
           </Text>
           <View
             style={[

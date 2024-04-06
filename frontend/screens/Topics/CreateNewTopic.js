@@ -204,15 +204,13 @@ export default function CreateNewTopic({ navigation }) {
             placeholder="Enter Your Session Name here"
             style={{
               backgroundColor: "#F1F1F3",
-              width: "95%",
+              width: 350,
               height: 50,
               borderRadius: 20,
               marginTop: 15,
               paddingHorizontal: 20,
               borderColor: "#D9D9D9",
               borderWidth: 1,
-              marginLeft: 15, // Adjusted margin left
-              marginRight: 15, // Adjusted margin right
             }}
             onChangeText={(text) => {
               setTopicName(text);
