@@ -1246,6 +1246,7 @@ app.put("/topics/:topicId/messages/read/:messageId", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 // Endpoint to get all messages for a specific topic
 app.get("/topics/:topicId/messages", async (req, res) => {
   try {
@@ -1257,25 +1258,37 @@ app.get("/topics/:topicId/messages", async (req, res) => {
       return res.status(404).json({ message: "Topic not found" });
     }
 
-    // Iterate through each message and include sender's name
-    const messagesWithSenderName = await Promise.all(
+    // Iterate through each message and include sender's name and image URL
+    const messagesWithSenderInfo = await Promise.all(
       topic.groupMessages.map(async (message) => {
-        // Find the sender's name from the User collection using senderId
-        const sender = await User.findById(message.senderId);
-        // Check if sender exists before accessing its name property
-        const senderName = sender ? sender.name : "Unknown";
-        // Include sender's name in the message object
+        // Check if sender's info exists in the ParticipantSchema or createdBy
+        let senderInfo = message.senderId
+          ? topic.participants.find((participant) =>
+              participant.userId.equals(message.senderId)
+            )
+          : null;
+
+        // If senderInfo is still null, check if the sender is the creator of the topic
+        if (!senderInfo && topic.createdBy.equals(message.senderId)) {
+          senderInfo = {
+            name: "Unknown", // You might want to replace this with the actual creator's name
+            image: topic.imageURL, // Assuming the creator's image URL is stored in the imageURL field of the Topic model
+          };
+        }
+
+        // Include sender's name and image URL in the message object
         return {
           ...message.toObject(),
-          senderName: senderName,
+          senderName: senderInfo ? senderInfo.name : "Unknown",
+          senderImage: senderInfo ? senderInfo.image : null,
         };
       })
     );
 
     // Sort messages by timestamp in ascending order
-    messagesWithSenderName.sort((a, b) => a.timestamp - b.timestamp);
+    messagesWithSenderInfo.sort((a, b) => a.timestamp - b.timestamp);
 
-    res.status(200).json({ messages: messagesWithSenderName });
+    res.status(200).json({ messages: messagesWithSenderInfo });
   } catch (error) {
     console.error("Error retrieving messages:", error);
     res.status(500).json({ message: "Internal Server Error" });

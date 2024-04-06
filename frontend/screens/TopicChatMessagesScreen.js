@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   TextInput,
-  Button,
   TouchableOpacity,
   Platform,
   KeyboardAvoidingView,
@@ -16,20 +15,44 @@ import {
 } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 const TopicChatMessagesScreen = ({ route }) => {
   const { topicId, userId } = route.params;
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const scrollViewRef = useRef(null);
   const [topicName, setTopicName] = useState("");
   const [topicImage, setTopicImage] = useState("");
+  const [message, setMessage] = useState("");
+  const [showEmojiSelector, setShowEmojiSelector] = useState(false);
+  const [initialLoadingComplete, setInitialLoadingComplete] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.canceled) {
+      handleSend("image", result.uri);
+    }
+  };
+
+  const formatTime = (time) => {
+    const options = { hour: "numeric", minute: "numeric" };
+    return new Date(time).toLocaleString("en-US", options);
+  };
 
   const fetchTopicData = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/topics/${topicId}/details`
+        `https://api.rahulmistry.in/topics/${topicId}/details`
       );
       const data = await response.json();
       if (response.ok) {
@@ -44,9 +67,11 @@ const TopicChatMessagesScreen = ({ route }) => {
       console.error("Error fetching topic data:", error);
     }
   };
+
   useEffect(() => {
     fetchTopicData();
   }, []);
+
   const fetchMessages = async () => {
     try {
       const response = await fetch(
@@ -55,20 +80,30 @@ const TopicChatMessagesScreen = ({ route }) => {
       const data = await response.json();
       if (response.ok) {
         setMessages(data.messages);
-        setLoading(false);
       } else {
         console.error("Error fetching messages:", data.message);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 1000);
+    const interval = setInterval(fetchMessages, 5000);
     return () => clearInterval(interval);
   }, [topicId]);
+
+  useEffect(() => {
+    if (!loading && !initialLoadingComplete) {
+      setTimeout(() => {
+        scrollToBottom();
+        setInitialLoadingComplete(true);
+      }, 500);
+    }
+  }, [loading, initialLoadingComplete]);
 
   useEffect(() => {
     // Listen for keyboard events
@@ -91,10 +126,14 @@ const TopicChatMessagesScreen = ({ route }) => {
     }
   };
 
+  const handleEmojiPress = () => {
+    setShowEmojiSelector(!showEmojiSelector);
+  };
+
   const sendMessage = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/messages`,
+        `http://172.20.10.3:8080/topics/${topicId}/messages`,
         {
           method: "POST",
           headers: {
@@ -103,7 +142,7 @@ const TopicChatMessagesScreen = ({ route }) => {
           body: JSON.stringify({
             senderId: userId,
             messageType: "text",
-            messageText: newMessage,
+            messageText: message,
           }),
         }
       );
@@ -113,7 +152,7 @@ const TopicChatMessagesScreen = ({ route }) => {
           ...messages,
           { ...data.message, senderName: "You", sent: true },
         ]);
-        setNewMessage("");
+        setMessage(""); // Clear message after sending
         scrollToBottom();
       } else {
         console.error("Error sending message:", data.message);
@@ -172,39 +211,136 @@ const TopicChatMessagesScreen = ({ route }) => {
                 message.senderId === userId
                   ? styles.myMessage
                   : styles.otherMessage,
+                message.senderId === userId && { justifyContent: "flex-end" },
               ]}
             >
-              <Text
-                style={[
-                  styles.senderName,
-                  message.senderId === userId && styles.senderWhite,
-                ]}
-              >
-                {message.senderName}
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {message.senderImage && (
+                  <Image
+                    style={styles.senderImage}
+                    source={{ uri: message.senderImage }}
+                  />
+                )}
+                <Text
+                  style={[
+                    styles.senderName,
+                    message.senderId === userId && styles.senderWhite,
+                    { marginLeft: message.senderId === userId ? "auto" : 5 },
+                  ]}
+                >
+                  {message.senderName}
+                </Text>
+              </View>
+
               <Text
                 style={[
                   styles.messageText,
                   message.senderId === userId && styles.textWhite,
+                  {
+                    marginTop: 3,
+                    marginBottom: 5,
+                    textAlign: message.senderId === userId ? "right" : "left",
+                  },
                 ]}
               >
                 {message.message}
               </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignSelf:
+                    message.senderId === userId ? "flex-end" : "flex-start",
+                }}
+              >
+                <Text
+                  style={[
+                    styles.timestamp,
+                    message.senderId === userId && styles.timestampWhite,
+                  ]}
+                >
+                  {formatTime(message.timestamp)}
+                </Text>
+
+                {message.sent && (
+                  <MaterialCommunityIcons
+                    name="check"
+                    size={16}
+                    color={message.senderId === userId ? "#FFFFFF" : "#000000"}
+                    style={{ marginLeft: 5 }}
+                  />
+                )}
+              </View>
             </View>
           ))
         )}
       </ScrollView>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message"
-          value={newMessage}
-          onChangeText={setNewMessage}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          borderTopWidth: 1,
+          borderTopColor: "#CCCCCC",
+          marginBottom: 10,
+        }}
+      >
+        <Entypo
+          onPress={handleEmojiPress}
+          style={{ marginRight: 5 }}
+          name="emoji-happy"
+          size={24}
+          color="#0077FF"
         />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
+        <TextInput
+          value={message}
+          onChangeText={(text) => setMessage(text)}
+          style={{
+            flex: 1,
+            height: 40,
+            borderWidth: 1,
+            borderColor: "#CCCCCC",
+            borderRadius: 20,
+            paddingHorizontal: 10,
+            color: "#000000",
+          }}
+          placeholder="Type Your message..."
+          placeholderTextColor="#A9A9A9"
+        />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 7,
+            marginHorizontal: 8,
+          }}
+        >
+          <Entypo
+            onPress={pickImage}
+            name="camera"
+            size={24}
+            color="#0077FF"
+            style={{ opacity: 1 }}
+          />
+          <Feather name="mic" size={24} color="#0077FF" />
+        </View>
+
+        <Pressable onPress={sendMessage} style={[styles.sendButton]}>
+          <Text style={{ color: "#FFFFFF", fontWeight: "bold" }}>Send</Text>
+        </Pressable>
       </View>
+
+      {showEmojiSelector && (
+        <EmojiSelector
+          onEmojiSelected={(emoji) => {
+            setMessage((prevMessage) => prevMessage + emoji);
+          }}
+          style={{ height: 250 }}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -221,11 +357,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
     maxWidth: "80%",
+    textAlign: "right",
   },
   myMessage: {
     alignSelf: "flex-end",
     backgroundColor: "#0077FF",
-    color: "#FFFFFF", // Set text color to white for my messages
+    color: "#FFFFFF",
   },
   otherMessage: {
     alignSelf: "flex-start",
@@ -235,27 +372,10 @@ const styles = StyleSheet.create({
   senderName: {
     fontWeight: "bold",
     marginBottom: 5,
+    marginLeft: 5,
   },
   messageText: {
     fontSize: 16,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#CCCCCC",
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    color: "#000000",
-    marginLeft: 5,
   },
   sendButton: {
     backgroundColor: "#0077FF",
@@ -266,14 +386,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 5,
   },
-  sendButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
   senderWhite: {
     color: "#FFFFFF",
   },
-
   textWhite: {
     color: "#FFFFFF",
   },
@@ -302,6 +417,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     marginLeft: 10,
+  },
+  timestamp: {
+    color: "#666666",
+  },
+  timestampWhite: {
+    color: "#FFFFFF",
+  },
+  senderImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 5,
   },
 });
 
