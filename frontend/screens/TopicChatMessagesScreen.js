@@ -151,7 +151,7 @@ const TopicChatMessagesScreen = ({ route }) => {
       if (response.ok) {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { ...data.message, senderName: "You", sent: true },
+          { ...data.message, senderName: "Wait", sent: true },
         ]);
         setMessage("");
         scrollToBottom();
@@ -243,7 +243,11 @@ const TopicChatMessagesScreen = ({ route }) => {
               style={[
                 styles.messageText,
                 message.senderId === userId && styles.textWhite,
-                { marginTop: 5, marginBottom: 5 },
+                {
+                  marginTop: 5,
+                  marginBottom: 5,
+                  textAlign: message.senderId === userId ? "right" : "left",
+                },
               ]}
             >
               {message.message}
