@@ -16,7 +16,7 @@ const TopicChat = ({ topic }) => {
 
   return (
     <Pressable onPress={handlePress} style={styles.container}>
-      <Image source={{ uri: topic.imageURL }} style={styles.image} />
+      <Image source={{ uri: topic?.imageURL }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.topicName}>{topic.topicName}</Text>
       </View>

@@ -1325,7 +1325,7 @@ app.post("/invite-topic/:topicId", async (req, res) => {
 // API to add image URL to the topic
 app.post(
   "/add-image-to-topic/:topicId",
-  upload.single("image"),
+  uploads.single("image"),
   async (req, res) => {
     try {
       const { topicId } = req.params;
