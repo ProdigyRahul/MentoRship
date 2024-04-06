@@ -22,20 +22,8 @@ const TopicChatMessagesScreen = ({ route }) => {
         );
         const data = await response.json();
         if (response.ok) {
-          // Fetch user information for each message
-          const messagesWithNames = await Promise.all(
-            data.messages.map(async (message) => {
-              const userResponse = await fetch(
-                `https://api.rahulmistry.in/users/${message.senderId}`
-              );
-              const userData = await userResponse.json();
-              return {
-                ...message,
-                senderName: userData.name, // Include sender's name with the message
-              };
-            })
-          );
-          setMessages(messagesWithNames);
+          // Set messages with sender's name included
+          setMessages(data.messages);
         } else {
           console.error("Error fetching messages:", data.message);
         }
@@ -66,7 +54,10 @@ const TopicChatMessagesScreen = ({ route }) => {
       const data = await response.json();
       if (response.ok) {
         // Add the new message to the message list
-        setMessages([...messages, { ...data.message, sent: true }]);
+        setMessages([
+          ...messages,
+          { ...data.message, senderName: "You", sent: true },
+        ]);
         // Clear the input field
         setNewMessage("");
       } else {
@@ -81,14 +72,14 @@ const TopicChatMessagesScreen = ({ route }) => {
     <View style={styles.container}>
       <FlatList
         data={messages}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <View style={styles.message}>
             <Text>
               {item.senderName}: {item.message}
             </Text>
           </View>
         )}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item, index) => `${item._id}_${index}`}
       />
       <View style={styles.inputContainer}>
         <TextInput
