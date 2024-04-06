@@ -11,6 +11,7 @@ import {
 import { UserType } from "../UserContext";
 import axios from "axios";
 import User from "../components/User";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Explore({ navigation }) {
   const { userId, setUserId } = useContext(UserType);
@@ -55,38 +56,55 @@ export default function Explore({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Mentorship Conversations</Text>
-      <View style={styles.separator}></View>
-      <View style={styles.userList}>
-        <FlatList
-          data={users}
-          renderItem={({ item }) => <User item={item} />}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
-      </View>
-    </SafeAreaView>
+    // 
+    //   
+
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
+    >
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.header}>Mentorship Conversations</Text>
+        <View style={styles.separator}>
+          <View style={styles.userList}>
+            <FlatList
+              data={users}
+              renderItem={({ item }) => <User item={item} />}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+            />
+          </View>
+        </View>
+
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D9D9D9",
+    paddingBottom: 0,
   },
   header: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#000000",
-    marginTop: 50,
-    textAlign: "center",
+    color: "#FFFFFF",
+    marginTop: 45,
+    textAlign: "left",
+    marginLeft: 20,
   },
   separator: {
     width: "100%",
     height: 1.5,
-    backgroundColor: "#D9D9D9",
-    marginTop: 10,
+    flex: 1,
+    borderTopStartRadius: 50,
+    borderTopEndRadius: 50,
+    backgroundColor: "#FFFFFF",
+    marginTop: 20,
   },
   userList: {
     flex: 1,
