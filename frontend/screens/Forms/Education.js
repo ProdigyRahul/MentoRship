@@ -136,7 +136,7 @@ export default function Education({ navigation }) {
     try {
       // Send POST request to backend API
       const response = await axios.post(
-        "http://172.20.10.3:8080/onboarding/v2",
+        "http://192.168.0.108:8080/onboarding/v2",
         data
       );
 

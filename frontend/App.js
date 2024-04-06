@@ -20,6 +20,8 @@ import MyConnections from "./screens/Profile/MyConnections";
 import MyEvents from "./screens/Profile/MyEvents";
 import CreateNewSession from "./screens/Sessions/CreateNewSession";
 import CreateNewTopic from "./screens/Topics/CreateNewTopic";
+import Community from "./screens/Community";
+import PublicProfile from "./screens/PublicProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +78,7 @@ function App() {
             <Stack.Screen name="MyEvents" component={MyEvents} />
             <Stack.Screen name="Session" component={CreateNewSession} />
             <Stack.Screen name="Topics" component={CreateNewTopic} />
+            <Stack.Screen name="PublicProfile" component={PublicProfile} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserContext>

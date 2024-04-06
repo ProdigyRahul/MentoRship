@@ -40,7 +40,7 @@ export default function Login({ navigation }) {
       password: password,
     };
     try {
-      const response = await axios.post(`http://172.20.10.3:8080/login`, user);
+      const response = await axios.post(`http://192.168.0.108:8080/login`, user);
       console.log(response);
       const token = response.data.token;
       // Save token to AsyncStorage
@@ -54,7 +54,7 @@ export default function Login({ navigation }) {
 
       // Check if the user is onboarded
       const onboardedResponse = await axios.get(
-        `http://172.20.10.3:8080/user-onboarded/${userId}`
+        `http://192.168.0.108:8080/user-onboarded/${userId}`
       );
 
       const onboarded = onboardedResponse.data.onboarded;

@@ -30,7 +30,7 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `http://172.20.10.3:8080/friend-request/${userId}`
+        `http://192.168.0.108:8080/friend-request/${userId}`
       );
       if (response.status === 200) {
         const friendRequestsData = response.data.map((friendRequest) => ({
@@ -61,7 +61,7 @@ const MentorRequestScreen = () => {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 20,
   };
-  const onSwipe = (gestureName) => {};
+  const onSwipe = (gestureName) => { };
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

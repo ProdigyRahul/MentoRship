@@ -11,7 +11,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-requests/sent/${userId}`
+          `http://192.168.0.108:8080/friend-requests/sent/${userId}`
         );
 
         const data = await response.json();

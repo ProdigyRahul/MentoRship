@@ -247,7 +247,7 @@ export default function Welcome({ navigation }) {
     try {
       // Send user data to backend for first API call
       const response1 = await axios.post(
-        `http://172.20.10.3:8080/onboarding/v1`,
+        `http://192.168.0.108:8080/onboarding/v1`,
         userData
       );
 
@@ -256,7 +256,7 @@ export default function Welcome({ navigation }) {
         console.log("Successfully sent user data to onboarded/v1 API");
         // Send user data to backend for second API call
         const response2 = await axios.post(
-          `http://172.20.10.3:8080/onboarded/${userId}`
+          `http://192.168.0.108:8080/onboarded/${userId}`
         );
 
         // Check response and navigate if successful
@@ -342,7 +342,7 @@ export default function Welcome({ navigation }) {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
               }}
             >
-              <TouchableWithoutFeedback onPress={() => {}}>
+              <TouchableWithoutFeedback onPress={() => { }}>
                 <View
                   style={{
                     backgroundColor: "#fff",

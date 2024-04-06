@@ -92,7 +92,7 @@ export default function CreateNewSession({ navigation }) {
 
     try {
       const response = await axios.post(
-        "http://172.20.10.3:8080/create-session",
+        "http://192.168.0.108:8080/create-session",
         sessionData
       );
     } catch (error) {

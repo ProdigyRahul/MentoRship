@@ -30,7 +30,7 @@ const ChatsScreen = () => {
     const fetchAcceptedFriends = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/accepted-friends/${userId}`
+          `http://192.168.0.108:8080/accepted-friends/${userId}`
         );
         const data = await response.json();
 
@@ -48,7 +48,7 @@ const ChatsScreen = () => {
     const fetchPendingFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/friend-request/${userId}`
+          `http://192.168.0.108:8080/friend-request/${userId}`
         );
         const data = await response.json();
 

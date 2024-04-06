@@ -75,7 +75,7 @@ const ChatMessagesScreen = () => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/messages/${userId}/${recepientId}`
+        `http://192.168.0.108:8080/messages/${userId}/${recepientId}`
       );
       const data = await response.json();
 
@@ -100,7 +100,7 @@ const ChatMessagesScreen = () => {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 20,
   };
-  const onSwipe = (gestureName) => {};
+  const onSwipe = (gestureName) => { };
 
   // TODO: Remove Comments
   useEffect(() => {
@@ -113,7 +113,7 @@ const ChatMessagesScreen = () => {
     const fetchRecepientData = async () => {
       try {
         const response = await fetch(
-          `http://172.20.10.3:8080/user/${recepientId}`
+          `http://192.168.0.108:8080/user/${recepientId}`
         );
 
         const data = await response.json();
@@ -145,7 +145,7 @@ const ChatMessagesScreen = () => {
       await Promise.all(
         messageIds.map(async (messageId) => {
           const response = await fetch(
-            `http://172.20.10.3:8080/messages/read/${messageId}`,
+            `http://192.168.0.108:8080/messages/read/${messageId}`,
             {
               method: "PUT",
             }
@@ -163,11 +163,11 @@ const ChatMessagesScreen = () => {
   const fetchLastSeen = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/user/last-seen/${recepientId}`
+        `http://192.168.0.108:8080/user/last-seen/${recepientId}`
       );
 
       // Update sender's last seen time
-      await fetch(`http://172.20.10.3:8080/user/last-seen/${userId}`, {
+      await fetch(`http://192.168.0.108:8080/user/last-seen/${userId}`, {
         method: "PUT",
       });
 
@@ -266,7 +266,7 @@ const ChatMessagesScreen = () => {
         formData.append("messageText", message);
       }
 
-      const response = await fetch("http://172.20.10.3:8080/messages", {
+      const response = await fetch("http://192.168.0.108:8080/messages", {
         method: "POST",
         body: formData,
       });
@@ -344,7 +344,7 @@ const ChatMessagesScreen = () => {
 
   const deleteMessages = async (messageIds) => {
     try {
-      const response = await fetch("http://172.20.10.3:8080/deleteMessages", {
+      const response = await fetch("http://192.168.0.108:8080/deleteMessages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -466,21 +466,21 @@ const ChatMessagesScreen = () => {
                   style={[
                     item?.senderId?._id === userId
                       ? {
-                          alignSelf: "flex-end",
-                          backgroundColor: "#0077FF",
-                          padding: 8,
-                          maxWidth: "60%",
-                          borderRadius: 10,
-                          margin: 10,
-                        }
+                        alignSelf: "flex-end",
+                        backgroundColor: "#0077FF",
+                        padding: 8,
+                        maxWidth: "60%",
+                        borderRadius: 10,
+                        margin: 10,
+                      }
                       : {
-                          alignSelf: "flex-start",
-                          backgroundColor: "#E8F0FE",
-                          padding: 8,
-                          margin: 10,
-                          borderRadius: 10,
-                          maxWidth: "60%",
-                        },
+                        alignSelf: "flex-start",
+                        backgroundColor: "#E8F0FE",
+                        padding: 8,
+                        margin: 10,
+                        borderRadius: 10,
+                        maxWidth: "60%",
+                      },
                     isSelected && { width: "100%", backgroundColor: "#F0FFFF" },
                   ]}
                 >
@@ -490,8 +490,8 @@ const ChatMessagesScreen = () => {
                       color: isSelected
                         ? "#FFFFFF"
                         : item?.senderId?._id === userId
-                        ? "#FFFFFF"
-                        : "#000000",
+                          ? "#FFFFFF"
+                          : "#000000",
                       textAlign: isSelected ? "right" : "left",
                     }}
                   >
@@ -510,8 +510,8 @@ const ChatMessagesScreen = () => {
                         color: isSelected
                           ? "#FFFFFF"
                           : item?.senderId?._id === userId
-                          ? "#FFFFFF"
-                          : "#808080",
+                            ? "#FFFFFF"
+                            : "#808080",
                         marginRight: 5,
                       }}
                     >

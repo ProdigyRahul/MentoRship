@@ -135,7 +135,7 @@ export default function MyProfile() {
   const fetchProfileData = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/user-details/${userId}`
+        `http://192.168.0.108:8080/user-details/${userId}`
       );
       if (response.ok) {
         const data = await response.json();
