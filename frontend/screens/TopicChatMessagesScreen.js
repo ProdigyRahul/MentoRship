@@ -12,6 +12,7 @@ import {
   StatusBar,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -52,7 +53,7 @@ const TopicChatMessagesScreen = ({ route }) => {
   const fetchTopicData = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/details`
+        `http://172.20.10.3:8080/topics/${topicId}/details`
       );
       const data = await response.json();
       if (response.ok) {
@@ -75,7 +76,7 @@ const TopicChatMessagesScreen = ({ route }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/messages`
+        `http://172.20.10.3:8080/topics/${topicId}/messages`
       );
       const data = await response.json();
       if (response.ok) {
@@ -148,11 +149,11 @@ const TopicChatMessagesScreen = ({ route }) => {
       );
       const data = await response.json();
       if (response.ok) {
-        setMessages([
-          ...messages,
+        setMessages((prevMessages) => [
+          ...prevMessages,
           { ...data.message, senderName: "You", sent: true },
         ]);
-        setMessage(""); // Clear message after sending
+        setMessage("");
         scrollToBottom();
       } else {
         console.error("Error sending message:", data.message);
@@ -161,6 +162,15 @@ const TopicChatMessagesScreen = ({ route }) => {
       console.error("Error sending message:", error);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000000" />
+        <Text style={{ marginTop: 10, color: "#000000" }}>Please wait...</Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -200,81 +210,73 @@ const TopicChatMessagesScreen = ({ route }) => {
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          messages.map((message, index) => (
-            <View
-              key={index}
-              style={[
-                styles.messageContainer,
-                message.senderId === userId
-                  ? styles.myMessage
-                  : styles.otherMessage,
-                message.senderId === userId && { justifyContent: "flex-end" },
-              ]}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                {message.senderImage && (
-                  <Image
-                    style={styles.senderImage}
-                    source={{ uri: message.senderImage }}
-                  />
-                )}
-                <Text
-                  style={[
-                    styles.senderName,
-                    message.senderId === userId && styles.senderWhite,
-                    { marginLeft: message.senderId === userId ? "auto" : 5 },
-                  ]}
-                >
-                  {message.senderName}
-                </Text>
-              </View>
-
+        {messages.map((message, index) => (
+          <View
+            key={index}
+            style={[
+              styles.messageContainer,
+              message.senderId === userId
+                ? styles.myMessage
+                : styles.otherMessage,
+              message.senderId === userId && { justifyContent: "flex-end" },
+            ]}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {message.senderImage && (
+                <Image
+                  style={styles.senderImage}
+                  source={{ uri: message.senderImage }}
+                />
+              )}
               <Text
                 style={[
-                  styles.messageText,
-                  message.senderId === userId && styles.textWhite,
-                  {
-                    marginTop: 3,
-                    marginBottom: 5,
-                    textAlign: message.senderId === userId ? "right" : "left",
-                  },
+                  styles.senderName,
+                  message.senderId === userId && styles.senderWhite,
+                  { marginLeft: message.senderId === userId ? "auto" : 5 },
                 ]}
               >
-                {message.message}
+                {message.senderName}
+              </Text>
+            </View>
+
+            <Text
+              style={[
+                styles.messageText,
+                message.senderId === userId && styles.textWhite,
+                { marginTop: 5, marginBottom: 5 },
+              ]}
+            >
+              {message.message}
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                alignSelf:
+                  message.senderId === userId ? "flex-end" : "flex-start",
+              }}
+            >
+              <Text
+                style={[
+                  styles.timestamp,
+                  message.senderId === userId && styles.timestampWhite,
+                ]}
+              >
+                {formatTime(message.timestamp)}
               </Text>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignSelf:
-                    message.senderId === userId ? "flex-end" : "flex-start",
-                }}
-              >
-                <Text
-                  style={[
-                    styles.timestamp,
-                    message.senderId === userId && styles.timestampWhite,
-                  ]}
-                >
-                  {formatTime(message.timestamp)}
-                </Text>
-
-                {message.sent && (
-                  <MaterialCommunityIcons
-                    name="check"
-                    size={16}
-                    color={message.senderId === userId ? "#FFFFFF" : "#000000"}
-                    style={{ marginLeft: 5 }}
-                  />
-                )}
-              </View>
+              {message.sent && (
+                <MaterialCommunityIcons
+                  name="check"
+                  size={16}
+                  color={message.senderId === userId ? "#FFFFFF" : "#000000"}
+                  style={{ marginLeft: 5 }}
+                />
+              )}
             </View>
-          ))
-        )}
+          </View>
+        ))}
       </ScrollView>
       <View
         style={{
@@ -357,12 +359,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
     maxWidth: "80%",
-    textAlign: "right",
   },
   myMessage: {
     alignSelf: "flex-end",
     backgroundColor: "#0077FF",
     color: "#FFFFFF",
+    textAlign: "right", // Right-align text for my messages
   },
   otherMessage: {
     alignSelf: "flex-start",

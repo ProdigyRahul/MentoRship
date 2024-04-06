@@ -1174,7 +1174,7 @@ app.post("/create-topic", async (req, res) => {
 // Endpoint to post Messages and store it in the backend for a specific topic
 app.post(
   "/topics/:topicId/messages",
-  upload.single("imageFile"),
+  uploads.single("imageFile"),
   async (req, res) => {
     try {
       const { senderId, messageType, messageText } = req.body;
