@@ -1,116 +1,109 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
-  ScrollView,
   Image,
-  FlatList,
   Pressable,
+  FlatList,
+  ScrollView,
 } from "react-native";
-import React from "react";
 
 export default function AllComponents() {
-  const navigateToPublicProfile = () => {
-    navigation.navigate("PublicProfile");
+  const [mentors, setMentors] = useState([]);
+
+  useEffect(() => {
+    fetchMentors();
+  }, []);
+
+  const fetchMentors = async () => {
+    try {
+      const response = await fetch("https://api.rahulmistry.in/mentors");
+      const data = await response.json();
+      setMentors(data.mentors);
+    } catch (error) {
+      console.error("Error fetching mentors:", error);
+    }
   };
 
-  return (
-    <View
-      style={{
-        marginBottom: 100,
-        backgroundColor: "#FFFFFF",
-      }}
-    >
-      <ScrollView
-        vertical={true}
+  const navigateToPublicProfile = () => {
+    // Navigation logic
+  };
+
+  const renderMentor = ({ item }) => (
+    <Pressable onPress={navigateToPublicProfile}>
+      <View
         style={{
-          marginRight: -5,
+          width: 150,
+          height: 180,
+          backgroundColor: "#e3e3e3",
+          borderRadius: 20,
+          borderColor: "#e3e3e3",
+          borderWidth: 1,
+          alignItems: "center",
+          marginRight: 15,
+          padding: 10,
+          shadowColor: "#fff",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
         }}
       >
+        <Image
+          source={{ uri: item.image }}
+          style={{
+            width: 120,
+            height: 120,
+            borderRadius: 60,
+            marginBottom: 10,
+          }}
+        />
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 16,
+            textAlign: "center",
+          }}
+        >
+          {item.name}
+        </Text>
+      </View>
+    </Pressable>
+  );
+
+  return (
+    <ScrollView style={{ backgroundColor: "#fff" }}>
+      <View style={{ marginBottom: 100 }}>
         <Text
           style={{
             fontWeight: "bold",
             fontSize: 20,
             marginHorizontal: 20,
-            marginTop: 10,
+            marginTop: 20,
+            marginBottom: 10,
+            color: "#333",
           }}
         >
           Recommended Mentors
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 15,
-            marginTop: 20,
-            marginHorizontal: 20,
-          }}
-        >
-          <Pressable
-            onPress={navigateToPublicProfile}
-            style={{ marginRight: 7 }}
-          >
-            <View
-              style={{
-                width: 150,
-                height: 150,
-                backgroundColor: "#d9d9d9",
-                borderRadius: 20,
-                borderColor: "#000000",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={require("../assets/User.png")}
-                style={{
-                  width: 60,
-                  height: 60,
-                  marginTop: 20,
-                }}
-              />
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 16,
-                }}
-              >
-                Melita Castelino
-              </Text>
-            </View>
-          </Pressable>
-          <View
-            style={{
-              width: 150,
-              height: 150,
-              backgroundColor: "#d9d9d9",
-              borderRadius: 20,
-              borderColor: "#000000",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("../assets/User.png")}
-              style={{
-                width: 60,
-                height: 60,
-                marginTop: 20,
-              }}
-            />
-            <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 16,
-              }}
-            >
-              Rahul Mistry
-            </Text>
-          </View>
-        </View>
+        <FlatList
+          data={mentors}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          renderItem={renderMentor}
+          keyExtractor={(item) => item._id} // Assuming mentor object has an '_id' field
+        />
         <Text
           style={{
             fontWeight: "bold",
             fontSize: 20,
             marginHorizontal: 20,
             marginTop: 30,
+            color: "#333",
           }}
         >
           Recommended Sessions
@@ -120,10 +113,21 @@ export default function AllComponents() {
             width: 300,
             height: 200,
             borderRadius: 20,
-            backgroundColor: "#d9d9d9",
+            backgroundColor: "#F4F4F4",
             marginTop: 20,
             marginHorizontal: 20,
             alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderColor: "#D9D9D9",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
           }}
         >
           <Image
@@ -131,13 +135,13 @@ export default function AllComponents() {
             style={{
               width: 150,
               height: 150,
-              marginTop: 20,
             }}
           />
           <Text
             style={{
               fontWeight: "bold",
               fontSize: 16,
+              marginTop: 10,
             }}
           >
             AI Session
@@ -149,6 +153,7 @@ export default function AllComponents() {
             fontSize: 20,
             marginHorizontal: 20,
             marginTop: 30,
+            color: "#333",
           }}
         >
           Recommended Topics
@@ -159,11 +164,12 @@ export default function AllComponents() {
             fontSize: 20,
             marginHorizontal: 20,
             marginTop: 30,
+            color: "#333",
           }}
         >
           Recommended Companies
         </Text>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
