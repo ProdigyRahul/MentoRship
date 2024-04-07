@@ -1,15 +1,22 @@
 import React, { useContext } from "react";
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import { UserType } from "../UserContext";
+import { useNavigation } from "@react-navigation/native";
 
 const User = ({ item, category }) => {
   const { userId } = useContext(UserType);
+  const navigation = useNavigation();
 
+  const handlePressMessage = () => {
+    // Navigate to "Messages" screen and pass recipientId in route params
+    navigation.navigate("Messages", { recepientId: item._id });
+  };
   const renderActionButton = () => {
     switch (category) {
       case "Friends":
         return (
           <Pressable
+            onPress={handlePressMessage}
             style={{
               backgroundColor: "#09A1F6",
               padding: 10,

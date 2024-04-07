@@ -21,8 +21,10 @@ export default function Explore({ navigation }) {
   const [category, setCategory] = useState("Friends");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoryLoading, setCategoryLoading] = useState(false);
 
   const fetchUsers = async () => {
+    setCategoryLoading(true);
     let url = "";
     switch (category) {
       case "Friends":
@@ -30,9 +32,6 @@ export default function Explore({ navigation }) {
         break;
       case "Request Sent":
         url = `https://api.rahulmistry.in/friend-requests/sent/${userId}`;
-        break;
-      case "Add Friend":
-        url = `https://api.rahulmistry.in/users/${userId}`;
         break;
       default:
         break;
@@ -44,6 +43,8 @@ export default function Explore({ navigation }) {
       setLoading(false);
     } catch (error) {
       console.log("Error fetching users:", error);
+    } finally {
+      setCategoryLoading(false);
     }
   };
 
@@ -54,21 +55,6 @@ export default function Explore({ navigation }) {
   const handleCategoryChange = (selectedCategory) => {
     setCategory(selectedCategory);
   };
-
-  if (loading) {
-    return (
-      <LinearGradient
-        colors={["#000000", "#007CB0"]}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0.3, 1]}
-      >
-        <ActivityIndicator size="large" color="#FFFFFF" />
-        <Text style={{ marginTop: 10, color: "#FFFFFF" }}>Please wait...</Text>
-      </LinearGradient>
-    );
-  }
 
   return (
     <LinearGradient
@@ -104,36 +90,58 @@ export default function Explore({ navigation }) {
         </Text>
       </View>
       <View style={styles.friendsContainer}>
-        <View style={{ marginTop: 10, marginLeft: 10, padding: 10 }}>
+        <View
+          style={{
+            marginTop: 10,
+            marginLeft: 10,
+            padding: 10,
+            alignItems: "center",
+          }}
+        >
           <FlatList
             horizontal
             data={[
               { id: "Friends", text: "Friends" },
               { id: "Request Sent", text: "Request Sent" },
-              { id: "Add Friend", text: "Add Friend" },
             ]}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[
                   styles.item,
-                  item.id === category && { backgroundColor: "#09A1F6" },
+                  item.id === category && styles.selectedItem,
                 ]}
                 onPress={() => handleCategoryChange(item.id)}
               >
-                <Text style={styles.text}>{item.text}</Text>
+                <Text
+                  style={[
+                    styles.text,
+                    item.id === category && styles.selectedText,
+                  ]}
+                >
+                  {item.text}
+                </Text>
               </TouchableOpacity>
             )}
             keyExtractor={(item) => item.id}
           />
         </View>
-        <View style={styles.userList}>
-          <FlatList
-            data={users}
-            renderItem={({ item }) => <User item={item} category={category} />}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ paddingBottom: 20 }}
-          />
-        </View>
+        {categoryLoading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#000" />
+            <Text style={styles.loadingText}>Please wait...</Text>
+          </View>
+        ) : (
+          <View style={styles.userList}>
+            <FlatList
+              data={users}
+              renderItem={({ item }) => (
+                <User item={item} category={category} />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingBottom: 20 }}
+            />
+          </View>
+        )}
       </View>
     </LinearGradient>
   );
@@ -151,6 +159,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     marginTop: 20,
   },
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(255, 255, 255)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderText: {
+    marginTop: 10,
+    color: "#007CB0",
+  },
   userList: {
     padding: 10,
   },
@@ -160,8 +182,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   text: {
-    fontSize: 15,
+    fontSize: 18,
     color: "black",
+  },
+  selectedItem: {
+    borderBottomWidth: 3,
+    borderColor: "#00FFFF",
+    paddingBottom: 5,
+  },
+  selectedText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000000",
   },
   buttonContainer: {
     marginBottom: 150,
