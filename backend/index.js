@@ -1425,3 +1425,39 @@ app.get("/mentors", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+// Endpoint to check if the current user is a friend of the profile viewing user
+app.get("/check-friendship/:currentUserId/:profileUserId", async (req, res) => {
+  try {
+    const { currentUserId, profileUserId } = req.params;
+
+    // Find the profile viewing user
+    const profileUser = await User.findById(profileUserId);
+
+    // Check if the profile viewing user's friends list contains the current user
+    const isFriend = profileUser.friends.includes(currentUserId);
+
+    // Check if the current user has sent a friend request to the profile viewing user
+    const sentRequest = profileUser.friendRequests.includes(currentUserId);
+
+    // Check if the current user has a friend request from the profile viewing user
+    const receivedRequest =
+      profileUser.sentFriendRequests.includes(currentUserId);
+
+    let status = "not_friends";
+
+    // Determine the relationship status
+    if (isFriend) {
+      status = "friends";
+    } else if (sentRequest) {
+      status = "request_sent";
+    } else if (receivedRequest) {
+      status = "accept_request";
+    }
+
+    // Return the relationship status
+    res.json({ status });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

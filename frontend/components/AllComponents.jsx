@@ -34,7 +34,7 @@ export default function AllComponents() {
       <View
         style={{
           width: 150,
-          height: 180,
+          height: 210,
           backgroundColor: "#e3e3e3",
           borderRadius: 20,
           borderColor: "#e3e3e3",
