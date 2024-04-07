@@ -7,14 +7,18 @@ import {
   Image,
   Platform,
   StatusBar,
+  ScrollView,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import { UserType } from "../UserContext";
 
-const PublicProfile = ({ route }) => {
+const PublicProfile = ({ route, navigation }) => {
   const { userId } = route.params;
   const { loggedInUserId } = useContext(UserType);
   const [userData, setUserData] = useState(null);
   const [friendshipStatus, setFriendshipStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,6 +34,8 @@ const PublicProfile = ({ route }) => {
         checkFriendshipStatus(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,7 +45,7 @@ const PublicProfile = ({ route }) => {
   const checkFriendshipStatus = async (userData) => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/check-friendship/${loggedInUserId}/${userData._id}`
+        `https://api.rahulmistry.in/check-friendship/${loggedInUserId}/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to check friendship status");
@@ -76,6 +82,12 @@ const PublicProfile = ({ route }) => {
     }
   };
 
+  const openSocialMedia = (url) => {
+    Linking.openURL(url).catch((err) =>
+      console.error("Error opening URL:", err)
+    );
+  };
+
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -110,147 +122,226 @@ const PublicProfile = ({ route }) => {
             paddingTop: 20,
           }}
         >
-          <Image
-            source={{ uri: userData ? userData.image : "../assets/User.png" }}
-            style={{
-              width: 100,
-              height: 100,
-              marginTop: 40,
-              alignSelf: "center",
-              borderRadius: 50,
-            }}
-          />
-          <Text style={{ textAlign: "center", fontSize: 20, marginTop: 10 }}>
-            {userData ? userData.name : "Dummy Name"}
-          </Text>
-          <Text style={{ textAlign: "center" }}>
-            {userData ? userData.headline : "Dummy Headline"}
-          </Text>
-          <Text style={{ textAlign: "center" }}>
-            {userData ? userData.bio : "Dummy Bio"}
-          </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 10,
-            }}
-          >
-            <TouchableOpacity
+          {loading ? (
+            <View
               style={{
-                width: 100,
-                height: 30,
-                borderRadius: 20,
-                backgroundColor:
-                  friendshipStatus === "friends"
-                    ? "#0095d5"
-                    : friendshipStatus === "request_sent"
-                    ? "#CCCCCC"
-                    : "#0095d5",
+                flex: 1,
                 justifyContent: "center",
-                marginHorizontal: 10,
-              }}
-              onPress={() => {
-                if (friendshipStatus !== "friends") {
-                  friendshipStatus === "request_sent"
-                    ? null
-                    : sendFriendRequest();
-                }
+                alignItems: "center",
               }}
             >
+              <ActivityIndicator size="large" color="#000" />
+              <Text>Please wait...</Text>
+            </View>
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Image
+                source={{
+                  uri: userData ? userData.image : "../assets/User.png",
+                }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  marginTop: 20,
+                  alignSelf: "center",
+                  borderRadius: 50,
+                }}
+              />
               <Text
                 style={{
-                  fontWeight: "bold",
                   textAlign: "center",
-                  color:
-                    friendshipStatus === "request_sent" ? "#000000" : "#ffffff",
+                  fontSize: 20,
+                  marginTop: 10,
+                  fontWeight: "bold",
                 }}
               >
-                {friendshipStatus === "friends"
-                  ? "Friends"
-                  : friendshipStatus === "request_sent"
-                  ? "Sent Request"
-                  : friendshipStatus === "accept_request"
-                  ? "Accept Request"
-                  : "Add Friend"}
+                {userData ? userData.name : ""}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                height: 30,
-                borderRadius: 20,
-                backgroundColor: "#0095d5",
-                justifyContent: "center",
-                marginHorizontal: 10,
-              }}
-            >
-              <Text
+              <Text style={{ textAlign: "center" }}>
+                {userData ? userData.headline : ""}
+              </Text>
+              <Text style={{ textAlign: "center" }}>
+                {userData ? userData.bio : ""}
+              </Text>
+
+              <View
                 style={{
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  color: "#ffffff",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  marginTop: 10,
                 }}
               >
-                Message
+                <TouchableOpacity
+                  style={{
+                    width: 100,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor:
+                      friendshipStatus === "friends"
+                        ? "#0095d5"
+                        : friendshipStatus === "request_sent"
+                        ? "#CCCCCC"
+                        : "#0095d5",
+                    justifyContent: "center",
+                    marginHorizontal: 10,
+                  }}
+                  onPress={() => {
+                    if (friendshipStatus !== "friends") {
+                      friendshipStatus === "request_sent"
+                        ? null
+                        : sendFriendRequest();
+                    }
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      color:
+                        friendshipStatus === "request_sent"
+                          ? "#000000"
+                          : "#ffffff",
+                    }}
+                  >
+                    {friendshipStatus === "friends"
+                      ? "Friends"
+                      : friendshipStatus === "request_sent"
+                      ? "Sent Request"
+                      : friendshipStatus === "accept_request"
+                      ? "Accept Request"
+                      : "Add Friend"}
+                  </Text>
+                </TouchableOpacity>
+                {friendshipStatus === "friends" && (
+                  <TouchableOpacity
+                    style={{
+                      width: 100,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: "#0095d5",
+                      justifyContent: "center",
+                      marginHorizontal: 10,
+                    }}
+                    onPress={() => {
+                      navigation.navigate("Messages", {
+                        recepientId: userId,
+                      });
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#ffffff",
+                      }}
+                    >
+                      Message
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Skills and Expertise
               </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* More sections here with user data */}
-
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Skills and Expertise
-          </Text>
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Interests and Goals
-          </Text>
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Experience and Education
-          </Text>
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Reviews
-          </Text>
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Contact
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "flex-start",
-              marginTop: 20,
-            }}
-          >
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/LinkedIn.png")}
-                style={{ height: 50, width: 50 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/instagram.png")}
-                style={{ height: 50, width: 50 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/fb.png")}
-                style={{ height: 50, width: 50 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/twitter.png")}
-                style={{ height: 50, width: 50 }}
-              />
-            </TouchableOpacity>
-          </View>
-          <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
-            Project
-          </Text>
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Interests and Goals
+              </Text>
+              {userData &&
+                userData.careerGoals &&
+                userData.careerGoals.length > 0 && (
+                  <View>
+                    <Text style={{ fontSize: 16, marginTop: 10 }}>
+                      {userData.careerGoals.map((goal, index) => (
+                        <Text key={index}>
+                          {goal}
+                          {index !== userData.careerGoals.length - 1
+                            ? ", "
+                            : ""}
+                        </Text>
+                      ))}
+                    </Text>
+                  </View>
+                )}
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Experience and Education
+              </Text>
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  Education:
+                </Text>
+                <Text>{userData ? userData.education : ""}</Text>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  Grade Year:
+                </Text>
+                <Text>{userData ? userData.gradeYear : ""}</Text>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Major:</Text>
+                <Text>{userData ? userData.major : ""}</Text>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  Degree:
+                </Text>
+                <Text>{userData ? userData.degree : ""}</Text>
+              </View>
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Reviews
+              </Text>
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Contact
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "flex-start",
+                  marginTop: 20,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => openSocialMedia(userData.socialMedia.linkedIn)}
+                >
+                  <Image
+                    source={require("../assets/LinkedIn.png")}
+                    style={{ height: 50, width: 50 }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    openSocialMedia(userData.socialMedia.instagram)
+                  }
+                >
+                  <Image
+                    source={require("../assets/instagram.png")}
+                    style={{ height: 50, width: 50 }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => openSocialMedia(userData.socialMedia.facebook)}
+                >
+                  <Image
+                    source={require("../assets/fb.png")}
+                    style={{ height: 50, width: 50 }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => openSocialMedia(userData.socialMedia.twitter)}
+                >
+                  <Image
+                    source={require("../assets/twitter.png")}
+                    style={{ height: 50, width: 50 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+                Project
+              </Text>
+            </ScrollView>
+          )}
         </View>
       </View>
     </LinearGradient>

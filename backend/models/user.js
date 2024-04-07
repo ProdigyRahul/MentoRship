@@ -158,6 +158,24 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  socialMedia: {
+    linkedIn: {
+      type: String,
+      default: "",
+    },
+    instagram: {
+      type: String,
+      default: "",
+    },
+    facebook: {
+      type: String,
+      default: "",
+    },
+    twitter: {
+      type: String,
+      default: "",
+    },
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -1003,7 +1003,6 @@ app.get("/user-friends/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 // Endpoint to retrieve the public profile of a particular user
 app.get("/public-profile/:userId", async (req, res) => {
   try {
@@ -1030,6 +1029,13 @@ app.get("/public-profile/:userId", async (req, res) => {
       gradeYear: user.GradeYear,
       major: user.Major,
       degree: user.Degree,
+      // Add social media URLs to the public profile
+      socialMedia: {
+        linkedIn: user.socialMedia.linkedIn,
+        instagram: user.socialMedia.instagram,
+        facebook: user.socialMedia.facebook,
+        twitter: user.socialMedia.twitter,
+      },
     };
 
     // Return the public profile
@@ -1459,5 +1465,40 @@ app.get("/check-friendship/:currentUserId/:profileUserId", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/add-social-media/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { linkedIn, instagram, facebook, twitter } = req.body;
+
+    // Validate userId
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user document with social media URLs
+    user.socialMedia = {
+      linkedIn: linkedIn || "",
+      instagram: instagram || "",
+      facebook: facebook || "",
+      twitter: twitter || "",
+    };
+
+    // Save the updated user document
+    await user.save();
+
+    // Return success response
+    res.status(200).json({ message: "Social media URLs added successfully" });
+  } catch (error) {
+    console.error("Error adding social media URLs:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
