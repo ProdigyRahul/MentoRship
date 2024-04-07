@@ -12,6 +12,7 @@ import {
   Linking,
 } from "react-native";
 import { UserType } from "../UserContext";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const PublicProfile = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -34,8 +35,6 @@ const PublicProfile = ({ route, navigation }) => {
         checkFriendshipStatus(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -54,6 +53,8 @@ const PublicProfile = ({ route, navigation }) => {
       setFriendshipStatus(data.status);
     } catch (error) {
       console.error("Error checking friendship status:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,9 +84,11 @@ const PublicProfile = ({ route, navigation }) => {
   };
 
   const openSocialMedia = (url) => {
-    Linking.openURL(url).catch((err) =>
-      console.error("Error opening URL:", err)
-    );
+    if (url) {
+      Linking.openURL(url).catch((err) =>
+        console.error("Error opening URL:", err)
+      );
+    }
   };
 
   return (
@@ -98,18 +101,30 @@ const PublicProfile = ({ route, navigation }) => {
     >
       <StatusBar barStyle="light-content" />
       <View style={{ flex: 1 }}>
-        <Text
+        <View
           style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "#FFFFFF",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
             marginTop: Platform.OS === "ios" ? 55 : 45,
-            textAlign: "left",
-            marginLeft: 20,
           }}
         >
-          Profile
-        </Text>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 15 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+            }}
+          >
+            Profile
+          </Text>
+        </View>
 
         <View
           style={{
@@ -173,14 +188,15 @@ const PublicProfile = ({ route, navigation }) => {
               >
                 <TouchableOpacity
                   style={{
-                    width: 100,
-                    height: 40,
+                    width: 120,
+                    height: 50,
                     borderRadius: 20,
+                    padding: 5,
                     backgroundColor:
                       friendshipStatus === "friends"
                         ? "#0095d5"
                         : friendshipStatus === "request_sent"
-                        ? "#CCCCCC"
+                        ? "#D3D3D3"
                         : "#0095d5",
                     justifyContent: "center",
                     marginHorizontal: 10,
@@ -215,8 +231,8 @@ const PublicProfile = ({ route, navigation }) => {
                 {friendshipStatus === "friends" && (
                   <TouchableOpacity
                     style={{
-                      width: 100,
-                      height: 40,
+                      width: 120,
+                      height: 50,
                       borderRadius: 20,
                       backgroundColor: "#0095d5",
                       justifyContent: "center",
@@ -274,7 +290,7 @@ const PublicProfile = ({ route, navigation }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  Grade Year:
+                  Starting Year:
                 </Text>
                 <Text>{userData ? userData.gradeYear : ""}</Text>
               </View>

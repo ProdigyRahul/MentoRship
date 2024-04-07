@@ -7,8 +7,10 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AllComponents() {
+  const navigation = useNavigation();
   const [mentors, setMentors] = useState([]);
 
   useEffect(() => {
@@ -25,12 +27,12 @@ export default function AllComponents() {
     }
   };
 
-  const navigateToPublicProfile = () => {
-    // Navigation logic
+  const navigateToPublicProfile = (userId) => {
+    navigation.navigate("PublicProfile", { userId });
   };
 
   const renderMentor = ({ item }) => (
-    <Pressable onPress={navigateToPublicProfile}>
+    <Pressable onPress={() => navigateToPublicProfile(item._id)}>
       <View
         style={{
           width: 150,
