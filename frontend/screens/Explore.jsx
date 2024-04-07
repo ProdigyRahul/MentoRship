@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     borderBottomWidth: 3,
-    borderColor: "#00FFFF",
+    borderColor: "#007CB0",
     paddingBottom: 5,
   },
   selectedText: {

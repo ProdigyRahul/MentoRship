@@ -20,7 +20,7 @@ import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
-const TopicChatMessagesScreen = ({ route }) => {
+const TopicChatMessagesScreen = ({ route, navigation }) => {
   const { topicId, userId } = route.params;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);

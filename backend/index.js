@@ -1399,3 +1399,28 @@ app.get("/topics/:topicId/details", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// Define the route for fetching users with mentor: true
+app.get("/mentors", async (req, res) => {
+  try {
+    // Find all users where mentor is true
+    const mentors = await User.find(
+      { mentor: true },
+      {
+        _id: true,
+        name: true,
+        image: true,
+      }
+    );
+
+    if (!mentors.length) {
+      return res.status(200).json({ message: "No mentors found" });
+    }
+
+    // Return success response with mentor details
+    res.status(200).json({ mentors });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
