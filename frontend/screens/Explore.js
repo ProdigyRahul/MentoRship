@@ -18,7 +18,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Explore({ navigation }) {
   const { userId, setUserId } = useContext(UserType);
-  const [category, setCategory] = useState("Friends");
+  const [category, setCategory] = useState("Connections");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryLoading, setCategoryLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function Explore({ navigation }) {
     setCategoryLoading(true);
     let url = "";
     switch (category) {
-      case "Friends":
+      case "Connections":
         url = `https://api.rahulmistry.in/friends/${userId}`;
         break;
       case "Request Sent":
@@ -101,7 +101,7 @@ export default function Explore({ navigation }) {
           <FlatList
             horizontal
             data={[
-              { id: "Friends", text: "Friends" },
+              { id: "Connections", text: "Connections" },
               { id: "Request Sent", text: "Request Sent" },
             ]}
             renderItem={({ item }) => (

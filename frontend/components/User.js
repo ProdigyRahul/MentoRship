@@ -13,7 +13,7 @@ const User = ({ item, category }) => {
   };
   const renderActionButton = () => {
     switch (category) {
-      case "Friends":
+      case "Connections":
         return (
           <Pressable
             onPress={handlePressMessage}

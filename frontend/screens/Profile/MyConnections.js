@@ -46,7 +46,7 @@ export default function MyConnections({ navigation }) {
   };
 
   const handleChatPress = (friendId) => {
-    navigation.navigate("Messages", { recipientId: friendId });
+    navigation.navigate("Messages", { recepientId: friendId });
   };
   return (
     <LinearGradient

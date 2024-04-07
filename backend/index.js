@@ -292,7 +292,6 @@ app.post("/friend-request/accept", async (req, res) => {
   try {
     const { senderId, recepientId } = req.body;
 
-    //retrieve the documents of sender and the recipient
     const sender = await User.findById(senderId);
     const recepient = await User.findById(recepientId);
 
@@ -302,11 +301,9 @@ app.post("/friend-request/accept", async (req, res) => {
     recepient.friendRequests = recepient.friendRequests.filter(
       (request) => request.toString() !== senderId.toString()
     );
-
     sender.sentFriendRequests = sender.sentFriendRequests.filter(
-      (request) => request.toString() !== recepientId.toString
+      (request) => request.toString() !== recepientId.toString()
     );
-
     await sender.save();
     await recepient.save();
 
