@@ -70,6 +70,15 @@ export default function AllComponents() {
         >
           {item.name}
         </Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: "#777",
+            textAlign: "center",
+          }}
+        >
+          {item.Headline}
+        </Text>
       </View>
     </Pressable>
   );

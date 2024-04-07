@@ -1410,6 +1410,7 @@ app.get("/mentors", async (req, res) => {
         _id: true,
         name: true,
         image: true,
+        Headline: true,
       }
     );
 
