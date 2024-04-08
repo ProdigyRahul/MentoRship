@@ -1,3 +1,4 @@
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,20 +8,17 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
-import { UserType } from "../UserContext";
-import MentorRequest from "../components/MentorRequest";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { UserType } from "../UserContext";
 
 const MentorRequestScreen = () => {
-  const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(true);
   const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
-
+  const { userId } = useContext(UserType);
   useEffect(() => {
     fetchFriendRequests();
   }, []);
@@ -28,20 +26,29 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `https://api.rahulmistry.in/friend-request/${userId}`
+        "https://api.rahulmistry.in/friend-request/" + userId
       );
       if (response.status === 200) {
-        const friendRequestsData = response.data.map((friendRequest) => ({
-          _id: friendRequest._id,
-          name: friendRequest.name,
-          image: friendRequest.image,
-        }));
-
+        setFriendRequests(response.data);
         setLoading(false);
-        setFriendRequests(friendRequestsData);
       }
-    } catch (err) {
-      console.log("error message", err);
+    } catch (error) {
+      console.error("Error fetching friend requests:", error);
+    }
+  };
+
+  const handleIgnoreRequest = async (userId) => {
+    try {
+      const response = await axios.post(
+        "https://api.rahulmistry.in/reject-friend-request",
+        { userId }
+      );
+      if (response.status === 200) {
+        // Refresh friend requests after ignoring
+        fetchFriendRequests();
+      }
+    } catch (error) {
+      console.error("Error ignoring friend request:", error);
     }
   };
 
@@ -57,64 +64,35 @@ const MentorRequestScreen = () => {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <StatusBar barStyle="white-content" />
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          marginTop: Platform.OS === "ios" ? 55 : 45,
-        }}
-      >
-        <TouchableOpacity onPress={navigateBack} style={{ marginRight: 15 }}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.container}>
+        <TouchableOpacity onPress={navigateBack} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 25,
-            fontWeight: "bold",
-            color: "#FFFFFF",
-          }}
-        >
-          Notifications
-        </Text>
+        <Text style={styles.title}>Notifications</Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          borderTopStartRadius: 50,
-          borderTopEndRadius: 50,
-          backgroundColor: "#FFFFFF",
-          marginTop: 20,
-        }}
-      >
+      <View style={styles.content}>
         {loading ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#FFFFFF",
-            }}
-          >
-            <ActivityIndicator size="large" color="#000" />
-            <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FFFFFF" />
+            <Text style={styles.loadingText}>Please wait...</Text>
           </View>
         ) : (
-          <View style={{ padding: 10, marginHorizontal: 15, marginTop: 15 }}>
+          <View style={styles.requestsContainer}>
             {friendRequests.length > 0 ? (
-              friendRequests.map((item, index) => (
-                <MentorRequest
-                  key={index}
-                  item={item}
-                  friendRequests={friendRequests}
-                  setFriendRequests={setFriendRequests}
-                />
+              friendRequests.map((request, index) => (
+                <View key={index} style={styles.requestItem}>
+                  <Text style={styles.requestText}>{request.name}</Text>
+                  <TouchableOpacity
+                    style={styles.ignoreButton}
+                    onPress={() => handleIgnoreRequest(request._id)}
+                  >
+                    <Text style={styles.ignoreButtonText}>Ignore</Text>
+                  </TouchableOpacity>
+                </View>
               ))
             ) : (
-              <Text style={{ fontSize: 16, textAlign: "center" }}>
-                No Notifications
-              </Text>
+              <Text style={styles.noRequestsText}>No Notifications</Text>
             )}
           </View>
         )}
@@ -122,5 +100,70 @@ const MentorRequestScreen = () => {
     </LinearGradient>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginTop: Platform.OS === "ios" ? 55 : 45,
+  },
+  backButton: {
+    marginRight: 15,
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  content: {
+    flex: 1,
+    borderTopStartRadius: 50,
+    borderTopEndRadius: 50,
+    backgroundColor: "#FFFFFF",
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#FFFFFF",
+  },
+  requestsContainer: {
+    flex: 1,
+  },
+  requestItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  requestText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000000",
+  },
+  ignoreButton: {
+    backgroundColor: "#FF6347",
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 5,
+  },
+  ignoreButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  noRequestsText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#000000",
+  },
+});
 
 export default MentorRequestScreen;
