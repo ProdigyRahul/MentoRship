@@ -1522,7 +1522,7 @@ app.post("/remove-friend", async (req, res) => {
 });
 
 // Endpoint to reject a friend request
-post("/reject-friend-request", async (req, res) => {
+app.post("/reject-friend-request", async (req, res) => {
   const { userId, senderId } = req.body;
 
   try {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,18 +7,18 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
+  Image,
 } from "react-native";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { UserType } from "../UserContext";
 
 const MentorRequestScreen = () => {
   const [loading, setLoading] = useState(true);
   const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
-  const { userId } = useContext(UserType);
+
   useEffect(() => {
     fetchFriendRequests();
   }, []);
@@ -26,15 +26,19 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        "https://api.rahulmistry.in/friend-request/" + userId
+        `https://api.rahulmistry.in/friend-request/${userId}`
       );
       if (response.status === 200) {
-        setFriendRequests(response.data);
         setLoading(false);
+        setFriendRequests(response.data);
       }
-    } catch (error) {
-      console.error("Error fetching friend requests:", error);
+    } catch (err) {
+      console.log("error message", err);
     }
+  };
+
+  const navigateBack = () => {
+    navigation.goBack();
   };
 
   const handleIgnoreRequest = async (userId) => {
@@ -50,10 +54,6 @@ const MentorRequestScreen = () => {
     } catch (error) {
       console.error("Error ignoring friend request:", error);
     }
-  };
-
-  const navigateBack = () => {
-    navigation.goBack();
   };
 
   return (
@@ -82,6 +82,10 @@ const MentorRequestScreen = () => {
             {friendRequests.length > 0 ? (
               friendRequests.map((request, index) => (
                 <View key={index} style={styles.requestItem}>
+                  <Image
+                    source={{ uri: request.image }}
+                    style={styles.userImage}
+                  />
                   <Text style={styles.requestText}>{request.name}</Text>
                   <TouchableOpacity
                     style={styles.ignoreButton}
@@ -143,6 +147,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
   requestText: {
     fontSize: 18,
