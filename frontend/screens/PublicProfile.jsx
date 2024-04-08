@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { UserType } from "../UserContext";
 import { MaterialIcons } from "@expo/vector-icons";
+import RemoveFriendModal from "./RemoveFriendModal";
 
 const PublicProfile = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -68,8 +69,8 @@ const PublicProfile = ({ route, navigation }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            senderId: loggedInUserId,
-            recepientId: userData._id,
+            currentUserId: loggedInUserId,
+            selectedUserId: userId,
           }),
         }
       );
@@ -80,6 +81,33 @@ const PublicProfile = ({ route, navigation }) => {
       checkFriendshipStatus(userData);
     } catch (error) {
       console.error("Error sending friend request:", error);
+    }
+  };
+
+  const acceptFriendRequest = async () => {
+    console.log("button clicked");
+    try {
+      const response = await fetch(
+        "https://api.rahulmistry.in/friend-request/accept",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            senderId: loggedInUserId,
+            recepientId: userId,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to accept friend request");
+      }
+      await response.json();
+      // Refresh friendship status after accepting friend request
+      checkFriendshipStatus(userData);
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
     }
   };
 
@@ -206,6 +234,8 @@ const PublicProfile = ({ route, navigation }) => {
                       friendshipStatus === "request_sent"
                         ? null
                         : sendFriendRequest();
+                    } else if (friendshipStatus === "accept_request") {
+                      acceptFriendRequest();
                     }
                   }}
                 >
@@ -220,7 +250,7 @@ const PublicProfile = ({ route, navigation }) => {
                     }}
                   >
                     {friendshipStatus === "friends"
-                      ? "Friends"
+                      ? "Connected"
                       : friendshipStatus === "request_sent"
                       ? "Sent Request"
                       : friendshipStatus === "accept_request"

@@ -102,7 +102,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  Mentor: {
+  mentor: {
     type: Boolean,
     default: false,
   },

@@ -1502,3 +1502,21 @@ app.post("/add-social-media/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// Endpoint API to remove connections
+app.post("/remove-friend", async (req, res) => {
+  const { userId, friendId } = req.body;
+
+  try {
+    // Remove friend from the user's friend list
+    await User.updateOne({ _id: userId }, { $pull: { friends: friendId } });
+
+    // Remove user from the friend's friend list
+    await User.updateOne({ _id: friendId }, { $pull: { friends: userId } });
+
+    res.status(200).json({ message: "Friend removed successfully" });
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});

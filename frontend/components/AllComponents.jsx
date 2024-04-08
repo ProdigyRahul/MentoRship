@@ -6,12 +6,14 @@ import {
   Pressable,
   FlatList,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function AllComponents() {
   const navigation = useNavigation();
   const [mentors, setMentors] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchMentors();
@@ -24,6 +26,8 @@ export default function AllComponents() {
       setMentors(data.mentors);
     } catch (error) {
       console.error("Error fetching mentors:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -85,8 +89,18 @@ export default function AllComponents() {
     </Pressable>
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchMentors();
+  };
+
   return (
-    <ScrollView style={{ backgroundColor: "#fff" }}>
+    <ScrollView
+      style={{ backgroundColor: "#fff" }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={{ marginBottom: 100 }}>
         <Text
           style={{
