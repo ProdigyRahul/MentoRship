@@ -1520,3 +1520,25 @@ app.post("/remove-friend", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// Endpoint to reject a friend request
+post("/reject-friend-request", async (req, res) => {
+  const { userId, senderId } = req.body;
+
+  try {
+    // Find the recipient user and remove the sender from their friendRequests array
+    await User.findByIdAndUpdate(userId, {
+      $pull: { friendRequests: senderId },
+    });
+
+    // Find the sender user and remove the recipient from their sentFriendRequests array
+    await User.findByIdAndUpdate(senderId, {
+      $pull: { sentFriendRequests: userId },
+    });
+
+    res.status(200).json({ message: "Friend request rejected successfully" });
+  } catch (error) {
+    console.error("Error rejecting friend request:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
