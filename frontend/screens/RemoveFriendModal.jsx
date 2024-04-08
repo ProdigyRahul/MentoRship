@@ -6,16 +6,18 @@ const RemoveFriendModal = ({ visible, onClose, onRemove }) => {
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Remove Friend</Text>
+          <Text style={styles.modalTitle}>Remove Connection</Text>
           <Text style={styles.modalText}>
-            Are you sure you want to remove this friend?
+            Are you sure you want to remove this connection?
           </Text>
           <TouchableOpacity style={styles.removeButton} onPress={onRemove}>
             <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.cancelButton}>Cancel</Text>
-          </TouchableOpacity>
+          <View style={styles.cancelContainer}>
+            <TouchableOpacity onPress={onClose}>
+              <Text style={styles.cancelButton}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -45,7 +47,7 @@ const styles = {
     marginBottom: 10,
   },
   removeButton: {
-    backgroundColor: "#FF6347",
+    backgroundColor: "#09A1F6",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -56,6 +58,10 @@ const styles = {
   },
   cancelButton: {
     color: "#007BFF",
+    marginTop: 10,
+  },
+  cancelContainer: {
+    alignItems: "center",
     marginTop: 10,
   },
 };

@@ -21,6 +21,7 @@ const PublicProfile = ({ route, navigation }) => {
   const [userData, setUserData] = useState(null);
   const [friendshipStatus, setFriendshipStatus] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -111,6 +112,29 @@ const PublicProfile = ({ route, navigation }) => {
     }
   };
 
+  const removeFriend = async () => {
+    try {
+      const response = await fetch("https://api.rahulmistry.in/remove-friend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: loggedInUserId,
+          friendId: userId,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to remove friend");
+      }
+      // Refresh friendship status after removing friend
+      checkFriendshipStatus(userData);
+      setRemoveModalVisible(false); // Close the modal
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
+
   const openSocialMedia = (url) => {
     if (url) {
       Linking.openURL(url).catch((err) =>
@@ -119,6 +143,11 @@ const PublicProfile = ({ route, navigation }) => {
     }
   };
 
+  const handleRemoveFriendModal = () => {
+    if (friendshipStatus === "friends") {
+      setRemoveModalVisible(true);
+    }
+  };
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -236,6 +265,8 @@ const PublicProfile = ({ route, navigation }) => {
                         : sendFriendRequest();
                     } else if (friendshipStatus === "accept_request") {
                       acceptFriendRequest();
+                    } else if (friendshipStatus === "friends") {
+                      handleRemoveFriendModal();
                     }
                   }}
                 >
@@ -389,6 +420,11 @@ const PublicProfile = ({ route, navigation }) => {
             </ScrollView>
           )}
         </View>
+        <RemoveFriendModal
+          visible={removeModalVisible}
+          onClose={() => setRemoveModalVisible(false)}
+          onRemove={removeFriend}
+        />
       </View>
     </LinearGradient>
   );
