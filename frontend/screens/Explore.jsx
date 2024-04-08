@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StatusBar,
   Platform,
+  RefreshControl,
 } from "react-native";
 import { UserType } from "../UserContext";
 import axios from "axios";
@@ -22,6 +23,7 @@ export default function Explore({ navigation }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryLoading, setCategoryLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchUsers = async () => {
     setCategoryLoading(true);
@@ -32,6 +34,9 @@ export default function Explore({ navigation }) {
         break;
       case "Request Sent":
         url = `https://api.rahulmistry.in/friend-requests/sent/${userId}`;
+        break;
+      case "All Members":
+        url = `https://api.rahulmistry.in/users/${userId}`;
         break;
       default:
         break;
@@ -46,6 +51,11 @@ export default function Explore({ navigation }) {
     } finally {
       setCategoryLoading(false);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchUsers().then(() => setRefreshing(false));
   };
 
   useEffect(() => {
@@ -99,10 +109,13 @@ export default function Explore({ navigation }) {
           }}
         >
           <FlatList
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
             horizontal
             data={[
               { id: "Connections", text: "Connections" },
               { id: "Request Sent", text: "Request Sent" },
+              { id: "All Members", text: "All Members" },
             ]}
             renderItem={({ item }) => (
               <TouchableOpacity
@@ -133,12 +146,24 @@ export default function Explore({ navigation }) {
         ) : (
           <View style={styles.userList}>
             <FlatList
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
               data={users}
               renderItem={({ item }) => (
                 <User item={item} category={category} />
               )}
               keyExtractor={(item, index) => index.toString()}
               contentContainerStyle={{ paddingBottom: 20 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={["#FFFFFF"]}
+                  tintColor="#FFFFFF"
+                  title="Refreshing..."
+                  titleColor="#FFFFFF"
+                />
+              }
             />
           </View>
         )}

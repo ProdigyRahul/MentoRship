@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,18 +7,19 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
-  Image,
 } from "react-native";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
+import MentorRequest from "../components/MentorRequest";
 import { useNavigation } from "@react-navigation/native";
+import { UserType } from "../UserContext";
 
 const MentorRequestScreen = () => {
   const [loading, setLoading] = useState(true);
   const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
-
+  const { userId } = useContext(UserType);
   useEffect(() => {
     fetchFriendRequests();
   }, []);
@@ -41,21 +42,6 @@ const MentorRequestScreen = () => {
     navigation.goBack();
   };
 
-  const handleIgnoreRequest = async (userId) => {
-    try {
-      const response = await axios.post(
-        "https://api.rahulmistry.in/reject-friend-request",
-        { userId }
-      );
-      if (response.status === 200) {
-        // Refresh friend requests after ignoring
-        fetchFriendRequests();
-      }
-    } catch (error) {
-      console.error("Error ignoring friend request:", error);
-    }
-  };
-
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -64,8 +50,8 @@ const MentorRequestScreen = () => {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
+      <StatusBar barStyle="white-content" />
+      <View style={styles.header}>
         <TouchableOpacity onPress={navigateBack} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
@@ -80,20 +66,13 @@ const MentorRequestScreen = () => {
         ) : (
           <View style={styles.requestsContainer}>
             {friendRequests.length > 0 ? (
-              friendRequests.map((request, index) => (
-                <View key={index} style={styles.requestItem}>
-                  <Image
-                    source={{ uri: request.image }}
-                    style={styles.userImage}
-                  />
-                  <Text style={styles.requestText}>{request.name}</Text>
-                  <TouchableOpacity
-                    style={styles.ignoreButton}
-                    onPress={() => handleIgnoreRequest(request._id)}
-                  >
-                    <Text style={styles.ignoreButtonText}>Ignore</Text>
-                  </TouchableOpacity>
-                </View>
+              friendRequests.map((item, index) => (
+                <MentorRequest
+                  key={index}
+                  item={item}
+                  friendRequests={friendRequests}
+                  setFriendRequests={setFriendRequests}
+                />
               ))
             ) : (
               <Text style={styles.noRequestsText}>No Notifications</Text>
@@ -106,7 +85,7 @@ const MentorRequestScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -141,33 +120,6 @@ const styles = StyleSheet.create({
   },
   requestsContainer: {
     flex: 1,
-  },
-  requestItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  userImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  requestText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000000",
-  },
-  ignoreButton: {
-    backgroundColor: "#FF6347",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 5,
-  },
-  ignoreButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
   },
   noRequestsText: {
     fontSize: 16,
