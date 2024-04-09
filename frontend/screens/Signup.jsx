@@ -101,7 +101,7 @@ export default function Signup({ navigation }) {
         duration: 1000,
         autoHide: true,
       });
-      navigation.navigate("Welcome");
+      navigation.navigate("VerifyOTP");
     } catch (error) {
       console.error("Signup failed:", error);
       Alert.alert("Signup Failed", "An error occurred during signup.");

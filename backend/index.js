@@ -13,6 +13,7 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 const generateOTP = require("./helpers/generateOTP");
+const nodemailer = require("nodemailer");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -114,6 +115,38 @@ const storages = new CloudinaryStorage({
 // Create Multer instance with storage configuration
 const uploads = multer({ storage: storages });
 
+// Sending Email to User
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.USER_EMAIL,
+    pass: process.env.USER_PASSWORD,
+  },
+});
+
+const sendMail = async (to, subject, text, html) => {
+  const mailOptions = {
+    from: {
+      name: "MentoRship",
+      address: process.env.USER_EMAIL,
+    },
+    to,
+    subject,
+    text,
+    html,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Mail sent successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // Endpoint to register users with image upload
 app.post("/register", uploads.single("image"), async (req, res) => {
   const { name, email, password } = req.body;
@@ -186,6 +219,12 @@ P.S. We are here if you need anything, just a message away.
     });
     await welcomeMessage.save();
 
+    // Send OTP to the user's email
+    const subject = "Your OTP for MentoRship registration";
+    const text = `Your OTP for registration is: ${otp}`;
+    const html = `<p>Your OTP for registration is: <strong>${otp}</strong></p>`;
+    await sendMail(email, subject, text, html);
+
     // Generate JWT token for the new user
     const token = createToken(newUser._id);
     res.status(201).json({ token, message: "User registered successfully" });
@@ -236,6 +275,12 @@ app.post("/login", async (req, res) => {
     // Store OTP in the user document
     user.otp = otp;
     await user.save();
+
+    // Send OTP to the user's email
+    const subject = "Your OTP for MentoRship login";
+    const text = `Your OTP for login is: ${otp}`;
+    const html = `<p>Your OTP for login is: <strong>${otp}</strong></p>`;
+    await sendMail(email, subject, text, html);
 
     // Check if the user is onboarded
     const onboarded = user.Onboarded;

@@ -80,9 +80,9 @@ export default function VerifyOTP({ navigation }) {
 
         const onboarded = onboardedResponse.data.onboarded;
         if (onboarded) {
-          navigation.navigate("Chat");
+          navigation.replace("Chat");
         } else {
-          navigation.navigate("Welcome");
+          navigation.replace("Welcome");
         }
       } else {
         // Invalid OTP
@@ -155,7 +155,7 @@ export default function VerifyOTP({ navigation }) {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 30, // Adjusted margin-top here
+          marginTop: 30,
         }}
       >
         <View style={{ alignItems: "center" }}>
@@ -164,14 +164,14 @@ export default function VerifyOTP({ navigation }) {
             style={{
               height: 100,
               width: 100,
-              marginBottom: 10, // Adjusted margin-bottom here
+              marginBottom: 10,
             }}
           />
           <Text
             style={{
               fontSize: 48,
               fontWeight: "bold",
-              marginBottom: 5, // Adjusted margin-bottom here
+              marginBottom: 5,
               color: "#000000",
             }}
           >
@@ -201,7 +201,7 @@ export default function VerifyOTP({ navigation }) {
               <Text
                 style={{ fontSize: 28, fontWeight: "bold", color: "#000000" }}
               >
-                Hi {userName}
+                Hi, {userName}
               </Text>
             </View>
           )}
@@ -229,8 +229,7 @@ export default function VerifyOTP({ navigation }) {
               ref={(ref) => (inputRefs.current[index] = ref)}
               style={{
                 borderWidth: 1,
-                borderColor:
-                  index === currentInputIndex ? "#075FAB" : "#09A1F6",
+                borderColor: index === currentInputIndex ? "#000" : "#09A1F6",
                 width: 50,
                 height: 50,
                 textAlign: "center",
