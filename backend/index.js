@@ -1180,7 +1180,7 @@ app.get("/:userId/name", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json({ name: user.name });
+    res.json({ name: user.name, image: user.image });
   } catch (error) {
     console.error("Error fetching user name:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -1579,5 +1579,20 @@ app.post("/reject-friend-request", async (req, res) => {
   } catch (error) {
     console.error("Error rejecting friend request:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// endpoint api to get user name and image only
+app.get("/:userId/image", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ name: user.name, image: user.image });
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
