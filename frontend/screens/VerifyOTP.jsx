@@ -23,6 +23,7 @@ export default function VerifyOTP({ navigation }) {
   const [resendDisabled, setResendDisabled] = useState(true);
   const [cooldownTimer, setCooldownTimer] = useState(60);
   const [userDataLoading, setUserDataLoading] = useState(true);
+  const [currentInputIndex, setCurrentInputIndex] = useState(-1);
 
   useEffect(() => {
     // Fetch user's name and image from the backend API
@@ -35,7 +36,7 @@ export default function VerifyOTP({ navigation }) {
         setUserImage(response.data.image);
         setUserDataLoading(false);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log("Error fetching user data:", error);
         setUserDataLoading(false);
       }
     };
@@ -89,8 +90,12 @@ export default function VerifyOTP({ navigation }) {
       }
     } catch (error) {
       setLoading(false);
-      console.error("Error:", error);
-      Alert.alert("Error", "An error occurred. Please try again later.");
+      console.log("Error:", error);
+      if (error.response && error.response.status === 400) {
+        Alert.alert("Error", "Invalid OTP. Please try again.");
+      } else {
+        Alert.alert("Error", "An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -110,9 +115,15 @@ export default function VerifyOTP({ navigation }) {
     const newOTP = [...otp];
     newOTP[index] = text;
     setOTP(newOTP.join(""));
-    if (text.length === 1) {
+
+    if (text.length === 0 && index > 0) {
+      // Move to the previous input when deleting a character and then go ahead again
+      focusPreviousInput(index);
+    } else if (text.length === 1 && index < 5) {
+      // Move to the next input when typing a character
       focusNextInput(index);
     }
+
     if (index === 5) {
       Keyboard.dismiss();
     }
@@ -123,7 +134,7 @@ export default function VerifyOTP({ navigation }) {
       // Disable resend button and start cooldown timer
       setResendDisabled(true);
     } catch (error) {
-      console.error("Error in resending OTP:", error);
+      console.log("Error in resending OTP:", error);
       Alert.alert("Error", "An error occurred. Please try again later.");
     }
   };
@@ -218,7 +229,8 @@ export default function VerifyOTP({ navigation }) {
               ref={(ref) => (inputRefs.current[index] = ref)}
               style={{
                 borderWidth: 1,
-                borderColor: "#09A1F6",
+                borderColor:
+                  index === currentInputIndex ? "#075FAB" : "#09A1F6",
                 width: 50,
                 height: 50,
                 textAlign: "center",
@@ -230,16 +242,18 @@ export default function VerifyOTP({ navigation }) {
               maxLength={1}
               value={otp[index] || ""}
               onChangeText={(text) => handleTextInputChange(text, index)}
+              onFocus={() => setCurrentInputIndex(index)}
               onSubmitEditing={() => {
                 if (index === 5) {
                   handleVerifyOTP();
                 }
               }}
               onKeyPress={({ nativeEvent }) => {
-                if (nativeEvent.key === "Backspace") {
+                if (nativeEvent.key === "Backspace" && index > 0) {
                   focusPreviousInput(index);
                 }
               }}
+              caretHidden={true}
             />
           ))}
         </View>
