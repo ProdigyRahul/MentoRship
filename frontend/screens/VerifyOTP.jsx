@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Keyboard,
+  StatusBar,
 } from "react-native";
 import axios from "axios";
 import { UserType } from "../UserContext";
@@ -15,12 +16,32 @@ import { UserType } from "../UserContext";
 export default function VerifyOTP({ navigation }) {
   const [otp, setOTP] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userImage, setUserImage] = useState(null);
   const inputRefs = useRef([]);
   const { userId } = useContext(UserType);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [cooldownTimer, setCooldownTimer] = useState(60);
+  const [userDataLoading, setUserDataLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch user's name and image from the backend API
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.rahulmistry.in/${userId}/image`
+        );
+        setUserName(response.data.name);
+        setUserImage(response.data.image);
+        setUserDataLoading(false);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setUserDataLoading(false);
+      }
+    };
+
+    fetchUserData();
+
     if (resendDisabled) {
       const timer = setInterval(() => {
         setCooldownTimer((prevTimer) => {
@@ -36,7 +57,7 @@ export default function VerifyOTP({ navigation }) {
 
       return () => clearInterval(timer);
     }
-  }, [resendDisabled]);
+  }, [resendDisabled, userId]);
 
   const handleVerifyOTP = async () => {
     try {
@@ -111,111 +132,170 @@ export default function VerifyOTP({ navigation }) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#FFFFFF",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#ffffff",
       }}
     >
-      <Image
-        source={require("../assets/Logo.png")}
-        style={{
-          height: 100,
-          width: 100,
-          marginBottom: 20,
-          marginTop: 5,
-        }}
-      />
-
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>
-        MentoRship
-      </Text>
-      <Text style={{ fontSize: 16, marginBottom: 20 }}>
-        Enter OTP to continue
-      </Text>
-
-      <View style={{ flexDirection: "row" }}>
-        {/* OTP input fields */}
-        {[...Array(6)].map((_, index) => (
-          <TextInput
-            key={index}
-            ref={(ref) => (inputRefs.current[index] = ref)}
-            style={{
-              borderWidth: 1,
-              borderColor: "#09A1F6",
-              width: 50,
-              height: 50,
-              textAlign: "center",
-              fontSize: 20,
-              borderRadius: 10,
-              marginRight: 10,
-            }}
-            keyboardType="numeric"
-            maxLength={1}
-            value={otp[index] || ""}
-            onChangeText={(text) => handleTextInputChange(text, index)}
-            onSubmitEditing={() => {
-              if (index === 5) {
-                handleVerifyOTP();
-              }
-            }}
-            onKeyPress={({ nativeEvent }) => {
-              if (nativeEvent.key === "Backspace") {
-                focusPreviousInput(index);
-              }
-            }}
-          />
-        ))}
-      </View>
-
-      {/* Verify OTP button */}
-      <TouchableOpacity
-        onPress={handleVerifyOTP}
-        style={{
-          backgroundColor: "#09A1F6",
-          paddingVertical: 15,
-          paddingHorizontal: 40,
-          borderRadius: 10,
-          marginTop: 20,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#FFFFFF" size="small" />
-        ) : (
-          <Text style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "bold" }}>
-            Verify OTP
-          </Text>
-        )}
-      </TouchableOpacity>
-
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View
         style={{
-          marginTop: 20,
-          flexDirection: "row",
+          flex: 1,
+          width: "100%",
           alignItems: "center",
-          flexWrap: "wrap",
           justifyContent: "center",
+          marginTop: 30, // Adjusted margin-top here
         }}
       >
-        <Text style={{ color: "#000", fontSize: 16 }}>
-          Didn't receive the verification OTP?
-        </Text>
-        <TouchableOpacity onPress={handleResendOTP} disabled={resendDisabled}>
+        <View style={{ alignItems: "center" }}>
+          <Image
+            source={require("../assets/Logo.png")}
+            style={{
+              height: 100,
+              width: 100,
+              marginBottom: 10, // Adjusted margin-bottom here
+            }}
+          />
           <Text
             style={{
-              color: resendDisabled ? "#ccc" : "#09A1F6",
-              fontSize: 16,
-              marginLeft: 5,
-              fontWeight: resendDisabled ? "normal" : "bold",
+              fontSize: 48,
+              fontWeight: "bold",
+              marginBottom: 5, // Adjusted margin-bottom here
+              color: "#000000",
             }}
           >
-            {resendDisabled
-              ? `Resend OTP in ${cooldownTimer}s`
-              : "Resend Again"}
+            MentoRship
           </Text>
+          {userDataLoading ? (
+            <ActivityIndicator color="#000000" size="small" />
+          ) : (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 60,
+              }}
+            >
+              {userImage && (
+                <Image
+                  source={{ uri: userImage }}
+                  style={{
+                    height: 60,
+                    width: 60,
+                    borderRadius: 30,
+                    marginRight: 10,
+                  }}
+                />
+              )}
+              <Text
+                style={{ fontSize: 28, fontWeight: "bold", color: "#000000" }}
+              >
+                Hi {userName}
+              </Text>
+            </View>
+          )}
+          <Text style={{ fontSize: 16, marginTop: 10, marginHorizontal: 20 }}>
+            Please enter the OTP sent to your email.
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          paddingHorizontal: 20,
+          paddingTop: 20,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          backgroundColor: "#F8F8F8",
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          {/* OTP input fields */}
+          {[...Array(6)].map((_, index) => (
+            <TextInput
+              key={index}
+              ref={(ref) => (inputRefs.current[index] = ref)}
+              style={{
+                borderWidth: 1,
+                borderColor: "#09A1F6",
+                width: 50,
+                height: 50,
+                textAlign: "center",
+                fontSize: 20,
+                borderRadius: 10,
+                marginRight: 10,
+              }}
+              keyboardType="numeric"
+              maxLength={1}
+              value={otp[index] || ""}
+              onChangeText={(text) => handleTextInputChange(text, index)}
+              onSubmitEditing={() => {
+                if (index === 5) {
+                  handleVerifyOTP();
+                }
+              }}
+              onKeyPress={({ nativeEvent }) => {
+                if (nativeEvent.key === "Backspace") {
+                  focusPreviousInput(index);
+                }
+              }}
+            />
+          ))}
+        </View>
+
+        {/* Verify OTP button */}
+        <TouchableOpacity
+          onPress={handleVerifyOTP}
+          style={{
+            backgroundColor: "#09A1F6",
+            paddingVertical: 15,
+            paddingHorizontal: 40,
+            borderRadius: 10,
+            marginTop: 20,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFFFFF" size="small" />
+          ) : (
+            <Text
+              style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "bold" }}
+            >
+              Verify OTP
+            </Text>
+          )}
         </TouchableOpacity>
+
+        <View
+          style={{
+            marginTop: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ color: "#000", fontSize: 16 }}>
+            Didn't receive the verification OTP?
+          </Text>
+          <TouchableOpacity onPress={handleResendOTP} disabled={resendDisabled}>
+            <Text
+              style={{
+                color: resendDisabled ? "#ccc" : "#09A1F6",
+                fontSize: 16,
+                marginLeft: 5,
+                fontWeight: resendDisabled ? "normal" : "bold",
+              }}
+            >
+              {resendDisabled
+                ? `Resend OTP in ${cooldownTimer}s`
+                : "Resend Again"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

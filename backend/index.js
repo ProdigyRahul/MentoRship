@@ -248,7 +248,6 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Internal server Error!" });
   }
 });
-
 // Endpoint api to verify otp
 app.post("/verify-otp", async (req, res) => {
   try {
@@ -260,7 +259,10 @@ app.post("/verify-otp", async (req, res) => {
     }
 
     if (user.otp === otp) {
-      // OTP is correct
+      // Remove OTP from user
+      user.otp = null;
+      await user.save();
+
       return res.status(200).json({ message: "OTP is valid" });
     } else {
       // OTP is incorrect
@@ -271,7 +273,6 @@ app.post("/verify-otp", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 //endpoint to access all the users except the user who's is currently logged in!
 app.get("/users/:userId", (req, res) => {
   const loggedInUserId = req.params.userId;
