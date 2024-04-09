@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  otp: {
+    type: String,
+  },
   image: {
     type: String,
     required: true,

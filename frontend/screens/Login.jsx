@@ -56,17 +56,7 @@ export default function Login({ navigation }) {
       await AsyncStorage.setItem("userId", userId);
       setUserId(userId);
 
-      // Check if the user is onboarded
-      const onboardedResponse = await axios.get(
-        `https://api.rahulmistry.in/user-onboarded/${userId}`
-      );
-
-      const onboarded = onboardedResponse.data.onboarded;
-      if (onboarded) {
-        navigation.navigate("Chat");
-      } else {
-        navigation.navigate("Welcome");
-      }
+      navigation.navigate("VerifyOTP");
     } catch (error) {
       if (error.response.status === 403) {
         // Account deactivated

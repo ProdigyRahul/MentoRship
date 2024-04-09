@@ -12,6 +12,7 @@ const dotenv = require("dotenv");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
+const generateOTP = require("./helpers/generateOTP");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -128,11 +129,19 @@ app.post("/register", uploads.single("image"), async (req, res) => {
       });
     }
 
+    // Generate OTP
+    const otp = generateOTP();
     // Hash the password before saving it
     const hashedPassword = await bcrypt.hash(password, 10); // Hash with salt rounds 10
 
     // Create a new User object with hashed password and image path
-    const newUser = new User({ name, email, password: hashedPassword, image });
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      image,
+      otp,
+    });
 
     // Save the user to the database
     await newUser.save();
@@ -200,7 +209,7 @@ const createToken = (userId) => {
 
   return token;
 };
-
+// Endpoint to verify OTP and login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -221,15 +230,45 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid Password!" });
     }
 
+    // Generate OTP
+    const otp = generateOTP();
+
+    // Store OTP in the user document
+    user.otp = otp;
+    await user.save();
+
     // Check if the user is onboarded
     const onboarded = user.Onboarded;
 
     // Generate token with onboarded status
     const token = createToken(user._id);
-    res.status(200).json({ token });
+    res.status(200).json({ token, otp });
   } catch (error) {
     console.log("Error in finding the user", error);
     res.status(500).json({ message: "Internal server Error!" });
+  }
+});
+
+// Endpoint api to verify otp
+app.post("/verify-otp", async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.otp === otp) {
+      // OTP is correct
+      return res.status(200).json({ message: "OTP is valid" });
+    } else {
+      // OTP is incorrect
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+  } catch (error) {
+    console.error("Error in OTP verification:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

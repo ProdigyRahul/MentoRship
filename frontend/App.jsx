@@ -31,6 +31,7 @@ import SplashScreen from "./screens/SplashScreen";
 import InviteTopicParticipants from "./screens/Topics/InviteTopicParticipants";
 import TopicBanner from "./screens/Topics/TopicBanner";
 import TopicChatMessagesScreen from "./screens/TopicChatMessagesScreen";
+import VerifyOTP from "./screens/VerifyOTP";
 
 const Stack = createNativeStackNavigator();
 
@@ -140,6 +141,11 @@ function App() {
             <Stack.Screen
               name="TopicChatMessages"
               component={TopicChatMessagesScreen}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="VerifyOTP"
+              component={VerifyOTP}
               options={{ animation: "ios" }}
             />
           </Stack.Navigator>
