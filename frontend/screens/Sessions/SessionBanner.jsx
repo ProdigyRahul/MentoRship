@@ -30,7 +30,7 @@ export default function SessionBanner({ navigation }) {
   const [image, setImage] = useState(null);
   const [altText, setAltText] = useState("");
   const { userId, sessionId } = useContext(UserType);
-  const [bannerImage, setBannerImage] = useState(null);
+  const [bannerImage, setBannerImage] = useState("");
 
   const handleChooseImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -165,9 +165,19 @@ export default function SessionBanner({ navigation }) {
               style={{ width: 350, height: 150, borderRadius: 10 }}
             />
           ) : (
-            <Text style={{ fontSize: 18, color: "#000", marginBottom: 10 }}>
-              Image Preview
-            </Text>
+            <View
+              style={{
+                width: 350,
+                height: 150,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18, color: "#000", marginBottom: 10 }}>
+                Image Preview
+              </Text>
+            </View>
           )}
         </TouchableOpacity>
         <Text
