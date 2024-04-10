@@ -286,7 +286,7 @@ const PublicProfile = ({ route, navigation }) => {
                       ? "Sent Request"
                       : friendshipStatus === "accept_request"
                       ? "Accept Request"
-                      : "Add Friend"}
+                      : "Connect"}
                   </Text>
                 </TouchableOpacity>
                 {friendshipStatus === "friends" && (

@@ -3,7 +3,7 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 
 const RemoveFriendModal = ({ visible, onClose, onRemove }) => {
   return (
-    <Modal visible={visible} animationType="slide" transparent={true}>
+    <Modal visible={visible} animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Remove Connection</Text>
@@ -29,7 +29,7 @@ const styles = {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   modalContent: {
     backgroundColor: "#FFFFFF",

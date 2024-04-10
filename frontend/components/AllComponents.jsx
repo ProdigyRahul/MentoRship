@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserType } from "../UserContext";
+
 export default function AllComponents() {
   const navigation = useNavigation();
-  const [mentors, setMentors] = useState([]);
+  const [users, setUsers] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [userType, setUserType] = useState("");
   const { userId } = useContext(UserType);
@@ -39,17 +40,25 @@ export default function AllComponents() {
     }
   };
 
-  useEffect(() => {
-    fetchMentors();
-  }, []);
-
   const fetchMentors = async () => {
     try {
       const response = await fetch("https://api.rahulmistry.in/mentors");
       const data = await response.json();
-      setMentors(data.mentors);
+      setUsers(data.mentors);
     } catch (error) {
       console.error("Error fetching mentors:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const fetchStudents = async () => {
+    try {
+      const response = await fetch("https://api.rahulmistry.in/students");
+      const data = await response.json();
+      setUsers(data.students);
+    } catch (error) {
+      console.error("Error fetching students:", error);
     } finally {
       setRefreshing(false);
     }
@@ -59,7 +68,7 @@ export default function AllComponents() {
     navigation.navigate("PublicProfile", { userId });
   };
 
-  const renderMentor = ({ item }) => (
+  const renderItem = ({ item }) => (
     <Pressable onPress={() => navigateToPublicProfile(item._id)}>
       <View
         style={{
@@ -115,7 +124,11 @@ export default function AllComponents() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchMentors();
+    if (userType === "mentor") {
+      fetchStudents();
+    } else if (userType === "student") {
+      fetchMentors();
+    }
   };
 
   return (
@@ -136,15 +149,17 @@ export default function AllComponents() {
             color: "#333",
           }}
         >
-          Recommended Mentors
+          {userType === "mentor"
+            ? "Recommended Mentees"
+            : "Recommended Mentors"}
         </Text>
         <FlatList
-          data={mentors}
+          data={users}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
-          renderItem={renderMentor}
-          keyExtractor={(item) => item._id} // Assuming mentor object has an '_id' field
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id} // Assuming user object has an '_id' field
         />
         <Text
           style={{
