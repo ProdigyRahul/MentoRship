@@ -1014,26 +1014,30 @@ app.post("/invite-friends/:sessionId", async (req, res) => {
 });
 
 // Endpoint to upload session banner and alt text
-app.post("/upload-banner/:sessionId", async (req, res) => {
-  const { sessionId } = req.params;
-  const { bannerUrl, bannerAltText } = req.body;
-  try {
-    // Fetch session by ID
-    const session = await GroupSession.findById(sessionId);
-    if (!session) {
-      return res.status(404).json({ message: "Session not found" });
-    }
+app.post(
+  "/upload-banner/:sessionId",
+  uploads.single("image"),
+  async (req, res) => {
+    const { sessionId } = req.params;
+    const image = req.file ? req.file.path : null;
+    const imageUrl = image;
+    try {
+      // Fetch session by ID
+      const session = await GroupSession.findById(sessionId);
+      if (!session) {
+        return res.status(404).json({ message: "Session not found" });
+      }
 
-    // Update session banner and alt text
-    session.banner = bannerUrl;
-    session.bannerAltText = bannerAltText;
-    await session.save();
-    res.status(200).json({ message: "Banner uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading banner:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+      // Update session banner and alt text
+      session.banner = imageUrl;
+      await session.save();
+      res.status(200).json({ message: "Banner uploaded successfully" });
+    } catch (error) {
+      console.error("Error uploading banner:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   }
-});
+);
 
 // Endpoint to select schedule
 app.post("/select-schedule/:sessionId", async (req, res) => {

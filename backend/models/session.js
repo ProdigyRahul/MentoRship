@@ -39,7 +39,10 @@ const groupSessionSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  banner: String,
+  banner: {
+    type: String,
+    default: "",
+  },
   bannerAltText: String,
   date: {
     type: Date,

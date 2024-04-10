@@ -30,33 +30,64 @@ export default function SessionBanner({ navigation }) {
   const [image, setImage] = useState(null);
   const [altText, setAltText] = useState("");
   const { userId, sessionId } = useContext(UserType);
+  const [bannerImage, setBannerImage] = useState(null);
 
   const handleChooseImage = async () => {
-    try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-        return;
-      }
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("Permission status:", status);
 
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 0.5,
-      });
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
 
-      if (!result.cancelled) {
-        setImage(result.uri);
-      }
-    } catch (error) {
-      console.error("Error choosing image:", error);
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+    });
+
+    console.log("Response:", response);
+
+    if (!response.cancelled && response.assets && response.assets.length > 0) {
+      const { uri } = response.assets[0];
+      console.log("Selected Image URI:", uri);
+      setBannerImage(uri);
+      console.log("Profile Image State:", bannerImage);
+    } else {
+      console.log("No image selected");
     }
   };
 
   const handleUploadImage = async () => {
-    navigation.navigate("Schedule");
+    try {
+      if (!bannerImage) {
+        Alert.alert("Error", "Please select an image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", {
+        name: new Date().toISOString() + "_banner.jpg",
+        type: "image/jpg",
+        uri: bannerImage,
+      });
+
+      const response = await axios.post(
+        `https://api.rahulmistry.in/upload-banner/${sessionId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Image upload response:", response.data);
+      navigation.navigate("Chat");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Alert.alert("Error", "Failed to upload image. Please try again.");
+    }
   };
 
   return (
@@ -118,7 +149,7 @@ export default function SessionBanner({ navigation }) {
           onPress={handleChooseImage}
           style={{
             backgroundColor: "#F1F1F3",
-            width: "100%",
+            width: 350,
             height: 150,
             borderRadius: 10,
             justifyContent: "center",
@@ -128,11 +159,10 @@ export default function SessionBanner({ navigation }) {
             borderColor: "#09A1F6",
           }}
         >
-          {image ? (
+          {bannerImage ? (
             <Image
-              source={{ uri: image }}
-              style={{ width: "100%", height: "100%", borderRadius: 10 }}
-              key={image} // Add the key prop here
+              source={{ uri: bannerImage }}
+              style={{ width: 350, height: 150, borderRadius: 10 }}
             />
           ) : (
             <Text style={{ fontSize: 18, color: "#000", marginBottom: 10 }}>
