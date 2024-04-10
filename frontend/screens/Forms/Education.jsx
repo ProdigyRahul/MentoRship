@@ -266,19 +266,24 @@ export default function Education({ navigation }) {
         }}
       ></View>
 
-      <ScrollView vertical={true} horizontal={false}>
+      <ScrollView
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+      >
         <Text
           style={{
             fontSize: 15,
             marginTop: 10,
             paddingHorizontal: 10,
+            flexWrap: "wrap",
           }}
         >
           Share your educational and professional background with the community.
         </Text>
         <View
           style={{
-            paddingHorizontal: 15,
+            paddingHorizontal: 10,
           }}
         >
           {Platform.OS === "android" && (
@@ -289,7 +294,7 @@ export default function Education({ navigation }) {
               <View
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -326,7 +331,7 @@ export default function Education({ navigation }) {
                 }}
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -344,10 +349,10 @@ export default function Education({ navigation }) {
           )}
           <Text style={{ marginTop: 15, fontWeight: 300 }}>Headline *</Text>
           <TextInput
-            placeholder="Enter your attention-grabbing headline for your profile"
+            placeholder="Enter your headline for your profile"
             style={{
               backgroundColor: "#F1F1F3",
-              width: "95%",
+              width: "100%",
               height: 50,
               borderRadius: 20,
               marginTop: 15,
@@ -369,7 +374,7 @@ export default function Education({ navigation }) {
               <View
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -411,7 +416,7 @@ export default function Education({ navigation }) {
                 }}
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -454,7 +459,7 @@ export default function Education({ navigation }) {
               <TextInput
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -475,7 +480,7 @@ export default function Education({ navigation }) {
               <TextInput
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -496,7 +501,7 @@ export default function Education({ navigation }) {
               <TextInput
                 style={{
                   backgroundColor: "#F1F1F3",
-                  width: "95%",
+                  width: "100%",
                   height: 50,
                   borderRadius: 20,
                   marginTop: 15,
@@ -520,7 +525,7 @@ export default function Education({ navigation }) {
                   <View
                     style={{
                       backgroundColor: "#F1F1F3",
-                      width: "95%",
+                      width: "100%",
                       height: 50,
                       borderRadius: 20,
                       marginTop: 15,
@@ -563,7 +568,7 @@ export default function Education({ navigation }) {
                     }}
                     style={{
                       backgroundColor: "#F1F1F3",
-                      width: "95%",
+                      width: "100%",
                       height: 50,
                       borderRadius: 20,
                       marginTop: 15,
@@ -604,7 +609,7 @@ export default function Education({ navigation }) {
           backgroundColor: "#09A1F6",
           padding: 10,
           borderRadius: 30,
-          width: "95%",
+          width: "100%",
           height: 50,
           justifyContent: "center",
           alignItems: "center",

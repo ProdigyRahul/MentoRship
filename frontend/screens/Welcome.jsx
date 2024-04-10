@@ -137,6 +137,25 @@ export default function Welcome({ navigation }) {
   const [LastName, setLastName] = useState("");
   const [Pronouns, setPronouns] = useState("");
 
+  // Function to open ActionSheetIOS for Pronouns selection
+  const showPronounsOptions = () => {
+    const pronounsOptions = ["She/Her", "He/Him", "They/Them", "Cancel"];
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: pronounsOptions,
+        cancelButtonIndex: pronounsOptions.length - 1,
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== pronounsOptions.length - 1) {
+          handlePronounsChange(pronounsOptions[buttonIndex]);
+        }
+      }
+    );
+  };
+  // Function to handle Pronouns change
+  const handlePronounsChange = (value) => {
+    setPronouns(value);
+  };
   // Function to open ActionSheetIOS for Gender selection
   const showGenderOptions = () => {
     const genderOptions = ["Male", "Female", "Rather not say", "Cancel"];
@@ -199,9 +218,6 @@ export default function Welcome({ navigation }) {
   };
   const handleLastNameChange = (text) => {
     setLastName(text);
-  };
-  const handlePronounsChange = (text) => {
-    setPronouns(text);
   };
   // Popup
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -468,23 +484,57 @@ export default function Welcome({ navigation }) {
             value={LastName}
             onChangeText={(text) => handleLastNameChange(text)}
           ></TextInput>
-          <Text style={{ marginTop: 15, fontWeight: 300 }}>
-            Pronouns (optional)
-          </Text>
-          <TextInput
-            style={{
-              backgroundColor: "#F1F1F3",
-              width: "100%",
-              height: 50,
-              borderRadius: 20,
-              marginTop: 15,
-              paddingHorizontal: 20,
-              borderColor: "#D9D9D9",
-              borderWidth: 1,
-            }}
-            value={Pronouns}
-            onChangeText={(text) => handlePronounsChange(text)}
-          ></TextInput>
+          {Platform.OS === "ios" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Pronouns *</Text>
+              <TouchableOpacity
+                onPress={showPronounsOptions}
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Text>{Pronouns || "Select Pronouns"}</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {Platform.OS === "android" && (
+            <>
+              <Text style={{ marginTop: 15, fontWeight: 300 }}>Pronouns *</Text>
+              <View
+                style={{
+                  backgroundColor: "#F1F1F3",
+                  width: "100%",
+                  height: 50,
+                  borderRadius: 20,
+                  marginTop: 15,
+                  paddingHorizontal: 5,
+                  borderColor: "#D9D9D9",
+                  justifyContent: "center",
+                  borderWidth: 1,
+                }}
+              >
+                <Picker
+                  selectedValue={Pronouns}
+                  onValueChange={(itemValue) => handlePronounsChange(itemValue)}
+                  style={{ height: 50, width: "100%" }}
+                  mode="dropdown"
+                >
+                  <Picker.Item label="Select Pronouns" value="" />
+                  <Picker.Item label="She/Her" value="She/Her" />
+                  <Picker.Item label="He/Him" value="He/Him" />
+                  <Picker.Item label="They/Them" value="They/Them" />
+                </Picker>
+              </View>
+            </>
+          )}
           {Platform.OS === "ios" && (
             <>
               <Text style={{ marginTop: 15, fontWeight: 300 }}>Gender *</Text>
