@@ -1522,7 +1522,7 @@ app.get("/students", async (req, res) => {
   try {
     // Find all users where student is true
     const students = await User.find(
-      { student: true },
+      { Student: true },
       {
         _id: true,
         name: true,
@@ -1671,9 +1671,9 @@ app.get("/:userId/image", async (req, res) => {
 });
 
 // Endpoint to get user type
-app.get("/user-type", async (req, res) => {
+app.get("/user-type/:userId", async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.params.userId;
 
     const user = await User.findById(userId);
 
