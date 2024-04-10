@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,35 @@ import {
   RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import { UserType } from "../UserContext";
 export default function AllComponents() {
   const navigation = useNavigation();
   const [mentors, setMentors] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [userType, setUserType] = useState("");
+  const { userId } = useContext(UserType);
+
+  useEffect(() => {
+    fetchUserType();
+  }, []);
+
+  const fetchUserType = async () => {
+    try {
+      const response = await fetch(
+        `https://api.rahulmistry.in/user-type/${userId}`
+      );
+      const data = await response.json();
+      if (data.isMentor) {
+        setUserType("mentor");
+        fetchStudents();
+      } else if (data.isStudent) {
+        setUserType("student");
+        fetchMentors();
+      }
+    } catch (error) {
+      console.error("Error fetching user type:", error);
+    }
+  };
 
   useEffect(() => {
     fetchMentors();
