@@ -1491,7 +1491,7 @@ app.get("/topics/:topicId/details", async (req, res) => {
   }
 });
 
-// Define the route for fetching users with mentor: true
+// Endpoint api to fetch the mentors
 app.get("/mentors", async (req, res) => {
   try {
     // Find all users where mentor is true
@@ -1516,6 +1516,33 @@ app.get("/mentors", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// Endpoint api to fetch all the students details :)
+app.get("/students", async (req, res) => {
+  try {
+    // Find all users where student is true
+    const students = await User.find(
+      { student: true },
+      {
+        _id: true,
+        name: true,
+        image: true,
+        Headline: true,
+      }
+    );
+
+    if (!students.length) {
+      return res.status(200).json({ message: "No students found" });
+    }
+
+    // Return success response with student details
+    res.status(200).json({ students });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // Endpoint to check if the current user is a friend of the profile viewing user
 app.get("/check-friendship/:currentUserId/:profileUserId", async (req, res) => {
   try {
@@ -1640,5 +1667,26 @@ app.get("/:userId/image", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user name:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to get user type
+app.get("/user-type", async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMentor = user.mentor;
+    const isStudent = user.Student;
+
+    res.status(200).json({ isMentor, isStudent });
+  } catch (error) {
+    console.error("Error checking user type:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
