@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Image,
   Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -165,7 +166,23 @@ export default function MyEvents({ navigation }) {
 
         <ScrollView>
           {filteredSessions.map((session, index) => (
-            <View key={index} style={{ marginBottom: 20 }}>
+            <View
+              key={index}
+              style={{ marginBottom: 20, alignItems: "center" }}
+            >
+              {/* Display session banner image */}
+              {session.banner && (
+                <Image
+                  source={{ uri: session.banner }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    borderRadius: 10,
+                    marginBottom: 10,
+                  }}
+                />
+              )}
+
               <Text
                 style={{
                   fontSize: 18,
@@ -226,14 +243,15 @@ export default function MyEvents({ navigation }) {
                   {displayType === "Upcoming" ? "Attending" : "Attended"}
                 </Text>
               </View>
+
               <TouchableOpacity
                 style={{
                   backgroundColor: "#007CB0",
                   paddingVertical: 10,
                   paddingHorizontal: 20,
                   borderRadius: 5,
-                  alignSelf: "flex-start",
                   marginTop: 10,
+                  alignItems: "center",
                 }}
               >
                 <Text style={{ color: "#FFFFFF" }}>View Session</Text>

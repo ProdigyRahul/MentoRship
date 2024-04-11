@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
   },
   userList: {
     padding: 10,
+    marginBottom: 50,
   },
   item: {
     padding: 5,

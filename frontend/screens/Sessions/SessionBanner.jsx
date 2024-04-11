@@ -83,7 +83,7 @@ export default function SessionBanner({ navigation }) {
       );
 
       console.log("Image upload response:", response.data);
-      navigation.navigate("Chat");
+      navigation.navigate("Schedule");
     } catch (error) {
       console.error("Error uploading image:", error);
       Alert.alert("Error", "Failed to upload image. Please try again.");
