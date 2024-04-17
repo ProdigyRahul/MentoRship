@@ -1063,7 +1063,7 @@ app.post("/select-schedule/:sessionId", async (req, res) => {
   }
 });
 
-// Endpoint to attend a session:
+// Endpoint to attend a session
 app.post("/attend-session/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
   const { userId } = req.body;
@@ -1086,7 +1086,6 @@ app.post("/attend-session/:sessionId", async (req, res) => {
     } else {
       // If private, send a request to the organizer
       // Here, you would typically implement a notification system to notify the organizer
-      // For simplicity, we'll directly add the user as pending attendee
       session.attendees.push({
         userId,
         status: "pending",
@@ -1099,6 +1098,7 @@ app.post("/attend-session/:sessionId", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 app.post("/accept-request/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
   const { userId } = req.body;
@@ -1766,11 +1766,10 @@ app.get("/user-type/:userId", async (req, res) => {
 // Endpoint to fetch all sessions with details including organizer's name
 app.get("/recommended-sessions", async (req, res) => {
   try {
-    // Fetch all necessary fields for recommended sessions and populate the createdBy field with user's name
     const sessions = await GroupSession.find({ ended: false })
       .populate("createdBy", "name image")
       .select(
-        "sessionName banner date createdBy description time duration public private -_id"
+        "sessionName banner date createdBy description time duration public private _id"
       );
 
     // If no sessions found, return a message
@@ -1782,6 +1781,35 @@ app.get("/recommended-sessions", async (req, res) => {
     res.status(200).json({ sessions });
   } catch (error) {
     console.error("Error fetching recommended sessions:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Endpoint to fetch attendee status
+app.get("/attendee-status/:sessionId/:userId", async (req, res) => {
+  try {
+    const { sessionId, userId } = req.params;
+
+    // Find the session by ID
+    const session = await GroupSession.findById(sessionId);
+
+    // If session not found, return error
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    // Find the attendee in the session
+    const attendee = session.attendees.find(
+      (attendee) => String(attendee.userId) === userId
+    );
+
+    // Determine the status
+    const status = attendee ? attendee.status : "none";
+
+    // Return the session ID, user ID, and status
+    res.json({ sessionId, userId, status });
+  } catch (error) {
+    console.error("Error fetching attendee status:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

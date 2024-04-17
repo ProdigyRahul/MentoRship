@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -9,12 +9,13 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { UserType } from "../UserContext";
 
 export default function RecommendedSessions() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+  const { userId } = useContext(UserType);
 
   useEffect(() => {
     fetchRecommendedSessions();
@@ -26,20 +27,32 @@ export default function RecommendedSessions() {
         "https://api.rahulmistry.in/recommended-sessions"
       );
       const data = await response.json();
-      // Format dates before setting them to state
       const formattedSessions = data.sessions.map((session) => ({
         ...session,
         date: formatDate(session.date),
+        attendees: session.attendees || [],
       }));
       setSessions(formattedSessions);
-      setLoading(false); // Data loaded, so set loading to false
+
+      // Fetch attendee status for each session
+      fetchAttendeeStatusForSessions(formattedSessions);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching recommended sessions:", error);
-      setLoading(false); // Error occurred, set loading to false
+      setLoading(false);
     }
   };
 
-  // Function to format date
+  const fetchAttendeeStatusForSessions = async (sessions) => {
+    const updatedSessions = await Promise.all(
+      sessions.map(async (session) => {
+        const status = await fetchAttendeeStatus(session._id, userId);
+        return { ...session, attendeeStatus: status };
+      })
+    );
+    setSessions(updatedSessions);
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
@@ -52,43 +65,133 @@ export default function RecommendedSessions() {
     return formattedDate.toUpperCase();
   };
 
-  const renderItem = ({ item, index }) => {
+  const fetchAttendeeStatus = async (sessionId, userId) => {
+    try {
+      const response = await fetch(
+        `https://api.rahulmistry.in/attendee-status/${sessionId}/${userId}`
+      );
+      const data = await response.json();
+      console.log(data);
+      return data.status;
+    } catch (error) {
+      console.error("Error fetching attendee status:", error);
+      return "none";
+    }
+  };
+
+  const attendSession = async (sessionId, userId) => {
+    try {
+      const response = await fetch(
+        `https://api.rahulmistry.in/attend-session/${sessionId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }),
+        }
+      );
+      const data = await response.json();
+    } catch (error) {
+      console.error("Error attending session:", error);
+    }
+  };
+
+  const handleAttendeeAction = async (sessionId) => {
+    try {
+      const session = sessions.find((session) => session._id === sessionId);
+      if (!session) {
+        console.log("Session not found");
+        return;
+      }
+
+      const { attendeeStatus } = session;
+      switch (attendeeStatus) {
+        case "attending":
+          console.log("User is already attending this session");
+          break;
+        case "pending":
+          console.log("User's request is pending");
+          break;
+        default:
+          console.log("User has not attended or requested yet");
+
+          if (session.public) {
+            console.log("Attending public session");
+            await attendSession(sessionId, userId);
+            updateAttendeeStatus(sessionId, "attending");
+          } else {
+            console.log("Sending request for private session");
+            updateAttendeeStatus(sessionId, "pending");
+          }
+          break;
+      }
+    } catch (error) {
+      console.error("Error handling attendee action:", error);
+    }
+  };
+
+  const updateAttendeeStatus = (sessionId, status) => {
+    const updatedSessions = sessions.map((session) =>
+      session._id === sessionId
+        ? { ...session, attendeeStatus: status }
+        : session
+    );
+    setSessions(updatedSessions);
+  };
+
+  const renderButton = (attendeeStatus) => {
+    switch (attendeeStatus) {
+      case "attending":
+        return { text: "Attending", style: styles.attendingButton };
+      case "pending":
+        return { text: "Request Sent", style: styles.requestSentButton };
+      default:
+        return { text: "Request", style: styles.attendButton };
+    }
+  };
+
+  const renderItem = ({ item }) => {
+    const {
+      _id,
+      banner,
+      date,
+      sessionName,
+      createdBy,
+      public: isPublic,
+      attendeeStatus,
+    } = item;
+    const { name, image } = createdBy;
+
+    const { text, style } = renderButton(attendeeStatus);
+
     return (
       <Pressable onPress={() => navigation.navigate("Sessions")}>
         <View style={styles.sessionContainer}>
           <Image
-            source={{ uri: item.banner }}
+            source={{ uri: banner }}
             style={styles.sessionImage}
             resizeMode="cover"
           />
           <View style={styles.sessionDetails}>
-            <Text style={styles.date}>{item.date}</Text>
-            <Text style={styles.sessionName}>{item.sessionName}</Text>
+            <Text style={styles.date}>{date}</Text>
+            <Text style={styles.sessionName}>{sessionName}</Text>
             <View style={styles.hostedByContainer}>
-              <Image
-                source={{ uri: item.createdBy.image }}
-                style={styles.hostedImage}
-              />
+              <Image source={{ uri: image }} style={styles.hostedImage} />
               <Text style={styles.hostedByText}>
-                Hosted by{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  {item.createdBy.name}
-                </Text>
+                Hosted by <Text style={{ fontWeight: "bold" }}>{name}</Text>
               </Text>
             </View>
             <Text style={styles.sessionType}>
-              {item.public ? "Public" : "Private"}
+              {isPublic ? "Public" : "Private"}
             </Text>
             <View style={styles.buttonContainer}>
-              {item.public ? (
-                <Pressable style={styles.attendButton}>
-                  <Text style={styles.attendButtonText}>Attend</Text>
-                </Pressable>
-              ) : (
-                <Pressable style={styles.privateSessionButton}>
-                  <Text style={styles.privateSessionButtonText}>Request</Text>
-                </Pressable>
-              )}
+              <Pressable
+                style={style}
+                onPress={() => handleAttendeeAction(_id)}
+              >
+                <Text style={styles.attendButtonText}>{text}</Text>
+              </Pressable>
             </View>
           </View>
         </View>
@@ -98,7 +201,7 @@ export default function RecommendedSessions() {
 
   return (
     <View style={{ flex: 1 }}>
-      {loading ? ( // Show activity indicator if loading
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#000" />
         </View>
@@ -109,7 +212,7 @@ export default function RecommendedSessions() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.container}
           renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item._id}
         />
       )}
     </View>
@@ -123,7 +226,7 @@ const styles = StyleSheet.create({
   },
   sessionContainer: {
     width: 300,
-    height: 270,
+    height: 290,
     borderRadius: 20,
     backgroundColor: "#F4F4F4",
     marginTop: 20,
@@ -188,19 +291,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  privateSessionButton: {
-    backgroundColor: "#09A1F6",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+  attendingButton: {
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 5,
-    marginBottom: 5,
-    flexDirection: "row",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
-  privateSessionButtonText: {
-    color: "white",
-    fontWeight: "bold",
+  requestSentButton: {
+    backgroundColor: "#FFC107",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
   sessionType: {
     fontSize: 12,
