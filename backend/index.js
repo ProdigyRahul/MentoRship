@@ -1700,7 +1700,7 @@ app.get("/recommended-sessions", async (req, res) => {
   try {
     // Fetch all necessary fields for recommended sessions and populate the createdBy field with user's name
     const sessions = await GroupSession.find({ public: true, ended: false })
-      .populate("createdBy", "name")
+      .populate("createdBy", "name image")
       .select(
         "sessionName banner date createdBy description time duration -_id"
       );
