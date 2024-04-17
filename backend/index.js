@@ -999,6 +999,7 @@ app.post("/invite-friends/:sessionId", async (req, res) => {
           userId: attendee._id,
           name: attendee.name,
           image: attendee.image,
+          status: "attending",
         });
       }
     }
@@ -1058,6 +1059,73 @@ app.post("/select-schedule/:sessionId", async (req, res) => {
     res.status(200).json({ message: "Schedule selected successfully" });
   } catch (error) {
     console.error("Error selecting schedule:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to attend a session:
+app.post("/attend-session/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+  const { userId } = req.body;
+  try {
+    // Find the session by ID
+    const session = await GroupSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Check if the session is public
+    if (session.public) {
+      // If public, add the user as an attendee
+      session.attendees.push({
+        userId,
+        status: "attending",
+      });
+      await session.save();
+      return res.status(200).json({ message: "Attended session successfully" });
+    } else {
+      // If private, send a request to the organizer
+      // Here, you would typically implement a notification system to notify the organizer
+      // For simplicity, we'll directly add the user as pending attendee
+      session.attendees.push({
+        userId,
+        status: "pending",
+      });
+      await session.save();
+      return res.status(200).json({ message: "Request sent to organizer" });
+    }
+  } catch (error) {
+    console.error("Error attending session:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+app.post("/accept-request/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+  const { userId } = req.body;
+  try {
+    // Find the session by ID
+    const session = await GroupSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Find the attendee request
+    const attendee = session.attendees.find(
+      (attendee) =>
+        String(attendee.userId) === String(userId) &&
+        attendee.status === "pending"
+    );
+    if (!attendee) {
+      return res.status(404).json({ message: "Attendee request not found" });
+    }
+
+    // Update the status to attending
+    attendee.status = "attending";
+    await session.save();
+
+    return res.status(200).json({ message: "Request accepted successfully" });
+  } catch (error) {
+    console.error("Error accepting request:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

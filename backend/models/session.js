@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const attendeeSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -10,6 +9,11 @@ const attendeeSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+  },
+  status: {
+    type: String,
+    enum: ["attending", "pending", "rejected", "none"],
+    default: "none",
   },
 });
 

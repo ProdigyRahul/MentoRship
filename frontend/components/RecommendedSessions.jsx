@@ -48,7 +48,8 @@ export default function RecommendedSessions() {
       day: "2-digit",
       year: "numeric",
     };
-    return date.toLocaleDateString("en-US", options);
+    const formattedDate = date.toLocaleDateString("en-US", options);
+    return formattedDate.toUpperCase();
   };
 
   const renderItem = ({ item, index }) => {
@@ -99,7 +100,7 @@ export default function RecommendedSessions() {
     <View style={{ flex: 1 }}>
       {loading ? ( // Show activity indicator if loading
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#09A1F6" />
+          <ActivityIndicator size="large" color="#000" />
         </View>
       ) : (
         <FlatList
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   date: {
-    fontSize: 14,
+    fontSize: 12,
     marginBottom: 5,
   },
   hostedByContainer: {
