@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  Pressable,
-  FlatList,
-  ScrollView,
-} from "react-native";
+import { View, Text, Image, Pressable, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function RecommendedSessions({ navigation }) {
@@ -42,12 +35,12 @@ export default function RecommendedSessions({ navigation }) {
         <View
           style={{
             width: 300,
-            height: 250, // Increased height to accommodate additional content
+            height: 250,
             borderRadius: 20,
             backgroundColor: "#F4F4F4",
             marginTop: 20,
             marginHorizontal: 20,
-            padding: 10, // Added padding for better spacing
+            padding: 10,
             borderWidth: 1,
             borderColor: "#D9D9D9",
             shadowColor: "#000",
@@ -64,72 +57,71 @@ export default function RecommendedSessions({ navigation }) {
             source={{ uri: item.banner }}
             style={{
               width: "100%",
-              height: 150,
+              height: 120,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
             }}
+            resizeMode="cover"
           />
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 16,
-              marginTop: 10,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            {item.sessionName}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              marginTop: 5,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            {formattedDate}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              marginTop: 5,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            Created By: {item.createdBy}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              marginTop: 5,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            Description: {item.description}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              marginTop: 5,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            Time: {item.time}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              marginTop: 5,
-              paddingHorizontal: 10,
-              textAlign: "center",
-            }}
-          >
-            Duration: {item.duration}
-          </Text>
+          <View style={{ padding: 10 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+                textAlign: "center",
+              }}
+            >
+              {item.sessionName}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              {formattedDate}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>Created By:</Text>{" "}
+              {item.createdBy.name || "Unknown"}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>Description:</Text>{" "}
+              {item.description}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>Time:</Text> {item.time}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>Duration:</Text>{" "}
+              {item.duration}
+            </Text>
+          </View>
         </View>
       </Pressable>
     );
