@@ -20,7 +20,7 @@ export default function RecommendedSessions() {
   const fetchRecommendedSessions = async () => {
     try {
       const response = await fetch(
-        "http://172.20.10.3:8080/recommended-sessions"
+        "https://api.rahulmistry.in/recommended-sessions"
       );
       const data = await response.json();
       setSessions(data.sessions);
