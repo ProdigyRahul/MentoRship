@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   buttonContainer: {
-    flexDirection: "column",
     alignItems: "center",
     marginTop: 10,
   },
@@ -187,7 +186,6 @@ const styles = StyleSheet.create({
   attendButtonText: {
     color: "white",
     fontWeight: "bold",
-    marginLeft: 5,
   },
   privateSessionButton: {
     backgroundColor: "#09A1F6",
