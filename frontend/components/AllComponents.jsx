@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserType } from "../UserContext";
+import RecommendedSessions from "./RecommendedSessions";
 
 export default function AllComponents() {
   const navigation = useNavigation();
@@ -172,45 +173,8 @@ export default function AllComponents() {
         >
           Recommended Sessions
         </Text>
-        <View
-          style={{
-            width: 300,
-            height: 200,
-            borderRadius: 20,
-            backgroundColor: "#F4F4F4",
-            marginTop: 20,
-            marginHorizontal: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            borderWidth: 1,
-            borderColor: "#D9D9D9",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
-        >
-          <Image
-            source={require("../assets/poster.jpg")}
-            style={{
-              width: 150,
-              height: 150,
-            }}
-          />
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 16,
-              marginTop: 10,
-            }}
-          >
-            AI Session
-          </Text>
-        </View>
+        <RecommendedSessions />
+
         <Text
           style={{
             fontWeight: "bold",

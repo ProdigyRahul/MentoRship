@@ -1694,13 +1694,22 @@ app.get("/user-type/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-// Endpoint to fetch recommended sessions with limited fields
+
+// Endpoint to fetch recommended sessions with all details
 app.get("/recommended-sessions", async (req, res) => {
   try {
-    // Fetch sessionName, banner, date, and _id fields for recommended sessions
+    // Fetch all necessary fields for recommended sessions
     const sessions = await GroupSession.find(
       { public: true, ended: false },
-      { sessionName: 1, banner: 1, date: 1 }
+      {
+        sessionName: 1,
+        banner: 1,
+        date: 1,
+        createdBy: 1,
+        description: 1,
+        time: 1,
+        duration: 1,
+      }
     );
 
     // If no sessions found, return a message
