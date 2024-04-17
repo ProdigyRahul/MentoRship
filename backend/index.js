@@ -1695,14 +1695,14 @@ app.get("/user-type/:userId", async (req, res) => {
   }
 });
 
-// Endpoint to fetch recommended sessions with all details including organizer's name
+// Endpoint to fetch all sessions with details including organizer's name
 app.get("/recommended-sessions", async (req, res) => {
   try {
     // Fetch all necessary fields for recommended sessions and populate the createdBy field with user's name
-    const sessions = await GroupSession.find({ public: true, ended: false })
+    const sessions = await GroupSession.find({ ended: false })
       .populate("createdBy", "name image")
       .select(
-        "sessionName banner date createdBy description time duration -_id"
+        "sessionName banner date createdBy description time duration public private -_id"
       );
 
     // If no sessions found, return a message

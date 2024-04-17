@@ -20,7 +20,7 @@ export default function RecommendedSessions() {
   const fetchRecommendedSessions = async () => {
     try {
       const response = await fetch(
-        "https://api.rahulmistry.in/recommended-sessions"
+        "http://172.20.10.3:8080/recommended-sessions"
       );
       const data = await response.json();
       setSessions(data.sessions);
@@ -39,8 +39,8 @@ export default function RecommendedSessions() {
             resizeMode="cover"
           />
           <View style={styles.sessionDetails}>
-            <Text style={styles.sessionName}>{item.sessionName}</Text>
             <Text style={styles.date}>{item.date}</Text>
+            <Text style={styles.sessionName}>{item.sessionName}</Text>
             <View style={styles.hostedByContainer}>
               <Image
                 source={{ uri: item.createdBy.image }}
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
   sessionName: {
     fontWeight: "bold",
     fontSize: 16,
-    textAlign: "center",
     marginBottom: 5,
   },
   date: {
@@ -121,7 +120,6 @@ const styles = StyleSheet.create({
   hostedByContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     marginTop: 10,
   },
   hostedImage: {
@@ -132,7 +130,6 @@ const styles = StyleSheet.create({
   },
   hostedByText: {
     fontSize: 14,
-    marginLeft: 5,
     fontWeight: "bold",
   },
   attendButton: {
@@ -147,7 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   privateSessionText: {
-    color: "#FF0000",
+    color: "#09A1F6",
     fontWeight: "bold",
   },
 });
