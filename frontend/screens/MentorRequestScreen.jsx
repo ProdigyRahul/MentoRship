@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
+  ScrollView,
 } from "react-native";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
@@ -65,18 +66,20 @@ const MentorRequestScreen = () => {
           </View>
         ) : (
           <View style={styles.requestsContainer}>
-            {friendRequests.length > 0 ? (
-              friendRequests.map((item, index) => (
-                <MentorRequest
-                  key={index}
-                  item={item}
-                  friendRequests={friendRequests}
-                  setFriendRequests={setFriendRequests}
-                />
-              ))
-            ) : (
-              <Text style={styles.noRequestsText}>No Notifications</Text>
-            )}
+            <ScrollView>
+              {friendRequests.length > 0 ? (
+                friendRequests.map((item, index) => (
+                  <MentorRequest
+                    key={index}
+                    item={item}
+                    friendRequests={friendRequests}
+                    setFriendRequests={setFriendRequests}
+                  />
+                ))
+              ) : (
+                <Text style={styles.noRequestsText}>No Notifications</Text>
+              )}
+            </ScrollView>
           </View>
         )}
       </View>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   noRequestsText: {
     fontSize: 16,
     textAlign: "center",
-    color: "#000000",
+    color: "gray",
   },
 });
 

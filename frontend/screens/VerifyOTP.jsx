@@ -24,6 +24,7 @@ export default function VerifyOTP({ navigation }) {
   const [cooldownTimer, setCooldownTimer] = useState(60);
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState(-1);
+  const [totalDigitsCount, setTotalDigitsCount] = useState(0);
 
   useEffect(() => {
     // Fetch user's name and image from the backend API
@@ -59,6 +60,24 @@ export default function VerifyOTP({ navigation }) {
       return () => clearInterval(timer);
     }
   }, [resendDisabled, userId]);
+
+  useEffect(() => {
+    calculateTotalDigitsCount();
+
+    if (totalDigitsCount === 6) {
+      handleVerifyOTP();
+    }
+  }, [otp, totalDigitsCount]);
+
+  // Function to calculate total digits count
+  const calculateTotalDigitsCount = () => {
+    const count = otp.replace(/\D/g, "").length;
+    setTotalDigitsCount(count);
+  };
+
+  useEffect(() => {
+    calculateTotalDigitsCount();
+  }, [otp]);
 
   const handleVerifyOTP = async () => {
     try {
@@ -127,6 +146,7 @@ export default function VerifyOTP({ navigation }) {
     if (index === 5) {
       Keyboard.dismiss();
     }
+    calculateTotalDigitsCount();
   };
 
   const handleResendOTP = async () => {
