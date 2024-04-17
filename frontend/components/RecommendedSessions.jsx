@@ -6,11 +6,14 @@ import {
   Pressable,
   FlatList,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function RecommendedSessions() {
   const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -20,13 +23,32 @@ export default function RecommendedSessions() {
   const fetchRecommendedSessions = async () => {
     try {
       const response = await fetch(
-        "http://172.20.10.3:8080/recommended-sessions"
+        "https://api.rahulmistry.in/recommended-sessions"
       );
       const data = await response.json();
-      setSessions(data.sessions);
+      // Format dates before setting them to state
+      const formattedSessions = data.sessions.map((session) => ({
+        ...session,
+        date: formatDate(session.date),
+      }));
+      setSessions(formattedSessions);
+      setLoading(false); // Data loaded, so set loading to false
     } catch (error) {
       console.error("Error fetching recommended sessions:", error);
+      setLoading(false); // Error occurred, set loading to false
     }
+  };
+
+  // Function to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
   };
 
   const renderItem = ({ item, index }) => {
@@ -47,14 +69,24 @@ export default function RecommendedSessions() {
                 style={styles.hostedImage}
               />
               <Text style={styles.hostedByText}>
-                Hosted by {item.createdBy.name}
+                Hosted by{" "}
+                <Text style={{ fontWeight: "bold" }}>
+                  {item.createdBy.name}
+                </Text>
               </Text>
+            </View>
+            <Text style={styles.sessionType}>
+              {item.public ? "Public" : "Private"}
+            </Text>
+            <View style={styles.buttonContainer}>
               {item.public ? (
                 <Pressable style={styles.attendButton}>
                   <Text style={styles.attendButtonText}>Attend</Text>
                 </Pressable>
               ) : (
-                <Text style={styles.privateSessionText}>Request</Text>
+                <Pressable style={styles.privateSessionButton}>
+                  <Text style={styles.privateSessionButtonText}>Request</Text>
+                </Pressable>
               )}
             </View>
           </View>
@@ -64,25 +96,33 @@ export default function RecommendedSessions() {
   };
 
   return (
-    <FlatList
-      data={sessions}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => index.toString()}
-    />
+    <View style={{ flex: 1 }}>
+      {loading ? ( // Show activity indicator if loading
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#09A1F6" />
+        </View>
+      ) : (
+        <FlatList
+          data={sessions}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.container}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    marginBottom: 100,
+    marginBottom: 10,
   },
   sessionContainer: {
     width: 300,
-    height: 250,
+    height: 270,
     borderRadius: 20,
     backgroundColor: "#F4F4F4",
     marginTop: 20,
@@ -120,7 +160,6 @@ const styles = StyleSheet.create({
   hostedByContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
   },
   hostedImage: {
     width: 20,
@@ -130,21 +169,48 @@ const styles = StyleSheet.create({
   },
   hostedByText: {
     fontSize: 14,
-    fontWeight: "bold",
+    flexShrink: 1,
+  },
+  buttonContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: 10,
   },
   attendButton: {
     backgroundColor: "#09A1F6",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 5,
-    marginLeft: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
   attendButtonText: {
     color: "white",
     fontWeight: "bold",
+    marginLeft: 5,
   },
-  privateSessionText: {
-    color: "#09A1F6",
+  privateSessionButton: {
+    backgroundColor: "#09A1F6",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginBottom: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  privateSessionButtonText: {
+    color: "white",
     fontWeight: "bold",
+  },
+  sessionType: {
+    fontSize: 12,
+    marginTop: 5,
+    color: "#666",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
