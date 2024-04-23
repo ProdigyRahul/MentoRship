@@ -32,6 +32,7 @@ import InviteTopicParticipants from "./screens/Topics/InviteTopicParticipants";
 import TopicBanner from "./screens/Topics/TopicBanner";
 import TopicChatMessagesScreen from "./screens/TopicChatMessagesScreen";
 import VerifyOTP from "./screens/VerifyOTP";
+import SearchUsersScreen from "./screens/SearchUsersScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -146,6 +147,11 @@ function App() {
             <Stack.Screen
               name="VerifyOTP"
               component={VerifyOTP}
+              options={{ animation: "ios" }}
+            />
+            <Stack.Screen
+              name="SearchUsers"
+              component={SearchUsersScreen}
               options={{ animation: "ios" }}
             />
           </Stack.Navigator>

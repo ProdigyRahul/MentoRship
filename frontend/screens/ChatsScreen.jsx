@@ -100,7 +100,7 @@ const ChatsScreen = () => {
   };
 
   const navigateToExplore = () => {
-    navigation.navigate("Explore");
+    navigation.navigate("SearchUsers");
   };
 
   const startAnimation = () => {

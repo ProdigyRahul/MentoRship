@@ -1813,3 +1813,28 @@ app.get("/attendee-status/:sessionId/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// Endpoint API to search for users
+app.post("/users/search", async (req, res) => {
+  try {
+    const { searchString } = req.body;
+
+    // Check if search string is provided in the request body
+    if (!searchString) {
+      return res
+        .status(400)
+        .json({ error: "Search string is required in the request body" });
+    }
+
+    // Perform case-insensitive search using regular expression and projection
+    const users = await User.find(
+      { name: { $regex: new RegExp(searchString, "i") } }, // Search 'name' field using regular expression
+      { name: 1, image: 1, Headline: 1, _id: 1 } // Projection to include only specified fields
+    );
+
+    res.json(users);
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
