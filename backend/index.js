@@ -1830,7 +1830,7 @@ app.post("/users/search", async (req, res) => {
     const users = await User.aggregate([
       {
         $match: {
-          name: { $regex: new RegExp("^" + searchString, "i") },
+          name: { $regex: new RegExp("^" + searchString, "i") }, // Search 'name' field using regular expression to match names starting with the search query
         },
       },
       {
