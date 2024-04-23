@@ -7,27 +7,53 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  StatusBar,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
-const SearchUsersScreen = () => {
+const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const searchUsers = async () => {
+  const searchUsers = async (query) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://192.168.29.103:8080/users/search",
-        { searchString: searchQuery } // Send search query in the request body
+        "https://api.rahulmistry.in/users/search",
+        { searchString: query }
       );
       setSearchResults(response.data);
     } catch (error) {
       console.error("Error searching users:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const handleSearch = (text) => {
+    setSearchQuery(text); // Update search query state
+    if (text.trim() !== "") {
+      // Check if search query is not empty
+      searchUsers(text); // Fetch data based on the updated search query
+    } else {
+      setSearchResults([]); // Clear search results if query is empty
+    }
+  };
+
+  const navigateToPublicProfile = (userId) => {
+    navigation.navigate("PublicProfile", { userId });
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.userItem}>
+    <TouchableOpacity
+      style={styles.userItem}
+      onPress={() => navigateToPublicProfile(item._id)}
+    >
       <Image source={{ uri: item.image }} style={styles.userImage} />
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
@@ -37,25 +63,72 @@ const SearchUsersScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search users..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={searchUsers}>
-          <Text style={styles.searchButtonText}>Search</Text>
-        </TouchableOpacity>
+    <LinearGradient
+      colors={["#000000", "#007CB0"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      locations={[0.3, 1]}
+    >
+      <StatusBar barStyle="light-content" />
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            marginTop: Platform.OS === "ios" ? 55 : 45,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 15 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#FFFFFF",
+            }}
+          >
+            My Connections
+          </Text>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            borderTopStartRadius: 50,
+            borderTopEndRadius: 50,
+            backgroundColor: "#FFFFFF",
+            marginTop: 20,
+          }}
+        >
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search users..."
+              value={searchQuery}
+              onChangeText={handleSearch} // Call handleSearch function on text change
+            />
+          </View>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#000" />
+              <Text style={styles.loadingText}>Please wait...</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={searchResults}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
+              contentContainerStyle={styles.flatlistContent}
+            />
+          )}
+        </View>
       </View>
-      <FlatList
-        data={searchResults}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.name}
-        contentContainerStyle={styles.flatlistContent}
-      />
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -63,13 +136,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    marginTop: 50,
     backgroundColor: "#fff",
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
   searchInput: {
     flex: 1,
@@ -78,20 +152,11 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 10,
-  },
-  searchButton: {
-    marginLeft: 10,
-    backgroundColor: "#007bff",
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  searchButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    backgroundColor: "#FFFFFF",
   },
   flatlistContent: {
     paddingTop: 10,
+    paddingHorizontal: 20,
   },
   userItem: {
     flexDirection: "row",
@@ -118,6 +183,15 @@ const styles = StyleSheet.create({
   userHeadline: {
     fontSize: 14,
     color: "#666",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
   },
 });
 

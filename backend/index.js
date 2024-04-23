@@ -1826,11 +1826,23 @@ app.post("/users/search", async (req, res) => {
         .json({ error: "Search string is required in the request body" });
     }
 
-    // Perform case-insensitive search using regular expression and projection
-    const users = await User.find(
-      { name: { $regex: new RegExp(searchString, "i") } }, // Search 'name' field using regular expression
-      { name: 1, image: 1, Headline: 1, _id: 1 } // Projection to include only specified fields
-    );
+    // Perform case-insensitive search using regular expression
+    const users = await User.aggregate([
+      {
+        $match: {
+          name: { $regex: new RegExp("^" + searchString, "i") }, // Search 'name' field using regular expression to match names starting with the search query
+        },
+      },
+      {
+        $project: {
+          // Project only the required fields
+          _id: 1,
+          name: 1,
+          image: 1,
+          Headline: 1,
+        },
+      },
+    ]);
 
     res.json(users);
   } catch (error) {

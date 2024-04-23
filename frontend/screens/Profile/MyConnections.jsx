@@ -1,53 +1,67 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-  StatusBar,
+  TextInput,
+  FlatList,
   TouchableOpacity,
+  StyleSheet,
+  Image,
+  StatusBar,
   Platform,
+  ActivityIndicator,
 } from "react-native";
-
+import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
-import Icon from "react-native-vector-icons/FontAwesome5";
-import { UserType } from "../../UserContext";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function MyConnections({ navigation }) {
-  const [friends, setFriends] = useState([]);
-  const [friendIds, setFriendIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { userId } = useContext(UserType);
+const SearchUsersScreen = ({ navigation }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Fetch friends data from backend API
-    fetchFriendsData();
-  }, []);
-
-  const fetchFriendsData = async () => {
+  const searchUsers = async (query) => {
+    setIsLoading(true);
     try {
-      // Fetch friends data from backend API
-      const response = await fetch(
-        `https://api.rahulmistry.in/user-friends/${userId}`
+      const response = await axios.post(
+        "https://api.rahulmistry.in/users/search",
+        { searchString: query }
       );
-      const { friends, friendIds } = await response.json();
-      setFriends(friends);
-      setFriendIds(friendIds);
-      setIsLoading(false);
+      setSearchResults(response.data);
     } catch (error) {
-      console.error("Error fetching friends data:", error);
-      // Handle error
+      console.error("Error searching users:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleChatPress = (friendId) => {
-    navigation.navigate("Messages", { recepientId: friendId });
+  const handleSearch = (text) => {
+    setSearchQuery(text); // Update search query state
+    if (text.trim() !== "") {
+      // Check if search query is not empty
+      searchUsers(text); // Fetch data based on the updated search query
+    } else {
+      setSearchResults([]); // Clear search results if query is empty
+    }
   };
+
+  const navigateToPublicProfile = (userId) => {
+    navigation.navigate("PublicProfile", { userId });
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.userItem}
+      onPress={() => navigateToPublicProfile(item._id)}
+    >
+      <Image source={{ uri: item.image }} style={styles.userImage} />
+      <View style={styles.userInfo}>
+        <Text style={styles.userName}>{item.name}</Text>
+        <Text style={styles.userHeadline}>{item.Headline}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <LinearGradient
       colors={["#000000", "#007CB0"]}
@@ -56,9 +70,8 @@ export default function MyConnections({ navigation }) {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <StatusBar barStyle="white-content" />
-
-      <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <View style={{ flex: 1 }}>
         <View
           style={{
             flexDirection: "row",
@@ -83,100 +96,103 @@ export default function MyConnections({ navigation }) {
             My Connections
           </Text>
         </View>
-        <View style={styles.friendsContainer}>
+        <View
+          style={{
+            flex: 1,
+            borderTopStartRadius: 50,
+            borderTopEndRadius: 50,
+            backgroundColor: "#FFFFFF",
+            marginTop: 20,
+          }}
+        >
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search users..."
+              value={searchQuery}
+              onChangeText={handleSearch} // Call handleSearch function on text change
+            />
+          </View>
           {isLoading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#000" />
               <Text style={styles.loadingText}>Please wait...</Text>
             </View>
           ) : (
-            <ScrollView>
-              {friends.map((friend, index) => (
-                <View key={index} style={styles.friendItem}>
-                  <Image source={{ uri: friend.image }} style={styles.image} />
-                  <View style={styles.friendDetails}>
-                    <Text style={styles.name}>{friend.name}</Text>
-                    <Text style={styles.headline}>{friend.headline}</Text>
-                  </View>
-                  <Pressable
-                    onPress={() => handleChatPress(friendIds[index])}
-                    style={({ pressed }) => [
-                      styles.icon,
-                      pressed && { backgroundColor: "#ddd" },
-                    ]}
-                  >
-                    <Icon
-                      name="paper-plane"
-                      size={20}
-                      color="#000"
-                      style={styles.icon}
-                    />
-                  </Pressable>
-                </View>
-              ))}
-            </ScrollView>
+            <FlatList
+              data={searchResults}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
+              contentContainerStyle={styles.flatlistContent}
+            />
           )}
         </View>
       </View>
     </LinearGradient>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    marginTop: 45,
-    textAlign: "left",
-    marginLeft: 20,
-  },
-  friendsContainer: {
-    flex: 1,
-    borderTopStartRadius: 50,
-    borderTopEndRadius: 50,
-    backgroundColor: "#FFFFFF",
-    marginTop: 20,
-  },
-  friendItem: {
+  searchContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 20,
+    paddingHorizontal: 20,
     marginTop: 20,
-    gap: 10,
   },
-  image: {
+  searchInput: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+  },
+  flatlistContent: {
+    paddingTop: 10,
+    paddingHorizontal: 20,
+  },
+  userItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  userImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginLeft: 25,
+    marginRight: 15,
   },
-  friendDetails: {
-    flexDirection: "column",
-    marginLeft: 10,
+  userInfo: {
+    flex: 1,
   },
-  name: {
-    fontWeight: "bold",
+  userName: {
     fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
-  headline: {
+  userHeadline: {
     fontSize: 14,
-    color: "#666666",
-  },
-  icon: {
-    marginLeft: "auto",
-    marginRight: 25,
+    color: "#666",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
   },
 });
+
+export default SearchUsersScreen;
