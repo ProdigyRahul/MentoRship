@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -14,30 +14,11 @@ import {
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { UserType } from "../UserContext";
 
 const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [recentSearches, setRecentSearches] = useState([]);
-  const { userId } = useContext(UserType);
-
-  useEffect(() => {
-    fetchRecentSearches(); // Fetch recent searches when component mounts
-  }, []);
-
-  const fetchRecentSearches = async () => {
-    try {
-      const response = await axios.get(
-        "https://api.rahulmistry.in/recent-searches", // Fetch recent searches from backend API
-        { userId: userId }
-      );
-      setRecentSearches(response.data);
-    } catch (error) {
-      console.error("Error fetching recent searches:", error);
-    }
-  };
 
   const searchUsers = async (query) => {
     setIsLoading(true);
@@ -112,7 +93,7 @@ const SearchUsersScreen = ({ navigation }) => {
               color: "#FFFFFF",
             }}
           >
-            Discover Connections
+            My Connections
           </Text>
         </View>
         <View
@@ -138,26 +119,12 @@ const SearchUsersScreen = ({ navigation }) => {
               <Text style={styles.loadingText}>Please wait...</Text>
             </View>
           ) : (
-            <>
-              <FlatList
-                data={recentSearches} // Use recent searches data for rendering
-                renderItem={renderItem}
-                keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
-                contentContainerStyle={styles.flatlistContent}
-                ListHeaderComponent={
-                  <Text style={styles.sectionTitle}>Recent Searches</Text>
-                } // Add section title
-              />
-              <FlatList
-                data={searchResults}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
-                contentContainerStyle={styles.flatlistContent}
-                ListHeaderComponent={
-                  <Text style={styles.sectionTitle}>Search Results</Text>
-                } // Add section title
-              />
-            </>
+            <FlatList
+              data={searchResults}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
+              contentContainerStyle={styles.flatlistContent}
+            />
           )}
         </View>
       </View>
@@ -225,13 +192,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 10,
   },
 });
 

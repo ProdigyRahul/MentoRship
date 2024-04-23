@@ -91,7 +91,6 @@ const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
 const Topic = require("./models/topic");
-const RecentSearch = require("./models/recent");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -1848,43 +1847,6 @@ app.post("/users/search", async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error("Error searching users:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Backend API Endpoint to Get and Post Recent Searches
-app.get("/recent-searches", async (req, res) => {
-  try {
-    // Extract userId from the request body or request parameters
-    const { userId } = req.body || req.params;
-
-    if (!userId) {
-      return res.status(400).json({ error: "User ID is required" });
-    }
-
-    const recentSearches = await RecentSearch.find({ userId })
-      .sort({ timestamp: -1 })
-      .limit(10); // You can limit the number of recent searches to retrieve
-
-    res.json(recentSearches);
-  } catch (error) {
-    console.error("Error fetching recent searches:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.post("/recent-searches", async (req, res) => {
-  try {
-    const { searchQuery, userId } = req.body;
-    const recentSearch = new RecentSearch({
-      userId,
-      searchQuery,
-    });
-    await recentSearch.save();
-
-    res.status(201).json(recentSearch);
-  } catch (error) {
-    console.error("Error saving recent search:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
