@@ -93,7 +93,7 @@ const SearchUsersScreen = ({ navigation }) => {
               color: "#FFFFFF",
             }}
           >
-            My Connections
+            Discover Connections
           </Text>
         </View>
         <View
