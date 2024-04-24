@@ -19,6 +19,8 @@ const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const inputRef = React.createRef();
+  const [isTyping, setIsTyping] = useState(false);
 
   const searchUsers = async (query) => {
     setIsLoading(true);
@@ -40,8 +42,10 @@ const SearchUsersScreen = ({ navigation }) => {
     if (text.trim() !== "") {
       // Check if search query is not empty
       searchUsers(text); // Fetch data based on the updated search query
+      setIsTyping(true);
     } else {
       setSearchResults([]); // Clear search results if query is empty
+      setIsTyping(false);
     }
   };
 
@@ -60,6 +64,14 @@ const SearchUsersScreen = ({ navigation }) => {
         <Text style={styles.userHeadline}>{item.Headline}</Text>
       </View>
     </TouchableOpacity>
+  );
+
+  const NoResultsMessage = () => (
+    <View style={styles.noResultsContainer}>
+      <Text style={styles.noResultsText}>
+        No results found. Start searching!
+      </Text>
+    </View>
   );
 
   return (
@@ -93,7 +105,7 @@ const SearchUsersScreen = ({ navigation }) => {
               color: "#FFFFFF",
             }}
           >
-            My Connections
+            Discover Connections
           </Text>
         </View>
         <View
@@ -105,17 +117,28 @@ const SearchUsersScreen = ({ navigation }) => {
             marginTop: 20,
           }}
         >
-          <View style={styles.searchContainer}>
+          <View
+            style={[
+              styles.searchContainer,
+              isTyping && { borderBottomColor: "#09A1F6" },
+            ]}
+          >
+            <MaterialIcons
+              name="search"
+              size={20}
+              color="#666"
+              style={styles.searchIcon}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search users..."
               value={searchQuery}
-              onChangeText={handleSearch} // Call handleSearch function on text change
+              onChangeText={handleSearch}
             />
           </View>
           {isLoading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#000" />
+              <ActivityIndicator size="small" color="#000" />
               <Text style={styles.loadingText}>Please wait...</Text>
             </View>
           ) : (
@@ -124,6 +147,7 @@ const SearchUsersScreen = ({ navigation }) => {
               renderItem={renderItem}
               keyExtractor={(item, index) => item._id || index.toString()} // Use _id if available, otherwise use index
               contentContainerStyle={styles.flatlistContent}
+              ListEmptyComponent={NoResultsMessage} // Render message when no results are found
             />
           )}
         </View>
@@ -142,17 +166,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-    paddingHorizontal: 20,
-    marginTop: 20,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    marginHorizontal: 10,
+    backgroundColor: "#f5f5f5",
+    marginTop: 30,
+    borderBottomWidth: 1.8,
+    borderBottomColor: "#000",
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    height: 60,
     paddingHorizontal: 10,
-    backgroundColor: "#FFFFFF",
+    fontSize: 15,
+  },
+  searchIcon: {
+    marginRight: 10,
   },
   flatlistContent: {
     paddingTop: 10,
@@ -165,6 +194,14 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   userImage: {
     width: 50,
@@ -186,12 +223,20 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+  },
+  noResultsContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: "#666",
   },
 });
 
