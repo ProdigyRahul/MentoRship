@@ -99,9 +99,17 @@ export default function VerifyOTP({ navigation }) {
 
         const onboarded = onboardedResponse.data.onboarded;
         if (onboarded) {
-          navigation.replace("Chat");
+          // Reset navigation stack and navigate to Chat screen
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Chat" }],
+          });
         } else {
-          navigation.replace("Welcome");
+          // Reset navigation stack and navigate to Welcome screen
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Welcome" }],
+          });
         }
       } else {
         // Invalid OTP

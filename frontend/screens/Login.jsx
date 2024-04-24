@@ -56,7 +56,7 @@ export default function Login({ navigation }) {
       await AsyncStorage.setItem("userId", userId);
       setUserId(userId);
 
-      navigation.navigate("VerifyOTP");
+      navigation.replace("VerifyOTP");
     } catch (error) {
       if (error.response.status === 403) {
         // Account deactivated
