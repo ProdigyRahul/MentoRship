@@ -53,7 +53,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   const fetchTopicData = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/topics/${topicId}/details`
+        `https://api.rahulmistry.in/topics/${topicId}/details`
       );
       const data = await response.json();
       if (response.ok) {
@@ -76,7 +76,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/topics/${topicId}/messages`
+        `https://api.rahulmistry.in/topics/${topicId}/messages`
       );
       const data = await response.json();
       if (response.ok) {
@@ -134,7 +134,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   const sendMessage = async () => {
     try {
       const response = await fetch(
-        `http://172.20.10.3:8080/topics/${topicId}/messages`,
+        `https://api.rahulmistry.in/topics/${topicId}/messages`,
         {
           method: "POST",
           headers: {

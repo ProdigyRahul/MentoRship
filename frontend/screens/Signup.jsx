@@ -249,8 +249,8 @@ export default function Signup({ navigation }) {
               <View style={{ alignItems: "center" }}>
                 <View
                   style={{
-                    width: 100,
-                    height: 100,
+                    width: 80,
+                    height: 80,
                     borderRadius: 50,
                     backgroundColor: profileImage ? "transparent" : "lightgray",
                     justifyContent: "center",
@@ -266,7 +266,7 @@ export default function Signup({ navigation }) {
                   ) : (
                     <MaterialCommunityIcons
                       name="camera"
-                      size={50}
+                      size={45}
                       color="#000"
                     />
                   )}
@@ -359,7 +359,8 @@ export default function Signup({ navigation }) {
                 marginTop: 5,
               }}
             >
-              Already have an account? Login Now
+              Already have an account?{" "}
+              <Text style={{ fontWeight: "bold" }}>Login Now</Text>
             </Text>
           </TouchableOpacity>
           <FlashMessage position="bottom" />

@@ -249,7 +249,7 @@ const ChatsScreen = () => {
               backgroundColor: "#FFFFFF",
             }}
           >
-            <ActivityIndicator size="large" color="#000" />
+            <ActivityIndicator size="small" color="#000" />
             <Text style={{ marginTop: 10, fontSize: 16 }}>Please wait...</Text>
           </View>
         ) : (

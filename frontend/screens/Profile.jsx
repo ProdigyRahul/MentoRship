@@ -78,7 +78,7 @@ export default function Profile({ navigation }) {
         end={{ x: 1, y: 0 }}
         locations={[0.3, 1]}
       >
-        <ActivityIndicator size="large" color="#FFFFFF" />
+        <ActivityIndicator size="small" color="#FFFFFF" />
         <Text style={{ marginTop: 10, color: "#FFFFFF" }}>Please wait...</Text>
       </LinearGradient>
     );

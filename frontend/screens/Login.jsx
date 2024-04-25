@@ -245,7 +245,7 @@ export default function Login({ navigation }) {
             width: 250,
             backgroundColor: "#09A1F6",
             borderRadius: 10,
-            marginTop: 20,
+            marginTop: 10,
 
             alignItems: "center",
             justifyContent: "center",
@@ -270,10 +270,11 @@ export default function Login({ navigation }) {
           <Text
             style={{
               color: "#333333",
-              marginTop: 5,
+              marginTop: 15,
             }}
           >
-            New to MentoRship? Signup Now
+            New to MentoRship?{" "}
+            <Text style={{ fontWeight: "bold" }}>Signup Now</Text>
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>

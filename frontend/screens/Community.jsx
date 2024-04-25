@@ -47,7 +47,7 @@ export default function Community() {
     <Pressable
       style={{
         paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingHorizontal: 12,
         borderBottomWidth: 3,
         borderColor: selectedOption === item.text ? "#5DC8D7" : "transparent",
       }}

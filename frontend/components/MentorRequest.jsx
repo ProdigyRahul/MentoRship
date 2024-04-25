@@ -52,7 +52,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
         <Image style={styles.userImage} source={{ uri: item.image }} />
         <View style={{ flexWrap: "wrap", flex: 1 }}>
           <Text style={styles.userName}>
-            {item.name} sent you{"\n"}a connection request!!
+            {item.name} sent{"\n"}a connection request!!
           </Text>
         </View>
       </View>
@@ -103,11 +103,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   acceptButton: {
-    backgroundColor: "#09A1F6",
+    backgroundColor: "#0095f6",
     marginRight: 10,
   },
   ignoreButton: {
-    backgroundColor: "#FF6347",
+    backgroundColor: "#ff2f41",
   },
 });
 
