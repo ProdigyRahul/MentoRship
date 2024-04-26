@@ -49,6 +49,7 @@ export default function Welcome({ navigation }) {
   const [isFocus, setIsFocus] = useState(false);
   const { userId, setUserId } = useContext(UserType);
   const [loading, setLoading] = useState(false);
+  const [lastInputTime, setLastInputTime] = useState(null);
 
   useEffect(() => {
     var config = {
@@ -337,6 +338,27 @@ export default function Welcome({ navigation }) {
       setLoading(false);
     }
   };
+
+  const handleSearchChange = (text, dropdown) => {
+    if (text.length >= 3) {
+      // Minimum characters for search to trigger
+      setLastInputTime(Date.now()); // Update last input time
+    } else {
+      // Clear data if search falls below minimum characters
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (Date.now() - lastInputTime > 500) {
+        // Check for inactivity after 200ms
+        Keyboard.dismiss();
+      }
+    }, 500); // Schedule timeout for 200ms
+
+    return () => clearTimeout(timeoutId); // Clear timeout on unmount
+  }, [lastInputTime]);
+
   return (
     <SafeAreaView
       style={{
@@ -701,6 +723,7 @@ export default function Welcome({ navigation }) {
                 setIsFocus(false);
                 Keyboard.dismiss();
               }}
+              onChangeText={(text) => handleSearchChange(text, this)}
             />
           </View>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>State *</Text>
@@ -749,6 +772,7 @@ export default function Welcome({ navigation }) {
                 setIsFocus(false);
                 Keyboard.dismiss();
               }}
+              onChangeText={(text) => handleSearchChange(text, this)}
             />
           </View>
           <Text style={{ marginTop: 15, fontWeight: 300 }}>City *</Text>
@@ -796,6 +820,7 @@ export default function Welcome({ navigation }) {
                 setIsFocus(false);
                 Keyboard.dismiss();
               }}
+              onChangeText={(text) => handleSearchChange(text, this)}
             />
           </View>
         </View>

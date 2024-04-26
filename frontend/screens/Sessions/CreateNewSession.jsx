@@ -70,6 +70,7 @@ export default function CreateNewSession({ navigation }) {
     createWork: false,
     changeRoles: false,
     createCareerPlans: false,
+    others: false,
   });
 
   const maxCharacterLimit = 75;
@@ -146,6 +147,7 @@ export default function CreateNewSession({ navigation }) {
     "Change Roles/Career",
     "Get Promoted",
     "Create Career Plan",
+    "Others",
   ];
 
   const isAtLeastOneSelected = Object.values(checkBoxStates).some(Boolean);
@@ -228,7 +230,7 @@ export default function CreateNewSession({ navigation }) {
             <TextInput
               style={{
                 backgroundColor: "#F1F1F3",
-                width: "95%",
+                width: 350,
                 height: 150,
                 borderRadius: 20,
                 paddingVertical: 10,
@@ -249,7 +251,7 @@ export default function CreateNewSession({ navigation }) {
               onPress={openGoalsModal}
               style={{
                 backgroundColor: "#F1F1F3",
-                width: "95%",
+                width: 350,
                 height: 50,
                 borderRadius: 20,
                 marginTop: 15,

@@ -101,7 +101,9 @@ export default function Signup({ navigation }) {
         duration: 1000,
         autoHide: true,
       });
-      navigation.navigate("VerifyOTP");
+      setTimeout(() => {
+        navigation.navigate("VerifyOTP");
+      }, 1000);
     } catch (error) {
       console.error("Signup failed:", error);
       Alert.alert("Signup Failed", "An error occurred during signup.");
@@ -261,7 +263,7 @@ export default function Signup({ navigation }) {
                   {profileImage ? (
                     <Image
                       source={{ uri: profileImage }}
-                      style={{ width: 100, height: 100, borderRadius: 50 }}
+                      style={{ width: 80, height: 80, borderRadius: 50 }}
                     />
                   ) : (
                     <MaterialCommunityIcons
