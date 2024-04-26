@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     color: "#585858",
   },
   newMessagesBadge: {
-    backgroundColor: "# 0095f6",
+    backgroundColor: "#0095f6",
     borderRadius: 50,
     width: 20,
     height: 20,

@@ -3,9 +3,11 @@ import { Pressable, View, Image, Text, StyleSheet } from "react-native";
 import { UserType } from "../UserContext";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
   const { userId } = useContext(UserType);
+  const navigation = useNavigation();
 
   const handleIgnoreRequest = async (friendRequestId) => {
     try {
@@ -46,10 +48,16 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
     }
   };
 
+  const handleNavigateToProfile = () => {
+    navigation.navigate("PublicProfile", { userId: item._id });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
-        <Image style={styles.userImage} source={{ uri: item.image }} />
+        <Pressable onPress={handleNavigateToProfile}>
+          <Image style={styles.userImage} source={{ uri: item.image }} />
+        </Pressable>
         <View style={{ flexWrap: "wrap", flex: 1 }}>
           <Text style={styles.userName}>
             {item.name} sent{"\n"}a connection request!!
