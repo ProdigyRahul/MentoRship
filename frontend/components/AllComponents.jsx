@@ -21,6 +21,7 @@ export default function AllComponents() {
   const [refreshing, setRefreshing] = useState(false);
   const [userType, setUserType] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
   const { userId } = useContext(UserType);
 
   useEffect(() => {
@@ -74,11 +75,14 @@ export default function AllComponents() {
 
   const fetchTopics = async () => {
     try {
-      const response = await fetch("http://192.168.29.103:8080/topics");
+      const response = await fetch("https://api.rahulmistry.in/topics");
       const data = await response.json();
       setTopics(data); // Assuming data is an array of topics
     } catch (error) {
       console.error("Error fetching topics:", error);
+    } finally {
+      setLoading2(false);
+      setRefreshing(false);
     }
   };
 
@@ -252,7 +256,7 @@ export default function AllComponents() {
       {loading ? (
         <ActivityIndicator size="small" color="#000" />
       ) : (
-        <View style={{ marginBottom: 0 }}>
+        <>
           <Text
             style={{
               fontWeight: "bold",
@@ -267,15 +271,17 @@ export default function AllComponents() {
               ? "Recommended Mentees"
               : "Recommended Mentors"}
           </Text>
-          <FlatList
-            data={users}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            renderItem={renderUserItem}
-            keyExtractor={(item) => item._id}
-          />
-        </View>
+          <View style={{ marginBottom: 0 }}>
+            <FlatList
+              data={users}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20 }}
+              renderItem={renderUserItem}
+              keyExtractor={(item) => item._id}
+            />
+          </View>
+        </>
       )}
       <Text
         style={{
@@ -302,14 +308,18 @@ export default function AllComponents() {
       >
         Recommended Topics
       </Text>
-      <FlatList
-        data={topics}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
-        renderItem={renderTopicItem}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {loading2 ? (
+        <ActivityIndicator size="small" color="#000" />
+      ) : (
+        <FlatList
+          data={topics}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          renderItem={renderTopicItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      )}
 
       <Text
         style={{
