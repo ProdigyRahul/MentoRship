@@ -11,7 +11,12 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Community from "../screens/Community";
 import Profile from "../screens/Profile";
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  AntDesign,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import ChatsScreen from "../screens/ChatsScreen";
 
 const Tab = createBottomTabNavigator();
@@ -63,23 +68,7 @@ const TabsWrapper = ({ navigation }) => {
         }}
       >
         <Tab.Screen
-          name="Homepage"
-          component={ChatsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={styles.tabItem}>
-                <FontAwesome
-                  name="home"
-                  size={26}
-                  color={focused ? "#fff" : "#748c94"}
-                />
-                <Text style={styles.tabText}>Home</Text>
-              </View>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Community"
+          name="Communitypage"
           component={Community}
           options={{
             tabBarIcon: ({ focused }) => (
@@ -94,6 +83,23 @@ const TabsWrapper = ({ navigation }) => {
             ),
           }}
         />
+        <Tab.Screen
+          name="ChatS"
+          component={ChatsScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.tabItem}>
+                <MaterialCommunityIcons
+                  name="message-text" // Use the "chat-bubble" icon
+                  size={26}
+                  color={focused ? "#fff" : "#748c94"}
+                />
+                <Text style={styles.tabText}>Chats</Text>
+              </View>
+            ),
+          }}
+        />
+
         <Tab.Screen
           name="Profile"
           component={Profile}

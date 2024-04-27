@@ -76,12 +76,17 @@ function App() {
               name="MentorRequest"
               component={MentorRequestScreen}
             />
+
+            <Stack.Screen
+              name="Community"
+              component={TabsWrapper}
+              options={{ animation: "fade" }}
+            />
             <Stack.Screen
               name="Chat"
               component={TabsWrapper}
               options={{ animation: "slide_from_left" }}
             />
-            <Stack.Screen name="Community" component={TabsWrapper} />
             <Stack.Screen name="Profile" component={TabsWrapper} />
             <Stack.Screen
               name="Messages"

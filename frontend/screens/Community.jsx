@@ -8,6 +8,7 @@ import {
   FlatList,
   Pressable,
   Platform,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -73,6 +74,7 @@ export default function Community() {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
+      <StatusBar barStyle="white-content" />
       <View style={{ flex: 1 }}>
         <Text
           style={{

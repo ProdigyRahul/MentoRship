@@ -15,7 +15,7 @@ const SplashScreen = ({ navigation }) => {
           // Update UserContext with userId if available
           setUserId(userId);
           setTimeout(() => {
-            navigation.replace("Chat");
+            navigation.replace("Community");
           }, 1000);
         } else {
           navigation.navigate("Onboarding");
