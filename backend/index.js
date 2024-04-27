@@ -90,7 +90,7 @@ app.get("/", (req, res) => {
 const User = require("./models/user");
 const Message = require("./models/message");
 const GroupSession = require("./models/session");
-const Topic = require("./models/topic");
+const { Topic, Participant } = require("./models/topic");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -1848,5 +1848,57 @@ app.post("/users/search", async (req, res) => {
   } catch (error) {
     console.error("Error searching users:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Endpoint to get topics with participation status
+app.get("/topics", async (req, res) => {
+  try {
+    const topics = await Topic.find();
+
+    // Map each topic to the required format with participation status
+    const formattedTopics = await Promise.all(
+      topics.map(async (topic) => {
+        const participant = await Participant.findOne({
+          userId: req.query.userId,
+          _id: { $in: topic.participants.map((p) => p.userId) },
+        });
+        const participating = participant ? true : false;
+        return {
+          name: topic.topicName,
+          imageURL: topic.imageURL,
+          totalParticipants: topic.participants.length,
+          isPublic: topic.isPublic,
+          participating: participating,
+        };
+      })
+    );
+
+    res.status(200).json(formattedTopics);
+  } catch (error) {
+    console.error("Error fetching topics:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to check if a user is participating in a topic
+app.put("/topics/:topicId/participants/:userId", async (req, res) => {
+  const { topicId, userId } = req.params;
+
+  try {
+    const topic = await Topic.findById(topicId);
+    if (!topic) {
+      return res.status(404).json({ message: "Topic not found" });
+    }
+
+    const participant = topic.participants.find((p) => p.userId === userId);
+    if (participant) {
+      return res.json({ participating: true });
+    } else {
+      return res.json({ participating: false });
+    }
+  } catch (error) {
+    console.error("Error checking participation:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });

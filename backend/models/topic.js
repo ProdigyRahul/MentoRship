@@ -77,5 +77,6 @@ const TopicSchema = new mongoose.Schema({
 });
 
 const Topic = mongoose.model("Topic", TopicSchema);
+const Participant = mongoose.model("Participant", ParticipantSchema);
 
-module.exports = Topic;
+module.exports = { Topic, Participant };

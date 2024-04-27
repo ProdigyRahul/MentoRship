@@ -71,7 +71,6 @@ export default function RecommendedSessions() {
         `https://api.rahulmistry.in/attendee-status/${sessionId}/${userId}`
       );
       const data = await response.json();
-      console.log(data);
       return data.status;
     } catch (error) {
       console.error("Error fetching attendee status:", error);
@@ -101,27 +100,20 @@ export default function RecommendedSessions() {
     try {
       const session = sessions.find((session) => session._id === sessionId);
       if (!session) {
-        console.log("Session not found");
         return;
       }
 
       const { attendeeStatus } = session;
       switch (attendeeStatus) {
         case "attending":
-          console.log("User is already attending this session");
           break;
         case "pending":
-          console.log("User's request is pending");
           break;
         default:
-          console.log("User has not attended or requested yet");
-
           if (session.public) {
-            console.log("Attending public session");
             await attendSession(sessionId, userId);
             updateAttendeeStatus(sessionId, "attending");
           } else {
-            console.log("Sending request for private session");
             updateAttendeeStatus(sessionId, "pending");
           }
           break;

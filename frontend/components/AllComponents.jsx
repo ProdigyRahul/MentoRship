@@ -7,20 +7,25 @@ import {
   FlatList,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 import { UserType } from "../UserContext";
 import RecommendedSessions from "./RecommendedSessions";
 
 export default function AllComponents() {
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
+  const [topics, setTopics] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [userType, setUserType] = useState("");
+  const [loading, setLoading] = useState(true);
   const { userId } = useContext(UserType);
 
   useEffect(() => {
     fetchUserType();
+    fetchTopics();
   }, []);
 
   const fetchUserType = async () => {
@@ -49,6 +54,7 @@ export default function AllComponents() {
     } catch (error) {
       console.error("Error fetching mentors:", error);
     } finally {
+      setLoading(false);
       setRefreshing(false);
     }
   };
@@ -61,7 +67,18 @@ export default function AllComponents() {
     } catch (error) {
       console.error("Error fetching students:", error);
     } finally {
+      setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const fetchTopics = async () => {
+    try {
+      const response = await fetch("http://192.168.29.103:8080/topics");
+      const data = await response.json();
+      setTopics(data); // Assuming data is an array of topics
+    } catch (error) {
+      console.error("Error fetching topics:", error);
     }
   };
 
@@ -69,7 +86,7 @@ export default function AllComponents() {
     navigation.navigate("PublicProfile", { userId });
   };
 
-  const renderItem = ({ item }) => (
+  const renderUserItem = ({ item }) => (
     <Pressable onPress={() => navigateToPublicProfile(item._id)}>
       <View
         style={{
@@ -119,6 +136,97 @@ export default function AllComponents() {
         >
           {item.Headline}
         </Text>
+        {item.totalParticipants && (
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          >
+            <Feather
+              name="users"
+              size={14}
+              color="#1E90FF"
+              style={{ marginRight: 5 }}
+            />
+            <Text
+              style={{
+                fontSize: 12,
+                color: "#1E90FF",
+                textAlign: "center",
+              }}
+            >
+              {item.totalParticipants}
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
+  );
+
+  const renderTopicItem = ({ item }) => (
+    <Pressable
+      onPress={() => {
+        navigation.navigate("ChatS");
+      }}
+    >
+      <View
+        style={{
+          width: 150,
+          height: 210,
+          backgroundColor: "#F4F4F4",
+          borderRadius: 20,
+          borderColor: "#D9D9D9",
+          borderWidth: 1,
+          alignItems: "center",
+          marginRight: 15,
+          padding: 10,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 5,
+            height: 1,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.84,
+          elevation: 5,
+        }}
+      >
+        <Image
+          source={{ uri: item.imageURL }}
+          style={{
+            width: 120,
+            height: 120,
+            borderRadius: 60,
+            marginBottom: 10,
+          }}
+        />
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 16,
+            textAlign: "center",
+          }}
+        >
+          {item.name}
+        </Text>
+        {item.totalParticipants && (
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          >
+            <Feather
+              name="users"
+              size={14}
+              color="#000"
+              style={{ marginRight: 5 }}
+            />
+            <Text
+              style={{
+                fontSize: 12,
+                color: "#000",
+                textAlign: "center",
+              }}
+            >
+              {item.totalParticipants + 1}
+            </Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -130,74 +238,91 @@ export default function AllComponents() {
     } else if (userType === "student") {
       fetchMentors();
     }
+    fetchTopics();
   };
 
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       style={{ backgroundColor: "#fff" }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View style={{ marginBottom: 100 }}>
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 20,
-            marginHorizontal: 20,
-            marginTop: 20,
-            marginBottom: 10,
-            color: "#333",
-          }}
-        >
-          {userType === "mentor"
-            ? "Recommended Mentees"
-            : "Recommended Mentors"}
-        </Text>
-        <FlatList
-          data={users}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id} // Assuming user object has an '_id' field
-        />
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 20,
-            marginHorizontal: 20,
-            marginTop: 30,
-            color: "#333",
-          }}
-        >
-          Recommended Sessions
-        </Text>
-        <RecommendedSessions />
+      {loading ? (
+        <ActivityIndicator size="small" color="#000" />
+      ) : (
+        <View style={{ marginBottom: 0 }}>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 20,
+              marginHorizontal: 20,
+              marginTop: 20,
+              marginBottom: 10,
+              color: "#333",
+            }}
+          >
+            {userType === "mentor"
+              ? "Recommended Mentees"
+              : "Recommended Mentors"}
+          </Text>
+          <FlatList
+            data={users}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            renderItem={renderUserItem}
+            keyExtractor={(item) => item._id}
+          />
+        </View>
+      )}
+      <Text
+        style={{
+          fontWeight: "bold",
+          fontSize: 20,
+          marginHorizontal: 20,
+          marginTop: 30,
+          color: "#333",
+        }}
+      >
+        Recommended Sessions
+      </Text>
+      <RecommendedSessions />
 
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 20,
-            marginHorizontal: 20,
-            marginTop: 30,
-            color: "#333",
-          }}
-        >
-          Recommended Topics
-        </Text>
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 20,
-            marginHorizontal: 20,
-            marginTop: 30,
-            color: "#333",
-          }}
-        >
-          Recommended Companies
-        </Text>
-      </View>
+      <Text
+        style={{
+          fontWeight: "bold",
+          fontSize: 20,
+          marginHorizontal: 20,
+          marginTop: 30,
+          color: "#333",
+          marginBottom: 10,
+        }}
+      >
+        Recommended Topics
+      </Text>
+      <FlatList
+        data={topics}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+        renderItem={renderTopicItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+
+      <Text
+        style={{
+          fontWeight: "bold",
+          fontSize: 20,
+          marginHorizontal: 20,
+          marginTop: 30,
+          color: "#333",
+          marginBottom: 250,
+        }}
+      >
+        Recommended Companies
+      </Text>
     </ScrollView>
   );
 }
