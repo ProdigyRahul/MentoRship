@@ -181,6 +181,7 @@ export default function AllComponents() {
           borderWidth: 1,
           alignItems: "center",
           marginRight: 15,
+          marginBottom: 250,
           padding: 10,
           shadowColor: "#000",
           shadowOffset: {
@@ -320,19 +321,6 @@ export default function AllComponents() {
           keyExtractor={(item, index) => index.toString()}
         />
       )}
-
-      <Text
-        style={{
-          fontWeight: "bold",
-          fontSize: 20,
-          marginHorizontal: 20,
-          marginTop: 30,
-          color: "#333",
-          marginBottom: 250,
-        }}
-      >
-        Recommended Companies
-      </Text>
     </ScrollView>
   );
 }

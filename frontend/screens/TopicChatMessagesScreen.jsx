@@ -99,10 +99,10 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (!loading && !initialLoadingComplete) {
-      setTimeout(() => {
+      if (messages.length > 0) {
         scrollToBottom();
         setInitialLoadingComplete(true);
-      }, 500);
+      }
     }
   }, [loading, initialLoadingComplete]);
 
@@ -123,7 +123,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
+      scrollViewRef.current.scrollToEnd({ animated: false });
     }
   };
 
@@ -132,6 +132,9 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   };
 
   const sendMessage = async () => {
+    if (!message.trim()) {
+      return;
+    }
     try {
       const response = await fetch(
         `https://api.rahulmistry.in/topics/${topicId}/messages`,
@@ -209,6 +212,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollViewContent}
+        onContentSizeChange={() => scrollToBottom()}
       >
         {messages.map((message, index) => (
           <View
