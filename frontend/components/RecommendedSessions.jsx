@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserType } from "../UserContext";
+import * as Animatable from "react-native-animatable";
 
 export default function RecommendedSessions() {
   const [sessions, setSessions] = useState([]);
@@ -159,34 +160,36 @@ export default function RecommendedSessions() {
 
     return (
       <Pressable onPress={() => navigation.navigate("Sessions")}>
-        <View style={styles.sessionContainer}>
-          <Image
-            source={{ uri: banner }}
-            style={styles.sessionImage}
-            resizeMode="cover"
-          />
-          <View style={styles.sessionDetails}>
-            <Text style={styles.date}>{date}</Text>
-            <Text style={styles.sessionName}>{sessionName}</Text>
-            <View style={styles.hostedByContainer}>
-              <Image source={{ uri: image }} style={styles.hostedImage} />
-              <Text style={styles.hostedByText}>
-                Hosted by <Text style={{ fontWeight: "bold" }}>{name}</Text>
+        <Animatable.View animation="fadeInUpBig" duration={1500}>
+          <View style={styles.sessionContainer}>
+            <Image
+              source={{ uri: banner }}
+              style={styles.sessionImage}
+              resizeMode="cover"
+            />
+            <View style={styles.sessionDetails}>
+              <Text style={styles.date}>{date}</Text>
+              <Text style={styles.sessionName}>{sessionName}</Text>
+              <View style={styles.hostedByContainer}>
+                <Image source={{ uri: image }} style={styles.hostedImage} />
+                <Text style={styles.hostedByText}>
+                  Hosted by <Text style={{ fontWeight: "bold" }}>{name}</Text>
+                </Text>
+              </View>
+              <Text style={styles.sessionType}>
+                {isPublic ? "Public" : "Private"}
               </Text>
-            </View>
-            <Text style={styles.sessionType}>
-              {isPublic ? "Public" : "Private"}
-            </Text>
-            <View style={styles.buttonContainer}>
-              <Pressable
-                style={style}
-                onPress={() => handleAttendeeAction(_id)}
-              >
-                <Text style={styles.attendButtonText}>{text}</Text>
-              </Pressable>
+              <View style={styles.buttonContainer}>
+                <Pressable
+                  style={style}
+                  onPress={() => handleAttendeeAction(_id)}
+                >
+                  <Text style={styles.attendButtonText}>{text}</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </Animatable.View>
       </Pressable>
     );
   };

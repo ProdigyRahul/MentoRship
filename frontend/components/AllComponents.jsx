@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { UserType } from "../UserContext";
 import RecommendedSessions from "./RecommendedSessions";
+import * as Animatable from "react-native-animatable";
 
 export default function AllComponents() {
   const navigation = useNavigation();
@@ -92,76 +93,82 @@ export default function AllComponents() {
 
   const renderUserItem = ({ item }) => (
     <Pressable onPress={() => navigateToPublicProfile(item._id)}>
-      <View
-        style={{
-          width: 150,
-          height: 210,
-          backgroundColor: "#F4F4F4",
-          borderRadius: 20,
-          borderColor: "#D9D9D9",
-          borderWidth: 1,
-          alignItems: "center",
-          marginRight: 15,
-          padding: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 5,
-            height: 1,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 3.84,
-          elevation: 5,
-        }}
-      >
-        <Image
-          source={{ uri: item.image }}
+      <Animatable.View animation="bounceIn" duration={1000}>
+        <View
           style={{
-            width: 120,
-            height: 120,
-            borderRadius: 60,
-            marginBottom: 10,
-          }}
-        />
-        <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 16,
-            textAlign: "center",
+            width: 150,
+            height: 210,
+            backgroundColor: "#F4F4F4",
+            borderRadius: 20,
+            borderColor: "#D9D9D9",
+            borderWidth: 1,
+            alignItems: "center",
+            marginRight: 15,
+            padding: 10,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 5,
+              height: 1,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 3.84,
+            elevation: 5,
           }}
         >
-          {item.name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            color: "#777",
-            textAlign: "center",
-          }}
-        >
-          {item.Headline}
-        </Text>
-        {item.totalParticipants && (
-          <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          <Image
+            source={{ uri: item.image }}
+            style={{
+              width: 120,
+              height: 120,
+              borderRadius: 60,
+              marginBottom: 10,
+            }}
+          />
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              textAlign: "center",
+            }}
           >
-            <Feather
-              name="users"
-              size={14}
-              color="#1E90FF"
-              style={{ marginRight: 5 }}
-            />
-            <Text
+            {item.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              color: "#777",
+              textAlign: "center",
+            }}
+          >
+            {item.Headline}
+          </Text>
+          {item.totalParticipants && (
+            <View
               style={{
-                fontSize: 12,
-                color: "#1E90FF",
-                textAlign: "center",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 5,
               }}
             >
-              {item.totalParticipants}
-            </Text>
-          </View>
-        )}
-      </View>
+              <Feather
+                name="users"
+                size={14}
+                color="#1E90FF"
+                style={{ marginRight: 5 }}
+              />
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#1E90FF",
+                  textAlign: "center",
+                }}
+              >
+                {item.totalParticipants}
+              </Text>
+            </View>
+          )}
+        </View>
+      </Animatable.View>
     </Pressable>
   );
 
@@ -263,8 +270,8 @@ export default function AllComponents() {
               fontWeight: "bold",
               fontSize: 20,
               marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              marginTop: 5,
+              marginBottom: 20,
               color: "#333",
             }}
           >

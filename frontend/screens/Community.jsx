@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  FlatList,
-  Pressable,
   Platform,
   StatusBar,
+  FlatList,
+  Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
@@ -28,6 +25,7 @@ const data = [
 
 export default function Community() {
   const [selectedOption, setSelectedOption] = useState("All");
+  const [flatListHeight, setFlatListHeight] = useState(50); // Initial height
 
   const renderComponent = () => {
     switch (selectedOption) {
@@ -52,7 +50,17 @@ export default function Community() {
         borderBottomWidth: 3,
         borderColor: selectedOption === item.text ? "#5DC8D7" : "transparent",
       }}
-      onPress={() => setSelectedOption(item.text)}
+      onPress={() => {
+        setSelectedOption(item.text);
+        if (item.text === "Members") {
+          setFlatListHeight(50);
+          setTimeout(() => {
+            setFlatListHeight(100);
+          }, 600);
+        } else {
+          setFlatListHeight(50);
+        }
+      }}
     >
       <Text
         style={{
@@ -74,7 +82,7 @@ export default function Community() {
       end={{ x: 1, y: 0 }}
       locations={[0.3, 1]}
     >
-      <StatusBar barStyle="white-content" />
+      <StatusBar barStyle="light-content" />
       <View style={{ flex: 1 }}>
         <Text
           style={{
@@ -103,13 +111,14 @@ export default function Community() {
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
             style={{
+              height: flatListHeight,
               marginTop: 12,
               marginLeft: 20,
               marginRight: 20,
+              marginBottom: 10,
             }}
             contentContainerStyle={{ paddingRight: 20 }}
           />
-
           {renderComponent()}
         </View>
       </View>

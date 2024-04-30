@@ -8,15 +8,17 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const MembersComponent = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchMembers();
-  }, []); // Fetch members once when component mounts
+  }, []);
 
   const fetchMembers = async () => {
     try {
@@ -40,6 +42,10 @@ const MembersComponent = () => {
     fetchMembers();
   };
 
+  const navigateToPublicProfile = (userId) => {
+    navigation.navigate("PublicProfile", { userId });
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={{
@@ -61,34 +67,54 @@ const MembersComponent = () => {
         shadowRadius: 3.84,
         elevation: 5,
       }}
+      onPress={() => navigateToPublicProfile(item._id)}
     >
       <Image
         source={{ uri: item.image }}
-        style={{ width: 60, height: 60, marginTop: 20 }}
+        style={{ width: 60, height: 60, marginTop: 20, borderRadius: 30 }}
       />
-      <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.name}</Text>
-      <Text>{item.Headline}</Text>
+      <Text style={{ fontWeight: "bold", fontSize: 16, textAlign: "center" }}>
+        {item.name}
+      </Text>
+      <Text style={{ textAlign: "center", flexWrap: "wrap" }}>
+        {item.Headline}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
-    <FlatList
-      data={members}
-      renderItem={renderItem}
-      keyExtractor={(item) => item._id}
-      contentContainerStyle={{
-        paddingHorizontal: 20,
-        paddingTop: 20,
-        alignItems: "center",
-      }} // Align items to center horizontally
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      ListFooterComponent={
-        loading ? <ActivityIndicator size="small" color="#000" /> : null
-      }
-    />
+    <>
+      <FlatList
+        data={members}
+        renderItem={renderItem}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 20,
+          alignItems: "center",
+          paddingBottom: 250,
+        }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListHeaderComponent={
+          loading ? (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="small" color="#000" />
+            </View>
+          ) : null
+        }
+      />
+      <View style={{ marginBottom: 1000 }}></View>
+    </>
   );
 };
 
