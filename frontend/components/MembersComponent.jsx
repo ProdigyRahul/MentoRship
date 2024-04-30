@@ -20,7 +20,7 @@ const MembersComponent = () => {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch("http://192.168.29.103:8080/members");
+      const response = await fetch("https://api.rahulmistry.in/members");
       const data = await response.json();
       if (response.ok) {
         setMembers(data.members);
