@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, StatusBar } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserType } from "../UserContext";
 
@@ -29,6 +29,7 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <Image
         source={require("../assets/01_Splash_screen.jpg")}
         style={styles.image}

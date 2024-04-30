@@ -59,8 +59,6 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
       if (response.ok) {
         setTopicName(data.topicName);
         setTopicImage(data.imageURL);
-        console.log("Topic Name:", data.topicName);
-        console.log("Topic Image URL:", data.imageURL);
       } else {
         console.error("Error fetching topic data:", data.message);
       }
