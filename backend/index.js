@@ -1902,3 +1902,24 @@ app.put("/topics/:topicId/participants/:userId", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// Endpoint to fetch all members
+app.get("/members", async (req, res) => {
+  try {
+    // Find all users with specified fields
+    const members = await User.find(
+      {},
+      { _id: true, name: true, image: true, Headline: true }
+    );
+
+    if (!members.length) {
+      return res.status(200).json({ message: "No members found" });
+    }
+
+    // Return success response with all member details
+    res.status(200).json({ members });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
