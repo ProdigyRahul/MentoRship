@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 export default function Session({ route, navigation }) {
   const { sessionId } = route.params;
   const [sessionDetails, setSessionDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch session details from API
@@ -22,16 +24,22 @@ export default function Session({ route, navigation }) {
 
   const fetchSessionDetails = async () => {
     try {
-      const response = await fetch(`http://192.168.29.103:8080/${sessionId}`);
+      const response = await fetch(`https://api.rahulmistry.in/${sessionId}`);
       const data = await response.json();
       setSessionDetails(data.session);
     } catch (error) {
       console.error("Error fetching session details:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   if (!sessionDetails) {
-    return null; // Handle loading state if needed
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="small" color="#000" />
+      </View>
+    );
   }
 
   const {
@@ -104,163 +112,184 @@ export default function Session({ route, navigation }) {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View
-          style={{
-            backgroundColor: "#FFFFFF",
-            padding: 20,
-            borderRadius: 20,
-            marginBottom: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              color: "#000000",
-              marginBottom: 10,
-            }}
+        {loading || !sessionDetails ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            {sessionName}
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image
-              source={{ uri: createdBy.image }}
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 15,
-                marginRight: 10,
-              }}
-            />
-            <Text style={{ fontSize: 16, color: "#000000" }}>
-              Organized by: {createdBy.name}
-            </Text>
+            <ActivityIndicator size="large" color="#000" />
           </View>
-          <Image
-            source={{ uri: banner }}
-            style={{
-              width: "100%",
-              height: 200,
-              borderRadius: 10,
-              marginTop: 20,
-              marginBottom: 20,
-            }}
-            resizeMode="cover"
-          />
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#007CB0",
-              marginTop: 20,
-            }}
-          >
-            Description
-          </Text>
-          <Text style={{ fontSize: 16, color: "#000000", marginTop: 10 }}>
-            {description}
-          </Text>
-          <View style={{ alignItems: "center" }}>
-            <TouchableOpacity
+        ) : (
+          <>
+            <View
               style={{
-                backgroundColor: "#09A1F6",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 5,
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundColor: "#FFFFFF",
+                padding: 20,
+                borderRadius: 20,
                 marginBottom: 20,
-                width: 250,
-                height: 45,
               }}
-              onPress={() => handleAttendeeAction(sessionId)}
             >
               <Text
-                style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
-              >
-                Request
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={{ paddingHorizontal: 20 }}>
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              marginTop: -20,
-              color: "#007CB0",
-            }}
-          >
-            Details
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 10,
-            }}
-          >
-            <MaterialIcons name="date-range" size={20} color="#007CB0" />
-            <Text style={{ fontSize: 16, marginLeft: 10 }}>
-              Date: {formattedDate}
-            </Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
-          >
-            <MaterialIcons name="access-time" size={20} color="#007CB0" />
-            <Text style={{ fontSize: 16, marginLeft: 10 }}>
-              Time: {formattedTime}
-            </Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
-          >
-            <MaterialIcons name="visibility" size={20} color="#007CB0" />
-            <Text style={{ fontSize: 16, marginLeft: 10 }}>
-              Session Type: {isPublic ? "Public" : "Private"}
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              marginTop: 20,
-              color: "#007CB0",
-            }}
-          >
-            Session Goals
-          </Text>
-          <Text style={{ fontSize: 16, marginTop: 10 }}>
-            {careerGoals.join(", ")}
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              marginTop: 20,
-              color: "#007CB0",
-            }}
-          >
-            Attendees
-          </Text>
-          <ScrollView horizontal style={{ marginTop: 10, paddingBottom: 50 }}>
-            {attendees.map((attendee) => (
-              <Image
-                key={attendee.userId}
-                source={{ uri: attendee.image }}
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  marginRight: 10,
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  color: "#000000",
+                  marginBottom: 10,
                 }}
+              >
+                {sessionName}
+              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={{ uri: createdBy.image }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 15,
+                    marginRight: 10,
+                  }}
+                />
+                <Text style={{ fontSize: 16, color: "#000000" }}>
+                  Organized by: {createdBy.name}
+                </Text>
+              </View>
+              <Image
+                source={{ uri: banner }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  borderRadius: 10,
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+                resizeMode="cover"
               />
-            ))}
-          </ScrollView>
-        </View>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#007CB0",
+                  marginTop: 20,
+                }}
+              >
+                Description
+              </Text>
+              <Text style={{ fontSize: 16, color: "#000000", marginTop: 10 }}>
+                {description}
+              </Text>
+              <View style={{ alignItems: "center" }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#09A1F6",
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 5,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 20,
+                    width: 250,
+                    height: 45,
+                  }}
+                  onPress={() => handleAttendeeAction(sessionId)}
+                >
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                  >
+                    Request
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginTop: -20,
+                  color: "#007CB0",
+                }}
+              >
+                Details
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <MaterialIcons name="date-range" size={20} color="#007CB0" />
+                <Text style={{ fontSize: 16, marginLeft: 10 }}>
+                  Date: {formattedDate}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 5,
+                }}
+              >
+                <MaterialIcons name="access-time" size={20} color="#007CB0" />
+                <Text style={{ fontSize: 16, marginLeft: 10 }}>
+                  Time: {formattedTime}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 5,
+                }}
+              >
+                <MaterialIcons name="visibility" size={20} color="#007CB0" />
+                <Text style={{ fontSize: 16, marginLeft: 10 }}>
+                  Session Type: {isPublic ? "Public" : "Private"}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginTop: 20,
+                  color: "#007CB0",
+                }}
+              >
+                Session Goals
+              </Text>
+              <Text style={{ fontSize: 16, marginTop: 10 }}>
+                {careerGoals.join(", ")}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginTop: 20,
+                  color: "#007CB0",
+                }}
+              >
+                Attendees
+              </Text>
+              <ScrollView
+                horizontal
+                style={{ marginTop: 10, paddingBottom: 50 }}
+              >
+                {attendees.map((attendee) => (
+                  <Image
+                    key={attendee.userId}
+                    source={{ uri: attendee.image }}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                      marginRight: 10,
+                    }}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          </>
+        )}
       </ScrollView>
     </LinearGradient>
   );
