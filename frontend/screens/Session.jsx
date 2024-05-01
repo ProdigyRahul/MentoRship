@@ -102,6 +102,7 @@ export default function Session({ route, navigation }) {
           marginTop: 20,
           padding: 20,
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
