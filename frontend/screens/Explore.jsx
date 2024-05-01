@@ -96,7 +96,7 @@ export default function Explore({ navigation }) {
             color: "#FFFFFF",
           }}
         >
-          Explore
+          Connections
         </Text>
       </View>
       <View style={styles.friendsContainer}>
