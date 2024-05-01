@@ -1923,3 +1923,26 @@ app.get("/members", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// Endpoint to fetch session details by session ID and user ID
+app.get("/:sessionId", async (req, res) => {
+  const { sessionId } = req.params;
+
+  try {
+    // Find the session by session ID and populate the createdBy field with name and image
+    const session = await GroupSession.findById(sessionId).populate(
+      "createdBy",
+      "name image"
+    );
+
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Return session details
+    res.json({ session });
+  } catch (error) {
+    console.error("Error fetching session details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});

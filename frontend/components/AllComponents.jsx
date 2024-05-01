@@ -317,7 +317,9 @@ export default function AllComponents() {
         Recommended Topics
       </Text>
       {loading2 ? (
-        <ActivityIndicator size="small" color="#000" />
+        <View style={{ flex: 1, height: 500 }}>
+          <ActivityIndicator size="small" color="#000" />
+        </View>
       ) : (
         <FlatList
           data={topics}

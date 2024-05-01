@@ -25,7 +25,7 @@ const data = [
 
 export default function Community() {
   const [selectedOption, setSelectedOption] = useState("All");
-  const [flatListHeight, setFlatListHeight] = useState(50); // Initial height
+  const [flatListHeight, setFlatListHeight] = useState(50);
 
   const renderComponent = () => {
     switch (selectedOption) {
@@ -33,10 +33,6 @@ export default function Community() {
         return <MembersComponent />;
       case "Sessions":
         return <SessionsComponent />;
-      case "Topics":
-        return <TopicsComponent />;
-      case "Companies/Orgs":
-        return <CompaniesComponent />;
       default:
         return <AllComponents />;
     }

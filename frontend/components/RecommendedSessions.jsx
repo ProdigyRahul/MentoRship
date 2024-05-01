@@ -159,7 +159,9 @@ export default function RecommendedSessions() {
     const { text, style } = renderButton(attendeeStatus);
 
     return (
-      <Pressable onPress={() => navigation.navigate("Sessions")}>
+      <Pressable
+        onPress={() => navigation.navigate("Sessions", { sessionId: _id })}
+      >
         <Animatable.View animation="fadeInUpBig" duration={1500}>
           <View style={styles.sessionContainer}>
             <Image
