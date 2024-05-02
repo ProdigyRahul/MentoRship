@@ -33,6 +33,9 @@ export default function Session({ route, navigation }) {
       setLoading(false);
     }
   };
+  const handleAttendeeAction = async (sessionId) => {
+    console.log("Attending");
+  };
 
   if (!sessionDetails) {
     return (
@@ -186,6 +189,7 @@ export default function Session({ route, navigation }) {
                     justifyContent: "center",
                     alignItems: "center",
                     marginBottom: 20,
+                    marginTop: 10,
                     width: 250,
                     height: 45,
                   }}
