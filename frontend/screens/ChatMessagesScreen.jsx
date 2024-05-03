@@ -87,11 +87,11 @@ const ChatMessagesScreen = () => {
   };
 
   // TODO: Remove Comments
-  // useEffect(() => {
-  //   const interval = setInterval(fetchMessages, 1000);
+  useEffect(() => {
+    const interval = setInterval(fetchMessages, 1000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchRecepientData = async () => {

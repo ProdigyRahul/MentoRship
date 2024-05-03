@@ -351,7 +351,7 @@ const PublicProfile = ({ route, navigation }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  Starting Year:
+                  Grade Year:
                 </Text>
                 <Text>{userData ? userData.gradeYear : ""}</Text>
               </View>
@@ -365,9 +365,9 @@ const PublicProfile = ({ route, navigation }) => {
                 </Text>
                 <Text>{userData ? userData.degree : ""}</Text>
               </View>
-              <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
+              {/* <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
                 Reviews
-              </Text>
+              </Text> */}
               <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 20 }}>
                 Contact
               </Text>

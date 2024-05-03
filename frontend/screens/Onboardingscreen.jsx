@@ -30,7 +30,9 @@ export default function Onboarding({ navigation }) {
   const handleGetStarted = () => {
     navigation.navigate("Signup");
   };
-  const handleSkip = () => {};
+  const handleSkip = () => {
+    navigation.navigate("Login");
+  };
   return (
     <SafeAreaView style={tw`flex-1 mt-20 items-center pb-20`}>
       <Image
