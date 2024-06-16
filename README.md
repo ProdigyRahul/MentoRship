@@ -34,7 +34,7 @@
 
 ## <a name="introduction">🤖 Introduction</a>
 
-MentoRship is a web-based application designed to connect individuals seeking guidance
+MentoRship is a application designed to connect individuals seeking guidance
 with experienced mentors from diverse fields. Users can create profiles, specifying their goals
 and interests. The app's algorithm then matches them with suitable mentors based on
 categories, ensuring a personalized mentorship experience. Users can choose mentors based
