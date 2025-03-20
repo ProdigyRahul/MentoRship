@@ -25,7 +25,7 @@ export default function MyEvents({ navigation }) {
     async function fetchSessions() {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/user-sessions/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-sessions/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch sessions");
@@ -48,7 +48,7 @@ export default function MyEvents({ navigation }) {
 
   async function fetchOrganizer(userId) {
     try {
-      const response = await fetch(`https://api.rahulmistry.in/${userId}/name`);
+      const response = await fetch(`https://mentorship-backends-rahul-mistrys-projects.vercel.app/${userId}/name`);
       if (!response.ok) {
         throw new Error("Failed to fetch organizer details");
       }

@@ -41,7 +41,7 @@ export default function Login({ navigation }) {
     };
     try {
       const response = await axios.post(
-        `https://api.rahulmistry.in/login`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/login`,
         user
       );
       const token = response.data.token;

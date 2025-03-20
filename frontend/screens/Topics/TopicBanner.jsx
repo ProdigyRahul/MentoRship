@@ -73,7 +73,7 @@ export default function TopicBanner({ navigation }) {
       });
 
       const response = await axios.post(
-        `https://api.rahulmistry.in/add-image-to-topic/${topicId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/add-image-to-topic/${topicId}`,
         formData,
         {
           headers: {

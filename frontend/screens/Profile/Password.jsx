@@ -54,7 +54,7 @@ export default function Password({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://api.rahulmistry.in/user-details/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-details/${userId}`
       );
       setUserName(response.data.FirstName);
     } catch (error) {
@@ -73,7 +73,7 @@ export default function Password({ navigation }) {
 
       setLoading(true);
       const response = await axios.delete(
-        `https://api.rahulmistry.in/delete-account/${userId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/delete-account/${userId}`,
         {
           data: { password },
         }

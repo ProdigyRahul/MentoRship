@@ -84,7 +84,7 @@ export default function CareerGoals({ navigation }) {
     try {
       // Send a POST request to your backend endpoint
       const response = await axios.post(
-        "https://api.rahulmistry.in/onboarding/v4",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/onboarding/v4",
         {
           userId: userId, // Use the userId from your context or state
           careerGoals: Object.keys(checkBoxStates).filter(

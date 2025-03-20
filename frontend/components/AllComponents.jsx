@@ -33,7 +33,7 @@ export default function AllComponents() {
   const fetchUserType = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/user-type/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-type/${userId}`
       );
       const data = await response.json();
       if (data.isMentor) {
@@ -50,7 +50,7 @@ export default function AllComponents() {
 
   const fetchMentors = async () => {
     try {
-      const response = await fetch("https://api.rahulmistry.in/mentors");
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/mentors");
       const data = await response.json();
       setUsers(data.mentors);
     } catch (error) {
@@ -63,7 +63,7 @@ export default function AllComponents() {
 
   const fetchStudents = async () => {
     try {
-      const response = await fetch("https://api.rahulmistry.in/students");
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/students");
       const data = await response.json();
       setUsers(data.students);
     } catch (error) {
@@ -76,7 +76,7 @@ export default function AllComponents() {
 
   const fetchTopics = async () => {
     try {
-      const response = await fetch("https://api.rahulmistry.in/topics");
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/topics");
       const data = await response.json();
       setTopics(data); // Assuming data is an array of topics
     } catch (error) {

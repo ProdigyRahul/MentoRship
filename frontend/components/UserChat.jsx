@@ -12,7 +12,7 @@ const UserChat = ({ item }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/messages/${userId}/${item._id}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/messages/${userId}/${item._id}`
       );
       const data = await response.json();
 

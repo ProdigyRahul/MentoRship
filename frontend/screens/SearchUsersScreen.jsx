@@ -26,7 +26,7 @@ const SearchUsersScreen = ({ navigation }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "https://api.rahulmistry.in/users/search",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/users/search",
         { searchString: query }
       );
       setSearchResults(response.data);

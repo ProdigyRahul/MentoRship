@@ -53,7 +53,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   const fetchTopicData = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/details`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/topics/${topicId}/details`
       );
       const data = await response.json();
       if (response.ok) {
@@ -74,7 +74,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/messages`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/topics/${topicId}/messages`
       );
       const data = await response.json();
       if (response.ok) {
@@ -135,7 +135,7 @@ const TopicChatMessagesScreen = ({ route, navigation }) => {
     }
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/topics/${topicId}/messages`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/topics/${topicId}/messages`,
         {
           method: "POST",
           headers: {

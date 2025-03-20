@@ -309,7 +309,7 @@ export default function Welcome({ navigation }) {
     try {
       // Send user data to backend for first API call
       const response1 = await axios.post(
-        `https://api.rahulmistry.in/onboarding/v1`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/onboarding/v1`,
         userData
       );
 
@@ -318,7 +318,7 @@ export default function Welcome({ navigation }) {
         console.log("Successfully sent user data to onboarded/v1 API");
         // Send user data to backend for second API call
         const response2 = await axios.post(
-          `https://api.rahulmistry.in/onboarded/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/onboarded/${userId}`
         );
 
         // Check response and navigate if successful

@@ -12,7 +12,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
   const handleIgnoreRequest = async (friendRequestId) => {
     try {
       const response = await axios.post(
-        "https://api.rahulmistry.in/reject-friend-request",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/reject-friend-request",
         {
           userId: userId,
           senderId: friendRequestId,
@@ -31,7 +31,7 @@ const MentorRequest = ({ item, friendRequests, setFriendRequests }) => {
   const handleAcceptRequest = async (friendRequestId) => {
     try {
       const response = await axios.post(
-        "https://api.rahulmistry.in/friend-request/accept",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request/accept",
         {
           senderId: friendRequestId,
           recepientId: userId,

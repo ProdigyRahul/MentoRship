@@ -61,7 +61,7 @@ const ScheduleSession = ({ navigation }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `https://api.rahulmistry.in/select-schedule/${sessionId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/select-schedule/${sessionId}`,
         { date, time, duration }
       );
       console.log("Response:", response.data);

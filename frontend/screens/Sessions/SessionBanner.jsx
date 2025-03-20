@@ -73,7 +73,7 @@ export default function SessionBanner({ navigation }) {
       });
 
       const response = await axios.post(
-        `https://api.rahulmistry.in/upload-banner/${sessionId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/upload-banner/${sessionId}`,
         formData,
         {
           headers: {

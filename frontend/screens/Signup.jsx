@@ -78,7 +78,7 @@ export default function Signup({ navigation }) {
       });
 
       const response = await axios.post(
-        "https://api.rahulmistry.in/register",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/register",
         formData,
         {
           headers: {

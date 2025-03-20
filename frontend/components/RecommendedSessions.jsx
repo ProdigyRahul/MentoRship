@@ -25,7 +25,7 @@ export default function RecommendedSessions() {
   const fetchRecommendedSessions = async () => {
     try {
       const response = await fetch(
-        "https://api.rahulmistry.in/recommended-sessions"
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/recommended-sessions"
       );
       const data = await response.json();
       const formattedSessions = data.sessions.map((session) => ({
@@ -69,7 +69,7 @@ export default function RecommendedSessions() {
   const fetchAttendeeStatus = async (sessionId, userId) => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/attendee-status/${sessionId}/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/attendee-status/${sessionId}/${userId}`
       );
       const data = await response.json();
       return data.status;
@@ -82,7 +82,7 @@ export default function RecommendedSessions() {
   const attendSession = async (sessionId, userId) => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/attend-session/${sessionId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/attend-session/${sessionId}`,
         {
           method: "POST",
           headers: {

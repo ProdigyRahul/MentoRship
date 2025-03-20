@@ -27,10 +27,10 @@ const User = ({ item, category }) => {
     setLoading(true);
     try {
       const friendRequestsResponse = await axios.get(
-        `https://api.rahulmistry.in/friend-request/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request/${userId}`
       );
       const acceptedFriendsResponse = await axios.get(
-        `https://api.rahulmistry.in/accepted-friends/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/accepted-friends/${userId}`
       );
 
       const friendRequests = friendRequestsResponse.data.map(
@@ -129,7 +129,7 @@ const User = ({ item, category }) => {
 
   const sendFriendRequest = async () => {
     try {
-      await axios.post("https://api.rahulmistry.in/friend-request", {
+      await axios.post("https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request", {
         currentUserId: userId,
         selectedUserId: item._id,
       });

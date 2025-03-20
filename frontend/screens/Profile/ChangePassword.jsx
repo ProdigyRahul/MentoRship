@@ -50,7 +50,7 @@ export default function ChangePassword({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.post(
-        `https://api.rahulmistry.in/change-password/${userId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/change-password/${userId}`,
         {
           oldPassword,
           newPassword,

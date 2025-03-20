@@ -37,7 +37,7 @@ const ChatsScreen = () => {
     const fetchAcceptedFriends = async () => {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/accepted-friends/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/accepted-friends/${userId}`
         );
         const data = await response.json();
 
@@ -56,7 +56,7 @@ const ChatsScreen = () => {
     const fetchTopics = async () => {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/user-topics/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-topics/${userId}`
         );
         const data = await response.json();
 
@@ -75,7 +75,7 @@ const ChatsScreen = () => {
     const fetchPendingFriendRequests = async () => {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/friend-request/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request/${userId}`
         );
         const data = await response.json();
 

@@ -96,7 +96,7 @@ export default function CreateNewTopic({ navigation }) {
 
     try {
       const response = await axios.post(
-        "https://api.rahulmistry.in/create-topic",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/create-topic",
         sessionData
       );
       // Save the session ID in the UserType context

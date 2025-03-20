@@ -27,7 +27,7 @@ export default function Profile({ navigation }) {
       try {
         setTimeout(async () => {
           const response = await fetch(
-            `https://api.rahulmistry.in/user-data/${userId}`
+            `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-data/${userId}`
           );
           const data = await response.json();
 

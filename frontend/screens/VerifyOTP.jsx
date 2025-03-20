@@ -31,7 +31,7 @@ export default function VerifyOTP({ navigation }) {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `https://api.rahulmistry.in/${userId}/image`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/${userId}/image`
         );
         setUserName(response.data.name);
         setUserImage(response.data.image);
@@ -83,7 +83,7 @@ export default function VerifyOTP({ navigation }) {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://api.rahulmistry.in/verify-otp",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/verify-otp",
         {
           userId,
           otp,
@@ -94,7 +94,7 @@ export default function VerifyOTP({ navigation }) {
       if (response.status === 200) {
         // OTP is valid, check if user is onboarded
         const onboardedResponse = await axios.get(
-          `https://api.rahulmistry.in/user-onboarded/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-onboarded/${userId}`
         );
 
         const onboarded = onboardedResponse.data.onboarded;

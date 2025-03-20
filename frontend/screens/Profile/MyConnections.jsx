@@ -33,7 +33,7 @@ export default function MyConnections({ navigation }) {
     try {
       // Fetch friends data from backend API
       const response = await fetch(
-        `https://api.rahulmistry.in/user-friends/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-friends/${userId}`
       );
       const { friends, friendIds } = await response.json();
       setFriends(friends);

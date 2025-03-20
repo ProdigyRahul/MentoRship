@@ -207,7 +207,7 @@ export default function Education({ navigation }) {
     try {
       // Send POST request to backend API
       const response = await axios.post(
-        "https://api.rahulmistry.in/onboarding/v2",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/onboarding/v2",
         data
       );
 

@@ -22,7 +22,7 @@ const MembersComponent = () => {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch("https://api.rahulmistry.in/members");
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/members");
       const data = await response.json();
       if (response.ok) {
         setMembers(data.members);

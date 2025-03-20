@@ -30,13 +30,13 @@ export default function Explore({ navigation }) {
     let url = "";
     switch (category) {
       case "Connections":
-        url = `https://api.rahulmistry.in/friends/${userId}`;
+        url = `https://mentorship-backends-rahul-mistrys-projects.vercel.app/friends/${userId}`;
         break;
       case "Request Sent":
-        url = `https://api.rahulmistry.in/friend-requests/sent/${userId}`;
+        url = `https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-requests/sent/${userId}`;
         break;
       case "All Members":
-        url = `https://api.rahulmistry.in/users/${userId}`;
+        url = `https://mentorship-backends-rahul-mistrys-projects.vercel.app/users/${userId}`;
         break;
       default:
         break;

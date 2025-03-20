@@ -24,7 +24,7 @@ export default function Session({ route, navigation }) {
 
   const fetchSessionDetails = async () => {
     try {
-      const response = await fetch(`https://api.rahulmistry.in/${sessionId}`);
+      const response = await fetch(`https://mentorship-backends-rahul-mistrys-projects.vercel.app/${sessionId}`);
       const data = await response.json();
       setSessionDetails(data.session);
     } catch (error) {

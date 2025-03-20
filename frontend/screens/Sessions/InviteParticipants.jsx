@@ -63,7 +63,7 @@ export default function InviteParticipants({ navigation }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://api.rahulmistry.in/user-friends/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user-friends/${userId}`
       );
       const { friends } = response.data;
       const initialSelected = friends.reduce((acc, friend) => {
@@ -104,7 +104,7 @@ export default function InviteParticipants({ navigation }) {
         .map((friend) => friend._id);
       console.log("Selected Friends:", invitedFriends);
       const response = await axios.post(
-        `https://api.rahulmistry.in/invite-friends/${sessionId}`,
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/invite-friends/${sessionId}`,
         { invitedFriends }
       );
       console.log("Successs");

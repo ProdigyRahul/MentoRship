@@ -97,7 +97,7 @@ export default function CreateNewSession({ navigation }) {
 
     try {
       const response = await axios.post(
-        "https://api.rahulmistry.in/create-session",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/create-session",
         sessionData
       );
       // Save the session ID in the UserType context

@@ -72,7 +72,7 @@ const ChatMessagesScreen = () => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/messages/${userId}/${recepientId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/messages/${userId}/${recepientId}`
       );
       const data = await response.json();
 
@@ -97,7 +97,7 @@ const ChatMessagesScreen = () => {
     const fetchRecepientData = async () => {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/user/${recepientId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user/${recepientId}`
         );
 
         const data = await response.json();
@@ -129,7 +129,7 @@ const ChatMessagesScreen = () => {
       await Promise.all(
         messageIds.map(async (messageId) => {
           const response = await fetch(
-            `https://api.rahulmistry.in/messages/read/${messageId}`,
+            `https://mentorship-backends-rahul-mistrys-projects.vercel.app/messages/read/${messageId}`,
             {
               method: "PUT",
             }
@@ -147,11 +147,11 @@ const ChatMessagesScreen = () => {
   const fetchLastSeen = async () => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/user/last-seen/${recepientId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/user/last-seen/${recepientId}`
       );
 
       // Update sender's last seen time
-      await fetch(`https://api.rahulmistry.in/user/last-seen/${userId}`, {
+      await fetch(`https://mentorship-backends-rahul-mistrys-projects.vercel.app/user/last-seen/${userId}`, {
         method: "PUT",
       });
 
@@ -250,7 +250,7 @@ const ChatMessagesScreen = () => {
         formData.append("messageText", message);
       }
 
-      const response = await fetch("https://api.rahulmistry.in/messages", {
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/messages", {
         method: "POST",
         body: formData,
       });
@@ -329,7 +329,7 @@ const ChatMessagesScreen = () => {
   const deleteMessages = async (messageIds) => {
     try {
       const response = await fetch(
-        "https://api.rahulmistry.in/deleteMessages",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/deleteMessages",
         {
           method: "POST",
           headers: {

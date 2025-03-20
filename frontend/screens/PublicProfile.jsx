@@ -27,7 +27,7 @@ const PublicProfile = ({ route, navigation }) => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://api.rahulmistry.in/public-profile/${userId}`
+          `https://mentorship-backends-rahul-mistrys-projects.vercel.app/public-profile/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -46,7 +46,7 @@ const PublicProfile = ({ route, navigation }) => {
   const checkFriendshipStatus = async (userData) => {
     try {
       const response = await fetch(
-        `https://api.rahulmistry.in/check-friendship/${loggedInUserId}/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/check-friendship/${loggedInUserId}/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to check friendship status");
@@ -63,7 +63,7 @@ const PublicProfile = ({ route, navigation }) => {
   const sendFriendRequest = async () => {
     try {
       const response = await fetch(
-        "https://api.rahulmistry.in/friend-request",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request",
         {
           method: "POST",
           headers: {
@@ -89,7 +89,7 @@ const PublicProfile = ({ route, navigation }) => {
     console.log("button clicked");
     try {
       const response = await fetch(
-        "https://api.rahulmistry.in/friend-request/accept",
+        "https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request/accept",
         {
           method: "POST",
           headers: {
@@ -114,7 +114,7 @@ const PublicProfile = ({ route, navigation }) => {
 
   const removeFriend = async () => {
     try {
-      const response = await fetch("https://api.rahulmistry.in/remove-friend", {
+      const response = await fetch("https://mentorship-backends-rahul-mistrys-projects.vercel.app/remove-friend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

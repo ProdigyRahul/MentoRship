@@ -28,7 +28,7 @@ const MentorRequestScreen = () => {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        `https://api.rahulmistry.in/friend-request/${userId}`
+        `https://mentorship-backends-rahul-mistrys-projects.vercel.app/friend-request/${userId}`
       );
       if (response.status === 200) {
         setLoading(false);
