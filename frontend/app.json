@@ -21,7 +21,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/01_Splash_screen.jpg",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.DETECT_SCREEN_CAPTURE"
+      ],
+      "package": "com.mentorship.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
